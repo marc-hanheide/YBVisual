@@ -4,27 +4,7 @@
  * and open the template in the editor.
  */
 
-/*
- * Wait for the window to be ready
- */
-$(document).ready(function()
-{
-    console.log("Window ready");
-    
-    //SESSION.Connect("127.0.0.1",5000);
-    
-    
-    jQuery.ajax({
-      type:'POST',
-      url:'http://10.169.145.143:8888',
-    
-        data:'hello server'
-     
-        }
-            
-            
-    );
-});
+
 
 /*
  *  This struct is used to hold information regarding information such as:

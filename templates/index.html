@@ -11,8 +11,11 @@ and open the template in the editor.
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="/static/js/jquery.js"></script>
+		<script src="/static/js/jquery-ui.js"></script>
         <script src="/static/js/YBEditor.js"></script>
+		<script src="/static/js/YBEditor-ui.js"></script>
         <link rel="stylesheet" type="text/css" href="/static/css/styles.css">
+		<link rel="stylesheet" type="text/css" href="/static/js/css/base/jquery-ui.css">
     </head>
     <body>
         <!-- This is the top (navigation) bar -->
@@ -20,9 +23,10 @@ and open the template in the editor.
             <!-- The content contained within the navigation bar -->
             <div id="top_bar_content">
                 <h1>YouBot Visual</h1>
-                <div onclick="SESSION.PROJECT.New()" id="new_btn">New</div> <!-- new project button -->
-                <div onclick="SESSION.PROJECT.Open()" id="open_btn">Open</div> <!-- open project button -->
-                <div onclick="SESSION.PROJECT.Save()" id="save_btn">Save</div> <!-- save project button -->
+                <div onclick="newClicked()" id="new_btn">New</div> <!-- new project button -->
+                <div onclick="" id="open_btn">Open</div> <!-- open project button -->
+                <div onclick="" id="save_btn">Save</div> <!-- save project button -->
+				<div onclick="" id="execute_btn">Execute</div> <!-- Execute button -->
             </div>
             
             <!-- This is the editor div
@@ -31,13 +35,50 @@ and open the template in the editor.
                 div02 - Program contents
                 -->
             <div id="editor_content">
-                <div id="editor_visual_content"><!-- content --></div>
-                <div id="editor_text_content">
-                    <p class="code_line">MOVE LEFT 12</p>
-                </div>
-                <div class="clear"><!-- N/A --></div>
+                <div id="editor_visual_content">
+				
+				<!--
+					SAMPLE MOVE PART
+					
+					<div id="0" class="vis_part vis_part_move">
+							<h1>MOVE</h1>
+							<p>Direction:</p>
+							<select>
+								<option value="left">Left</option>
+								<option value="right">Right</option>
+								<option value="forward">Forward</option>
+								<option value="back">Back</option>
+							</select>
+							<p>Amount:</p>
+							<input type="text" name="amount" value="0">
+					</div>
+					
+				-->
+				
+				<!-- 
+					<div id="0" class="vis_part vis_part_rot">
+							<h1>ROTATE</h1>
+							<p>Direction:</p>
+							<select>
+								<option value="left">Left</option>
+								<option value="right">Right</option>
+							</select>
+							<p>Amount:</p>
+							<input type="text" name="amount" value="0">
+					</div>
+				
+				-->
+				
+				</div>
+                
             </div>
         </div>
+		
+		
+		<!-- DIALOG BOX -->
+		<div id="dialog" title="Dialog">
+			<p id="dialog_desc"><!-- dialog description --></p>
+		</div>
         
     </body>
         
