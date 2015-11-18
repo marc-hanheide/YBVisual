@@ -1,0 +1,45 @@
+$def with (name)
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>YouBot Visual</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="/static/js/jquery.js"></script>
+        <script src="/static/js/YBEditor.js"></script>
+        <link rel="stylesheet" type="text/css" href="/static/css/styles.css">
+    </head>
+    <body>
+        <!-- This is the top (navigation) bar -->
+        <div id="top_bar">
+            <!-- The content contained within the navigation bar -->
+            <div id="top_bar_content">
+                <h1>YouBot Visual</h1>
+                <div onclick="SESSION.PROJECT.New()" id="new_btn">New</div> <!-- new project button -->
+                <div onclick="SESSION.PROJECT.Open()" id="open_btn">Open</div> <!-- open project button -->
+                <div onclick="SESSION.PROJECT.Save()" id="save_btn">Save</div> <!-- save project button -->
+            </div>
+            
+            <!-- This is the editor div
+                it will be split into two divs 
+                div01 - Visual programming
+                div02 - Program contents
+                -->
+            <div id="editor_content">
+                <div id="editor_visual_content"><!-- content --></div>
+                <div id="editor_text_content">
+                    <p class="code_line">MOVE LEFT 12</p>
+                </div>
+                <div class="clear"><!-- N/A --></div>
+            </div>
+        </div>
+        
+    </body>
+        
+</html>
+
