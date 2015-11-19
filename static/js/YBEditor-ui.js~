@@ -108,7 +108,7 @@ function saveClicked()
 //Execute button 
 function executeClicked()
 {
-		Halt();
+	
 }
 
 /*

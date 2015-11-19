@@ -27,7 +27,7 @@ and open the template in the editor.
                 <div onclick="newClicked()" id="new_btn">New</div> <!-- new project button -->
                 <div onclick="openClicked()" id="open_btn">Open</div> <!-- open project button -->
                 <div onclick="saveClicked()" id="save_btn">Save</div> <!-- save project button -->
-				<div onclick="executeClicked()" id="execute_btn">Execute</div> <!-- Execute button -->
+				<div onclick="" id="execute_btn">Execute</div> <!-- Execute button -->
             </div>
             
             <!-- This is the editor div
