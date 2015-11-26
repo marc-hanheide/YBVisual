@@ -4,12 +4,9 @@
 $(document).ready(function()
 {
     console.log("Window ready");
-    toggleSelections(SELECTIONS[CURRENT]);
 	
 	addMovePart('01');
 	addRotatePart('02');
-	
-
 
 	
 });
@@ -113,6 +110,7 @@ function executeClicked()
 }
 var SELECTIONS = new Array("statements","conditions","templates","demos");
 var CURRENT = 0;
+toggleSelections(SELECTIONS[CURRENT]);
 
 
 //Bottom bar button clicked
