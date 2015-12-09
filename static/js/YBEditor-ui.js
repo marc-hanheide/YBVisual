@@ -8,10 +8,7 @@ $(document).ready(function()
 	
 	addMovePart('01');
 	addRotatePart('02');
-	
-
-
-	
+		
 });
 
 
@@ -246,12 +243,67 @@ function partIsDraggable(div)
         KEY PRESS FUNCTIONS
    ------------------------------------------------
 */
+//Function is used to check if a key is pressed
+function isKeyPressed(key){
+		if(key == LAST_KEY_PRESSED_CHAR || key.toUpperCase() == LAST_KEY_PRESSED_CHAR ){
+			return true;
+		}else{
+			return false;
+		}
+}
+
+
+var LAST_KEY_PRESSED_CODE = null;
+var LAST_KEY_PRESSED_CHAR = null;
 $(document).keypress(function(e)
+
 {
-	if(e.keyCode == 37){ selectionsChoose('left');  }
-	if(e.keyCode == 39){ selectionsChoose('right');  }
+	LAST_KEY_PRESSED_CODE = e.keyCode;
+	LAST_KEY_PRESSED_CHAR = String.fromCharCode(e.which);
+
+	
+	//Left key press
+	if(e.keyCode == 37){ 
+	selectionsChoose('left');
+	LAST_KEY_PRESSED_CHAR = 'left';
+	}
+	//Right key press
+	if(e.keyCode == 39){ 
+	selectionsChoose('right');
+	LAST_KEY_PRESSED_CHAR = 'right';
+	}
+	//Up key press
+	if(e.keyCode == 38){
+		LAST_KEY_PRESSED_CHAR = 'up';
+	}
+	//Down key press
+	if(e.keyCode == 40){
+		LAST_KEY_PRESSED_CHAR = 'down';
+	}
 	
 	
+});
+$(document).keydown(function(e){
+	//Left key press
+	if(e.keyCode == 37){ 
+	LAST_KEY_PRESSED_CHAR = 'left';
+	}
+	//Right key press
+	if(e.keyCode == 39){ 
+	LAST_KEY_PRESSED_CHAR = 'right';
+	}
+	//Up key press
+	if(e.keyCode == 38){
+		LAST_KEY_PRESSED_CHAR = 'up';
+	}
+	//Down key press
+	if(e.keyCode == 40){
+		LAST_KEY_PRESSED_CHAR = 'down';
+	}
+});
+$(document).keyup(function(e){
+	LAST_KEY_PRESSED_CODE = -1;
+	LAST_KEY_PRESSED_CHAR = '';
 });
 
 

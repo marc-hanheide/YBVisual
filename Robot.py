@@ -68,24 +68,41 @@ class RobotController:
     def __init__(self):
         rospy.loginfo("Creating robot controller")
         self.robot = Youbot()
+        self.Processing = False;
     #Process incoming data
     def Process(self,data):
+        #Set processing
+        self.Processing = True;
         #we must split the string
-        _data = str.split(data)        
-        
+        _data = str.split(data)
+        print "DATA: " + _data;
         #First check for a halt command
         if(_data[0] == "HALT"):
             #If halt - stop the robot
             self.robot.Stop()
-        elif(_data[0] == "MOVE"):
+        #Now check for a move command
+        if(_data[0] == "MOVE"):
             if(_data[1] == "FORWARD"):
                 self.robot.Drive(1,0,0,0,0,0);
-            elif(_data[1] == "BACK"):
+            if(_data[1] == "BACK"):
                 self.robot.Drive(-1,0,0,0,0,0);
-            elif(_data[1]=="LEFT"):
+            if(_data[1]=="LEFT"):
                 self.robot.Drive(0,1,0,0,0,0);
-            elif(_data[1]=="RIGHT"):
+            if(_data[1]=="RIGHT"):
                 self.robot.Drive(0,-1,0,0,0,0);
+        #Check for a rotate command
+        if(_data[0] == "ROTATE"):
+            if(_data[1] == "LEFT"):
+                #rotate left
+                self.robot.Drive(0,0,0,0,1,0);
+            if(_data[1] == "RIGHT"):
+                #rotate right
+                print "Rotating right";
+                self.robot.Drive(0,0,0,0,-1,0);
+        print "Finished Processing";
+        self.Processing = False;
+    def isProcessing(self):
+        return self.Processing;
                 
             
         

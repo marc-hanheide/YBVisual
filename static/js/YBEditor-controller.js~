@@ -15,7 +15,7 @@ function moveRight(){SendData("MOVE\nRIGHT")}
 //Start rotating the robot left
 function rotateLeft(){SendData("ROTATE\nLEFT"); }
 //Start rotating the robot right
-function rotateRight(){ SendData("ROTATE\nRIGHT"); }
+function rotateRight(){ }
 
 
 //Stop the robot from moving
