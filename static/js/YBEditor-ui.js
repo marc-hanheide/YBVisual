@@ -4,10 +4,20 @@
 $(document).ready(function()
 {
     console.log("Window ready");
-    toggleSelections(SELECTIONS[CURRENT]);
 	
-	addMovePart('01');
-	addRotatePart('02');
+	//addMovePart('01');
+	//addRotatePart('02');
+	
+	
+	var atts = [
+	{'val': '01', 'text': 'One'},
+	{ 'val': '02', 'text': 'Two'},
+	{ 'val': '03', 'text': 'Three'}
+	];
+	
+	
+	//DraggableDiv("01","Move",200,200,'#editor_visual_content');
+	DraggableDiv_Select("01","Move",200,200,'#editor_visual_content',atts);
 		
 });
 
@@ -108,45 +118,7 @@ function executeClicked()
 {
 		Halt();
 }
-var SELECTIONS = new Array("statements","conditions","templates","demos");
-var CURRENT = 0;
 
-
-//Bottom bar button clicked
-function selectionButtonClicked(id){ toggleSelections(id); }
-//Used to toggle selections
-function toggleSelections(id)
-{
-	for(i = 0; i < SELECTIONS.length;i++)
-	{
-		if(SELECTIONS[i] == id){ CURRENT = i; }
-	}
-	
-	
-	var input_string = '#' + id + '_' + 'content';
-	$('#statements_content').hide();	$('#statements').css('background','darkgray');
-	$('#conditions_content').hide();	$('#conditions').css('background','darkgray');
-	$('#templates_content').hide();	$('#templates').css('background','darkgray');
-	$('#demos_content').hide();	$('#demos').css('background','darkgray');
-	$(input_string).show(); $('#' + id).css('background','lightgray');
-	
-}
-
-//Use arrow keys to switch between selections
-function selectionsChoose(key)
-{
-	if(key == 'left')
-	{
-		if(CURRENT > 0){ CURRENT--; }		
-	}
-	else if(key == 'right')
-	{
-		if(CURRENT < SELECTIONS.length-1){ CURRENT++; }
-	}
-	
-	var sel = SELECTIONS[CURRENT];
-	toggleSelections(sel);
-}
 
 
 

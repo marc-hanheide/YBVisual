@@ -1,0 +1,126 @@
+$def with (name)
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        	<title>YouBot Visual</title>
+        	<meta charset="UTF-8">
+        	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        	<script src="/static/js/jquery.js"></script>
+			<script src="/static/js/jquery-ui.js"></script>
+        	<script src="/static/js/YBEditor.js"></script>
+        	<script src="/static/js/YBEditor-controller.js"></script>
+			<script src="/static/js/YBEditor-ui.js"></script>
+			<script src="/static/js/YBEditor-demos.js"></script>
+        <link rel="stylesheet" type="text/css" href="/static/css/styles.css">
+		<link rel="stylesheet" type="text/css" href="/static/js/css/base/jquery-ui.css">
+    </head>
+    <body>
+        <!-- This is the top (navigation) bar -->
+        <div id="top_bar">
+            <!-- The content contained within the navigation bar -->
+            <div id="top_bar_content">
+                <h1>YouBot Visual</h1>
+                <div onclick="newClicked()" id="new_btn">New</div> <!-- new project button -->
+                <div onclick="openClicked()" id="open_btn">Open</div> <!-- open project button -->
+                <div onclick="saveClicked()" id="save_btn">Save</div> <!-- save project button -->
+				<div onclick="executeClicked()" id="execute_btn">Execute</div> <!-- Execute button -->
+            </div>
+            
+            <!-- The content contained within the side bar -->
+            <div id="bottom_bar_preview_outer">
+        
+            			<!-- STATEMENTS -->
+            			<div id="statements_content" style="display:none;" class="bottom_bar_preview_section" id=demos>
+            					<div>Move</div>
+            					<div>Move To</div>
+            					<div>Rotate</div>
+            					<div>Joint</div>
+            			</div>
+            			<!-- CONDITIONS -->
+            			<div   id="conditions_content" style="display:none;" class="bottom_bar_preview_section" id=demos>
+            					<div>IF</div>
+            					<div>WHILE</div>
+            			</div>
+            			<!-- TEMPLATES -->
+            			<div  id="templates_content" style="display:none;" class="bottom_bar_preview_section" id=demos>
+            					<div>Key Condition</div>
+            					<div>Position Condition</div>
+            					<div>Arm Condition</div>
+            			</div>
+            			<!-- DEMOS -->
+            			<div id="demos_content" style="display:none;" class="bottom_bar_preview_section" id=demos>
+            					<div>Joystick Control</div>
+            					<div onclick="startKeyboardDemo()">Keyboard Control</div>
+            					<div>Hello World</div>
+            			</div>
+            		
+            </div>
+            <div id="bottom_bar_outer">
+            	<div id="bottom_bar_content">
+            		<div onclick="selectionButtonClicked(this.id)" id="statements" class="bottom_bar_content_item">Statements</div>
+            		<div onclick="selectionButtonClicked(this.id)" id="conditions" class="bottom_bar_content_item">Conditions</div>
+            		<div onclick="selectionButtonClicked(this.id)" id="templates" class="bottom_bar_content_item">Templates</div>
+            		<div onclick="selectionButtonClicked(this.id)" id="demos" class="bottom_bar_content_item">Demos</div>
+            	</div>
+            </div>
+            
+            <!-- This is the editor div
+                it will be split into two divs 
+                div01 - Visual programming
+                div02 - Program contents
+                -->
+            <div id="editor_content">
+                <div id="editor_visual_content">
+				
+				<!--
+					SAMPLE MOVE PART
+					
+					<div id="0" class="vis_part vis_part_move">
+							<h1>MOVE</h1>
+							<p>Direction:</p>
+							<select>
+								<option value="left">Left</option>
+								<option value="right">Right</option>
+								<option value="forward">Forward</option>
+								<option value="back">Back</option>
+							</select>
+							<p>Amount:</p>
+							<input type="text" name="amount" value="0">
+					</div>
+					
+				-->
+				
+				<!-- 
+					<div id="0" class="vis_part vis_part_rot">
+							<h1>ROTATE</h1>
+							<p>Direction:</p>
+							<select>
+								<option value="left">Left</option>
+								<option value="right">Right</option>
+							</select>
+							<p>Amount:</p>
+							<input type="text" name="amount" value="0">
+					</div>
+				
+				-->
+				
+				</div>
+                
+            </div>
+        </div>
+		
+		
+		<!-- DIALOG BOX -->
+		<div id="dialog" title="Dialog">
+			<p id="dialog_desc"><!-- dialog description --></p>
+		</div>
+        
+    </body>
+        
+</html>
+
