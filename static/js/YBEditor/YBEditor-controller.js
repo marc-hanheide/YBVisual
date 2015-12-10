@@ -27,5 +27,6 @@ function Halt(){ SendData("HALT"); }
         SERVER I/O FUNCTIONS
    ------------------------------------------------
 */
+//Send data as POST request
 function SendData(_data)
 {  $.ajax({ type:"POST",data: _data } ); }

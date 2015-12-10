@@ -3,9 +3,6 @@
 	Contains definitions,and handling for blocks
 */
 
-
-
-
 //MOVE
 //https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#cckrgt
 Blockly.Blocks['move'] = {
