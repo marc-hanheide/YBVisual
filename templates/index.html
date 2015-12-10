@@ -12,17 +12,33 @@ and open the template in the editor.
         	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 			
 			
-			<link rel="stylesheet" type="text/css" href="/static/js/css/base/jquery-ui.css">
+			<!--<link rel="stylesheet" type="text/css" href="/static/js/css/base/jquery-ui.css">-->
 			<link rel="stylesheet" type="text/css" href="/static/css/themes/bootstrap/easyui.css">
+			<link rel="stylesheet" type="text/css" href="/static/css/jqueryui/css/base/jquery-ui.css">
 			
-        	<script src="/static/js/jquery.js"></script>
-			<script src="/static/js/jquery-ui.js"></script>
-			<script src="/static/js/jquery-easyui.js"></script>
-			<script src="/static/js/jquery-easyui-helper.js"></script>
+			<!--
+			
+				Load block definitions
+			
+					-->
+			<script type="text/javascript" src="/static/json/Move.json"></script>
+			
+			
+			
+        	<script src="/static/js/jquery/jquery.js"></script>
+			<script src="/static/js/jqueryui/jquery-ui.js"></script>
+			<script src="/static/js/jqueryui/jquery-easyui.js"></script>
+			<script src="/static/js/jqueryui/jquery-easyui-helper.js"></script>
+			<script src="/static/js/blockly/blockly_compressed.js"></script>
+			<script src="/static/js/blockly/blocks_compressed.js"></script>
+			<script src="/static/js/blockly/msg/js/en.js"></script>
+			<script src="/static/js/blockly/generators/robotcode.js"></script>
+			
         	<script src="/static/js/YBEditor.js"></script>
         	<script src="/static/js/YBEditor-controller.js"></script>
-			<script src="/static/js/YBEditor-ui.js"></script>
+			<script src="/static/js/YBEditor/YBEditor-ui.js"></script>
 			<script src="/static/js/YBEditor-demos.js"></script>
+			<script src="/static/js/YBEditor-blocks.js"></script>
 		
     </head>
     <body>
@@ -50,110 +66,17 @@ and open the template in the editor.
 						<!-- MAIN EDITING AREA CONTENTS -->
 						
 						
-						<!--<div class="easyui-draggable" data-options="handle:'#title'" style="width:100px; height:100px;border:1px solid black;">
-							<div id="title" style="background:gray;">Move</div>
-							<div>Direction:</div>
-							<select class="easyui-combobox" name="direction" style="width:80px;">
-								<option value="left">Left</option>
-								<option value="right">Right</option>
-								<option value="forward">Forward</option>
-								<option value="back">Back</option>
-							</select>
-							<div>Amount:</div>
-							<input class="easyui-textbox" data-options="prompt:'Enter an amount..'" style="width:100%; height:20px;">
-						</div>-->
-						
 						
 						</div>
 						<!-- END: EDIT AREA-->
 						
 						
-						<!-- START: SIDE CONTENT -->
-						<div data-options="region:'west',split:true" title="Components" style="width: 200px;">
-						
-							<!-- SIDE CONTENT CONTENTS -->
-							<div class="easyui-panel">
-								<!-- START: components tree -->
-								<ul class="easyui-tree">
-									
-									<!-- START:COMPONENTS -->
-									<li>
-											
-											
-											<span>Components</span>
-											<ul>
-									
-												<!-- START:STATEMENTS -->
-												<li data-options="state:'closed'">
-												<span>Statements</span>
-													<ul>
-														<li data-options="state:'closed'">
-														<span>Base</span>
-														<ul>
-															<li><span>Move Left</span></li>
-															<li><span>Move Right</span></li>
-															<li><span>Move Forwards</span></li>
-															<li><span>Move Back</span></li>
-															<li><span>Move Towards</span></li>
-															<li><span>Rotate Left</span></li>
-															<li><span>Rotate Right</span></li>
-															<li><span>Stop</span></li>
-														</ul>
-														</li>
-														<li data-options="state:'closed'">
-														<span>Arm</span>
-														<ul>
-															<li><span>Rotate Joint 1</span></li>
-															<li><span>Rotate Joint 2</span></li>
-															<li><span>Rotate Joint 3</span></li>
-															<li><span>Rotate Joint 4</span></li>
-															<li><span>Rotate Joint 5</span></li>
-															<li><span>Rotate Joint 6</span></li>
-															<li><span>Move Torwards</span></li>
-														</ul>
-														</li>
-													</ul>
-												</li>
-												<!-- END:STATEMENTS -->
-										
-										
-												<!-- START:CONDITIONS-->
-												<li data-options="state:'closed'">
-												<span>Conditions</span>
-												<ul>
-													<li><span>IF Key Pressed</span></li>
-													<li><span>IF Reached Speed</span></li>
-													<li><span>IF Joint 1</span></li>
-													<li><span>IF Joint 2</span></li>
-													<li><span>IF Joint 3</span></li>
-													<li><span>IF Joint 4</span></li>
-													<li><span>IF Joint 5</span></li>
-													<li><span>IF Joint 6</span></li>
-												</ul>
-												</li>
-												<!-- END:CONDITIONS-->
-												
-												
-											
-										
-										
-										</ul>
-										<!-- END:COMPONENTS-->
-									
-										
-									
-								</li>
-								<!-- END:COMPONENTS -->
+					
 								
-								
-								
-							</ul>
-							<!-- END: components tree -->
-						</div>
+							
 						
 						
-						</div>
-						<!-- END: SIDE CONTENT -->
+						
 				</div>
 			
 			</div>
@@ -172,7 +95,7 @@ and open the template in the editor.
 		
 		<!-- START: programs menu items -->
 		<div id="program_menu">
-			<div>Run</div>
+			<div onclick="runClicked(this)">Run</div>
 			<div>Stop</div>
 			<div>
 				<span>Demos</span>
@@ -195,9 +118,43 @@ and open the template in the editor.
 		</div>
 		<!-- END: start menu items -->
 		
-       
 		
-		<!-- END: drag function -->
+		
+		
+		
+		<xml id="toolbox" style="display: none">
+			<category name="Statements" colour="100">
+				<category name="Base" colour="110">
+					<block type="move"></block>
+					<block type="rotate"></block>
+				</category>
+				
+				<category name="Arm" colour="120">
+				
+				</category>
+			</category>
+			<category name="Conditions" colour="200">
+				<block type="controls_if"></block>
+			</category>
+			<category name="Variables" colour="330" custom="VARIABLE"></category>
+
+		</xml>
+		<script>
+		
+			var workspace = Blockly.inject('editor_visual_content',
+				{ toolbox: document.getElementById('toolbox'),
+				grid:
+				{
+					spacing: 20,
+					length: 3,
+					colour: '#ccc',
+					snap:true
+				}
+				
+				}
+				);
+		
+		</script>
 		
 		
     </body>

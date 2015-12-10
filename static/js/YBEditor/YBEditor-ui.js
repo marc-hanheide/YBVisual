@@ -4,20 +4,7 @@
 $(document).ready(function()
 {
     console.log("Window ready");
-	
-	//addMovePart('01');
-	//addRotatePart('02');
-	
-	
-	//var atts = [
-	//{'val': '01', 'text': 'One'},
-	//{ 'val': '02', 'text': 'Two'},
-	//{ 'val': '03', 'text': 'Three'}
-	//];
-	
-	
-	//DraggableDiv("01","Move",200,200,'#editor_visual_content');
-	//DraggableDiv_Select("01","Move",200,200,'#editor_visual_content',atts);
+
 		
 });
 
@@ -87,39 +74,9 @@ function dialogClose(){ $('#dialog').dialog("close");  }
         USER INTERFACE FUNCTION CALLS
    ------------------------------------------------
 */
-//New Project button
-function newClicked()
-{  
-	yesnoDialog("New Project","Are sure you want to start a new project?",function()
-	{ 
-		//YES
-		//SESSION.PROJECT.New();
-		dialogClose();
-		infoDialog("Starting new project");
-	},
-	function()
-	{ 
-		//NO
-		dialogClose();
-	});
+function runClicked(obj){
+	Generate();
 }
-//Open project button
-function openClicked()
-{ 
-		moveForward();
-}
-//Save project button
-function saveClicked()
-{ 
-		moveBackward();
-}
-//Execute button 
-function executeClicked()
-{
-		Halt();
-}
-
-
 
 
 /*
@@ -127,85 +84,6 @@ function executeClicked()
         VISUAL PROGRAMMING PART FUNCTIONS
    ------------------------------------------------
 */
-/*
-	Add a move robot part
-*/
-function addMovePart(_id)
-{
-	//Main div
-	var div = $('<div/>',
-	{
-		id:_id,
-		class: 'vis_part vis_part_move'
-	}).appendTo('#editor_visual_content');
-	
-	//Header
-	var header = $('<h1/>',
-	{
-		text:'MOVE'
-	}).appendTo(div);
-	
-	//Direction components
-	var selection_header = $('</p>',{}).text("Direction:").appendTo(div);
-	var selectbox = $('<select/>',{ });
-	var option_left = $('<option/>',{value:'left'}).text("Left").appendTo(selectbox);
-	var option_right = $('<option/>',{value:'right'}).text("Right").appendTo(selectbox);
-	var option_forward = $('<option/>',{value:'forward'}).text("Forward").appendTo(selectbox);
-	var option_back = $('<option/>',{value:'back'}).text("Back").appendTo(selectbox);
-	selectbox.appendTo(div);
-	
-	//Amount components
-	var selection_header = $('</p>',{}).text("Amount:").appendTo(div);
-	var input = $('<input/>',{type:'text',name:'amount',value:'0'}).appendTo(div);
-	
-	//The part needs to be draggable
-	partIsDraggable(div);
-}
-
-/*
-	Add a rotate robot part
-*/
-function addRotatePart(_id)
-{
-	//Main div
-	var div = $('<div/>',
-	{
-		id:_id,
-		class: 'vis_part vis_part_rot'
-	}).appendTo('#editor_visual_content');
-	
-	//Header
-	var header = $('<h1/>',
-	{
-		text:'ROTATE'
-	}).appendTo(div);
-	
-	//Direction components
-	var selection_header = $('</p>',{}).text("Direction:").appendTo(div);
-	var selectbox = $('<select/>',{ });
-	var option_left = $('<option/>',{value:'left'}).text("Left").appendTo(selectbox);
-	var option_right = $('<option/>',{value:'right'}).text("Right").appendTo(selectbox);
-	selectbox.appendTo(div);
-	
-	//Amount components
-	var selection_header = $('</p>',{}).text("Amount:").appendTo(div);
-	var input = $('<input/>',{type:'text',name:'amount',value:'0'}).appendTo(div);
-	
-	//The part needs to be draggable
-	partIsDraggable(div);
-}
-
-
-/*
-	Make a part draggable
-*/
-function partIsDraggable(div)
-{
-	//Make div draggable
-	//Should be contained in visual area
-	//Add a grid (10 x 10)
-	div.draggable({containment:"#editor_visual_content",cursor:"crosshair",grid:[10,10]});
-}
 
 
 

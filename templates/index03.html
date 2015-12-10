@@ -1,0 +1,212 @@
+$def with (name)
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        	<title>YouBot Visual</title>
+        	<meta charset="UTF-8">
+        	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			
+			
+			<!--<link rel="stylesheet" type="text/css" href="/static/js/css/base/jquery-ui.css">-->
+			<link rel="stylesheet" type="text/css" href="/static/css/themes/bootstrap/easyui.css">
+			<link rel="stylesheet" type="text/css" href="/static/css/jqueryui/css/base/jquery-ui.css">
+			
+        	<script src="/static/js/jquery/jquery.js"></script>
+			<script src="/static/js/jqueryui/jquery-ui.js"></script>
+			<script src="/static/js/jqueryui/jquery-easyui.js"></script>
+			<script src="/static/js/jqueryui/jquery-easyui-helper.js"></script>
+			<script src="/static/js/blockly/blockly_compressed.js"></script>
+			<script src="/static/js/blockly/blocks_compressed.js"></script>
+			<script src="/static/js/blockly/msg/js/en.js"></script>
+			
+			
+        	<script src="/static/js/YBEditor.js"></script>
+        	<script src="/static/js/YBEditor-controller.js"></script>
+			<script src="/static/js/YBEditor-ui.js"></script>
+			<script src="/static/js/YBEditor-demos.js"></script>
+		
+    </head>
+    <body>
+        
+		
+		<!-- START: outer layout -->
+		<div class="easyui-layout" style="width:100%; height: 1000px; fit:true">
+		
+			<!-- START: menu layout -->
+			<div class="easyui-panel" style="padding:5px" data-options="region:'north' " >
+				<a href="#" class="easyui-menubutton" data-options=" menu:'#projects_menu'">Project</a>
+				<a href="#" class="easyui-menubutton" data-options=" menu:'#program_menu'">Program</a>
+				<a href="#" class="easyui-menubutton" data-options=" menu:'#help_menu'">Help</a>
+			</div>
+			<!-- END: menu layout -->
+			
+			<!-- START: lower layout -->
+			<div data-options="region:'center'" style="width: 800px; height: 800px;">
+				<div class="easyui-layout" data-options="fit:true">
+				
+				
+						<!-- START: EDIT AREA -->
+						<div id="editor_visual_content" data-options="region:'center',split:true" title="Editing Area" style="width:100px;">
+						
+						<!-- MAIN EDITING AREA CONTENTS -->
+						
+						
+						<!--<div class="easyui-draggable" data-options="handle:'#title'" style="width:100px; height:100px;border:1px solid black;">
+							<div id="title" style="background:gray;">Move</div>
+							<div>Direction:</div>
+							<select class="easyui-combobox" name="direction" style="width:80px;">
+								<option value="left">Left</option>
+								<option value="right">Right</option>
+								<option value="forward">Forward</option>
+								<option value="back">Back</option>
+							</select>
+							<div>Amount:</div>
+							<input class="easyui-textbox" data-options="prompt:'Enter an amount..'" style="width:100%; height:20px;">
+						</div>-->
+						
+						
+						</div>
+						<!-- END: EDIT AREA-->
+						
+						
+						<!-- START: SIDE CONTENT -->
+						<div data-options="region:'west',split:true" title="Components" style="width: 200px;">
+						
+							<!-- SIDE CONTENT CONTENTS -->
+							<div class="easyui-panel">
+								<!-- START: components tree -->
+								<ul class="easyui-tree">
+									
+									<!-- START:COMPONENTS -->
+									<li>
+											
+											
+											<span>Components</span>
+											<ul>
+									
+												<!-- START:STATEMENTS -->
+												<li data-options="state:'closed'">
+												<span>Statements</span>
+													<ul>
+														<li data-options="state:'closed'">
+														<span>Base</span>
+														<ul>
+															<li><span>Move Left</span></li>
+															<li><span>Move Right</span></li>
+															<li><span>Move Forwards</span></li>
+															<li><span>Move Back</span></li>
+															<li><span>Move Towards</span></li>
+															<li><span>Rotate Left</span></li>
+															<li><span>Rotate Right</span></li>
+															<li><span>Stop</span></li>
+														</ul>
+														</li>
+														<li data-options="state:'closed'">
+														<span>Arm</span>
+														<ul>
+															<li><span>Rotate Joint 1</span></li>
+															<li><span>Rotate Joint 2</span></li>
+															<li><span>Rotate Joint 3</span></li>
+															<li><span>Rotate Joint 4</span></li>
+															<li><span>Rotate Joint 5</span></li>
+															<li><span>Rotate Joint 6</span></li>
+															<li><span>Move Torwards</span></li>
+														</ul>
+														</li>
+													</ul>
+												</li>
+												<!-- END:STATEMENTS -->
+										
+										
+												<!-- START:CONDITIONS-->
+												<li data-options="state:'closed'">
+												<span>Conditions</span>
+												<ul>
+													<li><span>IF Key Pressed</span></li>
+													<li><span>IF Reached Speed</span></li>
+													<li><span>IF Joint 1</span></li>
+													<li><span>IF Joint 2</span></li>
+													<li><span>IF Joint 3</span></li>
+													<li><span>IF Joint 4</span></li>
+													<li><span>IF Joint 5</span></li>
+													<li><span>IF Joint 6</span></li>
+												</ul>
+												</li>
+												<!-- END:CONDITIONS-->
+												
+												
+											
+										
+										
+										</ul>
+										<!-- END:COMPONENTS-->
+									
+										
+									
+								</li>
+								<!-- END:COMPONENTS -->
+								
+								
+								
+							</ul>
+							<!-- END: components tree -->
+						</div>
+						
+						
+						</div>
+						<!-- END: SIDE CONTENT -->
+				</div>
+			
+			</div>
+			<!-- END: lower layout -->
+			
+		</div>
+		<!-- END: outer layout -->
+		
+		<!-- START: projects menu items -->
+		<div id="projects_menu">
+			<div>New</div>
+			<div>Open</div>
+			<div>Save</div>
+		</div>
+		<!-- END: projects menu items -->
+		
+		<!-- START: programs menu items -->
+		<div id="program_menu">
+			<div>Run</div>
+			<div>Stop</div>
+			<div>
+				<span>Demos</span>
+				<div>
+					<div>Hello World</div>
+					<div>Joystick Control</div>
+					<div>Keyboard Control</div>
+				</div>
+			</div>
+			
+			<div>Status</div>
+			
+		</div>
+		<!-- END: programs menu items -->
+		
+		<!-- START: start menu items -->
+		<div id="help_menu">
+			<div>Getting Started</div>
+			<div>About</div>
+		</div>
+		<!-- END: start menu items -->
+		
+       
+		
+		<!-- END: drag function -->
+		
+		
+    </body>
+        
+</html>
+
