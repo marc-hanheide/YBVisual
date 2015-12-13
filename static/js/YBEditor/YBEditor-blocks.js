@@ -2,6 +2,18 @@
 
 	Contains definitions,and handling for blocks
 */
+//START ROBOT
+////https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#svhneq
+Blockly.Blocks['start_robot'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("START ROBOT");
+    this.setNextStatement(true);
+    this.setColour(0);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
 
 //MOVE
 //https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#cckrgt

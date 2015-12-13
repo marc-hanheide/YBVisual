@@ -1,3 +1,10 @@
+//START ROBOT
+//https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#svhneq
+Blockly.JavaScript['start_robot'] = function(block) {
+  // TODO: Assemble JavaScript into code variable.
+  var code = '...';
+  return code;
+};
 
 //MOVE
 //https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#8fk3o3
@@ -20,13 +27,15 @@ Blockly.JavaScript['rotate'] = function(block) {
 };
 
 
+
+
 /*
 	Used to convert the program into workable data
 */
 function Generate(){
 	
 	//Get the block collection
-	var blocks = getBlockArray();
+	var blocks = getBlockArray(0);
 	//We need a collection which contains the final commands
 	var commands = [];
 	
@@ -50,12 +59,10 @@ function Generate(){
 			//Get amount
 			var amount = block.getFieldValue('AMOUNT');
 			
-			//Push to commands array
-			//commands.push({
-			//	'type':'MOVE',
-			//	'direction':dir,
-			//	'amount':amount
-			//});
+			//For debugging
+			//alert('move found');
+			
+			//Push to the commands array
 			commands.push("MOVE," + dir + "," + amount);
 			
 		}
@@ -66,12 +73,10 @@ function Generate(){
 			//Get amount
 			var amount = block.getFieldValue('AMOUNT');
 			
-			//Push to commands array
-			//commands.push({
-			//	'type':'ROTATE',
-			//	'direction':dir,
-			//	'amount':amount
-			//});
+			//For debugging
+			//alert('rotate found');
+			
+			//Push to the commands array
 			commands.push("ROTATE," + dir + "," + amount);
 		}
 		
@@ -81,9 +86,6 @@ function Generate(){
 	/*
 		Finally - the function should return the final commands list
 	*/
-	//for(var i = 0 ; i < commands.length;i++){
-	//	alert(commands[i]);
-	//}
 	return commands;
 }
 
@@ -91,18 +93,40 @@ function Generate(){
 /**
 	Used to get blocks, and store in array
 **/
-function getBlockArray(){
+function getBlockArray(top_col){
 	//Get top blocks
 	var blocks = workspace.getTopBlocks(true);
+	//This will hold the start robot blocks
+	var start_blocks = [];
 	
-	//Get all blocks -- including children
+	//Cycle through the top blocks
 	for(var i = 0; i < blocks.length;i++){
-		blocks = blocks.concat(blocks[i].getChildren());
-		
+		//Check the colour of the block.. is it a start_robot block?
+		if(blocks[i].getColour()===top_col){
+			//If true, add to the array
+			//start_blocks = blocks[i];
+			start_blocks.push(blocks[i]);
+		}
 	}
+	//Only return valid if:
+	//1. A START_ROBOT block was created
+	//2. The block is valid
+	//3. Only one START_ROBOT block exists
+	if( (start_blocks.length===1))
+	{
+		blocks = start_blocks;
 	
-	//Return block contents
-	return blocks;
+		//Get all blocks -- including children
+		for(var i = 0; i < blocks.length;i++){
+			blocks = blocks.concat(blocks[i].getChildren());
+		
+		}
+	
+		//Return block contents
+		return blocks;
+		
+	}else{  
+	return start_blocks; } 
 }
 
 
