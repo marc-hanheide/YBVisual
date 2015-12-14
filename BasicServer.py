@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import web
+from BasicRobot import *
 
 
 render = web.template.render('templates/')
@@ -9,7 +10,7 @@ urls = (
     '/', 'index'
 )
 
-
+controller = RobotController()
 
 
 class index:
@@ -18,9 +19,10 @@ class index:
         
     
     def POST(self):
-        data = web.data()
-        print data
-
+            data = web.data()
+            print "Received Data: " + data
+            controller.Process(data)
+        
 if __name__ == "__main__":
     app = web.application(urls,globals())
     app.run()

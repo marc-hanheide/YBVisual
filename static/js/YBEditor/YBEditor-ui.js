@@ -3,8 +3,8 @@
  */
 $(document).ready(function()
 {
-	//Initially - we don't want to see the 'getting started' window
-	toggleGettingStarted(false);
+	//Which windows should be initially visible?
+	toggleNewApplication(false);
 		
 });
 /*
@@ -17,6 +17,13 @@ function toggleGettingStarted(flag){
 		$('#getting_started').window('open');
 	}else{
 		$('#getting_started').window('close');
+	}
+}
+function toggleNewApplication(flag){
+	if(flag){
+		$('#new_app').window('open');
+	}else{
+		$('#new_app').window('close');
 	}
 }
 
@@ -66,19 +73,32 @@ function Confirm(_msg,func_yes,func_no){
 /**
 	New button clicked
 	**/
-function newClicked(){
-	Confirm("Are you sure you would like to create a new project? you will lose any unsaved changes.",
-	function(){
-		/*
-			User clicked YES
-		*/
+function newClicked(ask){
+	if(ask)
+	{
+		Confirm("Are you sure you would like to create a new project? you will lose any unsaved changes.",
+		function(){
+			/*
+				User clicked YES
+			*/
+			FileIO.New();
+			toggleNewApplication(true);
 		
-	},function(){
-		/*
-			User clicked NO
-		*/
+		},function(){
+			/*
+				User clicked NO
+			*/
 		
-	});
+		});
+	}else{ toggleNewApplication(true); }
+}
+
+/**
+	Save button clicked
+		**/
+function saveClicked(){
+	FileIO.Save();
+	
 }
 
 
@@ -95,38 +115,10 @@ function runClicked(obj){
 	**/
 	if(commands.length>0){
 			ShowMessage("Robot commands generated. Executing Program..");
-	
-		//Cycle through the commands
-		for(var i = 0;i < commands.length;i++){
-		
-			/**
-				We need to split - and parse the command string
-				**/
-			var command = commands[i].split(",");
-			//Get the command type
-			var type = command[0];
-		
-			//Check the type if its a move, or rotate command we need to get the direction, and amount
-			if(type === "MOVE" || type === "ROTATE"){
-				//Get the direction, and amount
-				var direction = command[1];
-				var amount = command[2];
 			
-				//If move command - move the robot in direction, by amount
-				if(type == "MOVE"){
-				
-				}
-				//If rotate command - rotate the robot in direction,by amount
-				if(type == "ROTATE"){
-				
-				}
-			
-			
-			}
-
+			//Send command data to the server as a JSON
+			sendApplicationJSON(commands);
 		
-		
-		}
 	}else{ ShowError("Unable to run program,caused by an error generating robot commands. You either created too many STARTROBOT blocks, or you need to create one."); }
 	
 }	

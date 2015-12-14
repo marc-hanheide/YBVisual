@@ -76,7 +76,11 @@ class RobotController:
         #we must split the string
         _data = str.split(data)
         print "DATA: " + _data;
-        #First check for a halt command
+		#Check for application data
+		if(_data[0] == "APPDATA")
+			#Then - found app data
+			print "Found app data";
+        #Check for a halt command
         if(_data[0] == "HALT"):
             #If halt - stop the robot
             self.robot.Stop()
