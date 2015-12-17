@@ -51,8 +51,8 @@ function sendApplicationJSON(commands){
 	}
 	
 	//Finally -- add a halt command
-	var json_halt = createJSON("HALT","","");
-	data.commands.push(json_halt);
+	var __json = createJSON("HALT","","");
+	data.commands.push(__json);
 	
 	//Create a final JSON object using the created json array
 	var json_final = JSON.stringify(data);

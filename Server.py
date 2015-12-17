@@ -19,12 +19,9 @@ class index:
         
     
     def POST(self):
-        if(controller.isProcessing() == False):
-            data = web.data()
-            print data
-            controller.Process(data)
-        else:
-            print "Still processing";
+        data = web.data()
+        print "Received Data: " + data
+        controller.Process(data)
 
 if __name__ == "__main__":
     app = web.application(urls,globals())

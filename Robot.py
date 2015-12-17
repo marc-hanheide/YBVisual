@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import sys
 import rospy
+import json
 import moveit_commander
 import moveit_msgs.msg
 import geometry_msgs.msg
@@ -9,7 +10,9 @@ import move_base_msgs.msg
 from std_msgs.msg import *
 
 
-
+#
+# Primary Youbot class
+#
 class Youbot:
     #Init
     def __init__(self):
@@ -59,54 +62,91 @@ class Youbot:
     def Stop(self):
         self.Drive(0,0,0,0,0,0);
 
+#
+# JSON Object
+#
+class JSONObject:
+    #Initialise
+    def __init__(self,_jsondata):
+        self.data = json.loads(_jsondata)
+        print "Created JSON object"
+    def getData(self,att):
+        return self.data[att];
 
 
 
-
+#
+# Robot controller
+#
 class RobotController:
     #Initialise
     def __init__(self):
-        rospy.loginfo("Creating robot controller")
-        self.robot = Youbot()
+        #Define the youbot object
+        self.robot = Youbot();
         self.Processing = False;
     #Process incoming data
     def Process(self,data):
-        #Set processing
-        self.Processing = True;
-        #we must split the string
-        _data = str.split(data)
-        print "DATA: " + _data;
-		#Check for application data
-		if(_data[0] == "APPDATA")
-			#Then - found app data
-			print "Found app data";
-        #Check for a halt command
-        if(_data[0] == "HALT"):
-            #If halt - stop the robot
-            self.robot.Stop()
-        #Now check for a move command
-        if(_data[0] == "MOVE"):
-            if(_data[1] == "FORWARD"):
-                self.robot.Drive(1,0,0,0,0,0);
-            if(_data[1] == "BACK"):
-                self.robot.Drive(-1,0,0,0,0,0);
-            if(_data[1]=="LEFT"):
-                self.robot.Drive(0,1,0,0,0,0);
-            if(_data[1]=="RIGHT"):
-                self.robot.Drive(0,-1,0,0,0,0);
-        #Check for a rotate command
-        if(_data[0] == "ROTATE"):
-            if(_data[1] == "LEFT"):
-                #rotate left
-                self.robot.Drive(0,0,0,0,1,0);
-            if(_data[1] == "RIGHT"):
-                #rotate right
-                print "Rotating right";
-                self.robot.Drive(0,0,0,0,-1,0);
-        print "Finished Processing";
-        self.Processing = False;
-    def isProcessing(self):
-        return self.Processing;
+        #Create JSON object using given data
+        json = JSONObject(data);
+        #Get the commands from the json data
+        commands = json.getData('commands');
+        #Cycle through, and manage the given commands
+        for command in commands:
+            #
+            # We may get, and print command info 
+            #
+            _command = JSONObject(command);
+            _type = _command.getData('type');
+            _att = _command.getData('attribute');
+            _val = _command.getData('value');
+            print "Command Given"
+            print "TYPE: "  + _type;
+            print "ATTRIBUTE: " + _att;
+            print "VALUE: " + _val;
+       
+
+            #
+            # Now we need to check the given type, and use the data appropriately
+            #
+            if(_type == "APPDATA"):
+                # -- Now process the application data, and save it to file
+                xml_file = open(_data + ".xml","wb");
+                xml_file.write(_data02);
+                xml_file.close();
+                print xml_file
+            #Move type command
+            if(_type == "MOVE"):
+                    print "Move command";
+                    if(_att == "FORWARDS"):
+                        print "Move forward command";
+                        self.robot.Drive(1,0,0,0,0,0);
+                        #Process the data here - move the robot forward
+                    if(_att == "BACK"):
+                        print "Move backward command";
+                        self.robot.Drive(-1,0,0,0,0,0);
+                        #Move the robot back
+                    if(_att == "LEFT"):
+                        print "Move left command";
+                        self.robot.Drive(0,1,0,0,0,0);
+                        #Move the robot left
+                    if(_att == "RIGHT"):
+                        print "Move right command";
+                        self.robot.Drive(0,-1,0,0,0,0);
+                        #Move the robot right
+            #Rotate type command
+            if(_type == "ROTATE"):
+                    if(_att == "RIGHT"):
+                        print "Rotate right command";
+                        #Rotate the robot right
+                    if(_att == "LEFT"):
+                        print "Rotate left command";
+                        #Rotate the robot left
+            #halt type command
+            if(_type == "HALT"):
+                print "Halt command";
+                self.robot.Stop();
+            
+            rospy.sleep(0.2);
                 
             
-        
+        self.robot.Stop();
