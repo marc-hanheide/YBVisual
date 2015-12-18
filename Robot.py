@@ -136,17 +136,20 @@ class RobotController:
             #Rotate type command
             if(_type == "ROTATE"):
                     if(_att == "RIGHT"):
-                        print "Rotate right command";
                         #Rotate the robot right
+                        print "Rotate right command";
+                        self.robot.Drive(0,0,0,0,0,1);
                     if(_att == "LEFT"):
-                        print "Rotate left command";
                         #Rotate the robot left
+                        print "Rotate left command";
+                        self.robot.Drive(0,0,0,0,0,-1);
             #halt type command
             if(_type == "HALT"):
                 print "Halt command";
                 self.robot.Stop();
             
+            #Pause before starting next command
             rospy.sleep(0.2);
                 
-            
+        #Stop the robot once execution has finished
         self.robot.Stop();
