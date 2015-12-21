@@ -14,7 +14,7 @@ from std_msgs.msg import *
 # Primary Youbot class
 #
 class Youbot:
-    #Init
+    #Initialise
     def __init__(self):
         rospy.loginfo("Initialising youbot")
         #Init moveit_commander
@@ -72,7 +72,6 @@ class JSONObject:
         print "Created JSON object"
     def getData(self,att):
         return self.data[att];
-
 
 
 #
