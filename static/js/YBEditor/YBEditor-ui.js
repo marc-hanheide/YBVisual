@@ -1,3 +1,37 @@
+
+
+/*
+   ------------------------------------------------
+       INTERFACE STYLE FUNCTIONS
+   ------------------------------------------------
+*/
+//Holds available stylesheets
+var THEMES = 
+[
+	['metro','/static/css/themes/metro/easyui.css'],
+	['gray','/static/css/themes/gray/easyui.css'],
+	['default','/static/css/themes/default/easyui.css'],
+	['bootstrap','/static/css/themes/bootstrap/easyui.css'],
+	['black','/static/css/themes/black/easyui.css']
+];
+//Changes page style
+function changeStyle(name){	
+	var theme = null;
+	
+	for(var i = 0; i < THEMES.length;i++){
+		
+		if(THEMES[i][0] == name){
+			theme = THEMES[i][1];
+		}
+	}
+	
+	if( !(theme==null) ){
+		document.getElementById('ui_style').href = theme;
+	}
+	
+}
+
+
 /*
  * Wait for the window to be ready
  */

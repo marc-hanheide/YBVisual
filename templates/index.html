@@ -14,15 +14,9 @@ and open the template in the editor.
 			
 			
 			<!--<link rel="stylesheet" type="text/css" href="/static/js/css/base/jquery-ui.css">-->
-			<link rel="stylesheet" type="text/css" href="/static/css/themes/bootstrap/easyui.css">
-			<link rel="stylesheet" type="text/css" href="/static/css/jqueryui/css/base/jquery-ui.css">
+			<link id="ui_style" rel="stylesheet" type="text/css" href="/static/css/themes/default/easyui.css">
+			<link  rel="stylesheet" type="text/css" href="/static/css/jqueryui/css/base/jquery-ui.css">
 			
-			<!--
-			
-				Load block definitions
-			
-					-->
-			<script type="text/javascript" src="/static/json/Move.json"></script>
 			
 			
 			<!--
@@ -97,6 +91,22 @@ and open the template in the editor.
 			
 		</div>
 		<!-- END: outer layout -->
+		
+		<!-- START: footer layout -->
+			<div class="easyui-panel" style="padding:5px" data-options="region:'south' " >
+				<div style="float: left;"><strong>Theme Select:</strong>
+				<select id="theme_selector" onchange="changeStyle(this.value)"  name="theme_select" style="width:200px;">
+					<option value="metro">Metro</option>
+					<option value="gray">Gray</option>
+					<option value="default">Default</option>
+					<option value="bootstrap">Bootstrap</option>
+					<option value="black">Black</option>
+				</select>
+				
+				
+			</div>
+			<!-- END: footer layout -->
+		
 	</div>
 	<!-- END: outer div -->
 		
