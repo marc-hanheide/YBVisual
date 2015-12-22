@@ -1,3 +1,4 @@
+![robot](https://github.com/webbam46/YBVisual/blob/master/static/img/robot.jpg)
 # YBVisual Programming Environment
 
 ##About
