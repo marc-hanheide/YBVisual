@@ -6,3 +6,7 @@ YBVisual is a visual programming platform which aims to improve the accessibilit
 ##Getting Started
 The following demonstrates how to setup the framework
 ###Requirements
+1. [ROS](http://wiki.ros.org/)
+2. [Gazebo](http://gazebosim.org/)
+3. [MoveIt!](http://moveit.ros.org/documentation/)
+4. [Move_Base](http://wiki.ros.org/move_base)
