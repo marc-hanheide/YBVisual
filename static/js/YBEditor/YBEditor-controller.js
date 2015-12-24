@@ -1,4 +1,7 @@
+/*
+	YBEDITOR Controller - Used for sending application data to the python server
 
+*/
 
 
 /*
@@ -6,7 +9,7 @@
         SERVER I/O FUNCTIONS
    ------------------------------------------------
 */
-//Send application data to the setActive
+//Send application data to the server
 function SendApplicationData(appdata){
 	//var json = createJSON("APPDATA",appdata);
 	SendData(createJSON("APPDATA",FileIO.Name,appdata));
@@ -65,3 +68,11 @@ function sendApplicationJSON(commands){
 //Send data as POST request
 function SendData(_data)
 {  $.ajax({ type:"POST",data: _data } ); }
+
+function SendData(_data,callback)
+{  var request = $.ajax({ type:"POST",data: _data } );
+request.done(callback);  }
+
+//Request data using a GET request
+function RequestData(_data)
+{  alert("GET request"); $.ajax({ type:"GET",data: _data } ); }

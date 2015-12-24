@@ -1,4 +1,4 @@
-$def with (name)
+
 <!DOCTYPE html>
 <!--
 To change this license header, choose License Headers in Project Properties.
@@ -43,6 +43,7 @@ and open the template in the editor.
         	<script src="/static/js/YBEditor/YBEditor-controller.js"></script>
 			<script src="/static/js/YBEditor/YBEditor-blocks.js"></script>
 			<script src="/static/js/YBEditor/YBEditor-file.js"></script>
+			<script src="/static/js/YBEditor/YBEditor-authentication.js"></script>
 			<script src="/static/js/YBEditor/YBEditor-ui.js"></script>
 		
     </head>
@@ -50,7 +51,7 @@ and open the template in the editor.
         
 		
 	<!-- START: outer div -->
-	<div style=" width: 1334px; height: 750px; margin: 20px auto" id="outer_div">
+	<div id="main_interface" style=" width: 1334px; height: 750px; margin: 20px auto" id="outer_div">
 		<!-- START: outer layout -->
 		<div class="easyui-layout" style="width:100%; height: 100%; fit:true">
 		
@@ -113,7 +114,7 @@ and open the template in the editor.
 		<!-- START: projects menu items -->
 		<div id="file_menu">
 			<div onclick="newClicked(true)">New</div>
-			<div >Open</div>
+			<div onclick="LoadAuthFile()">Open</div>
 			<div onclick="saveClicked()">Save</div>
 		</div>
 		<!-- END: projects menu items -->
@@ -184,7 +185,7 @@ and open the template in the editor.
 		<!-- END: Init editor workspace -->
 		
 		<!-- START: getting started window -->
-			<div id="getting_started" class="easyui-window" title="Getting Started" style="width:700px;height:300px;padding:10px;">
+			<div id="getting_started" class="easyui-window" title="Getting Started" style="width:700px;height:300px;padding:10px; ">
 				
 				
 				<div class="easyui-tabs" style="width:100%; height:100%;">
@@ -211,7 +212,7 @@ and open the template in the editor.
 		<!-- END: getting started window -->
 	
 		<!-- START: new application panel -->
-		<div id="new_app" class="easyui-window" title="New Application" style="width:250px; height:150px; padding:10px;">
+		<div id="new_app" class="easyui-window" title="New Application" style="width:250px; height:150px; padding:10px; ">
 						<div>Name: <input class="easyui-textbox" type="text" name="appname" data-options="required:true"></input></div>
 						
 						<hr />
@@ -221,6 +222,28 @@ and open the template in the editor.
 		</div>
 		<!-- END: new application panel -->
 		
+		<!-- START: Login form -->
+		<div id="login_form" class="easyui-window" title="New User" closable="false" maximizable="false" draggable="false" minimizable="false"   style="width:400px">
+			<form id="ff" method="post">
+				<table cellpadding="5">
+					<tr>
+						<td>Enter Password:</td>
+						<td><input id="pass_box" class="easyui-textbox" type="text" name="password" data-options="required:true"></input></td>
+					</tr>
+				</table>
+			</form>
+			<div style="text-align:center;padding:5px">
+				<a href="javascript:void(0)" class="easyui-linkbutton" onclick="authButtonClicked()">Submit</a>
+			</div>
+	    </div>
+		<!-- END: login form -->
+		
+		<script>
+			//Is called when the window is ready and loaded
+			isDocumentReady(function(){
+				AuthenticateUser();
+			});
+		</script>
 		
     </body>
         

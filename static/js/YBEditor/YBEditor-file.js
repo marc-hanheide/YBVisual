@@ -1,6 +1,7 @@
-/**
-	Contains code for defining individual projects
-	**/
+/*
+	YBEDITOR Controller - I/O functions for the currently loaded program
+
+*/
 	
 	
 /**
@@ -36,4 +37,29 @@ var FileIO =
 		//Show completion message
 		ShowMessage("Application successfully saved to file.");
 	}
+}
+
+//Holds loaded xml data
+var LOADED_XML = null;
+//Used to send GET HTTP Requests
+var XMLIO = new XMLHttpRequest();
+//On XMLIO ready
+XMLIO.onreadystatechange = function(){
+	//Check status
+	if (XMLIO.readyState == 4 && XMLIO.status == 200){
+			//Check, and print the loaded XML data
+			LOADED_XML = XMLIO.responseXML;
+			alert("Loaded xml file: " + LOADED_XML);
+	}
+}
+
+/**
+	Function is used to load XML data using a HTTP GET request
+**/
+function LoadXML(src){
+	//Send the request
+	XMLIO.open("GET",src,true);
+	XMLIO.send();
+	//Return the loaded xml data
+	return LOADED_XML;
 }

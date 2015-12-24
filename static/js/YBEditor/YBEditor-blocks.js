@@ -1,7 +1,8 @@
 /*
 
-	Contains definitions,and handling for blocks
+	YBEDITOR Blocks - Contains definitions,and handling for blocks
 */
+
 //START ROBOT
 ////https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#svhneq
 Blockly.Blocks['start_robot'] = {

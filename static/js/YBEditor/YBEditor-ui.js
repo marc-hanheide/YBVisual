@@ -1,4 +1,7 @@
+/*
+	YBEDITOR UI- I/O - Functions to define the user interface
 
+*/
 
 /*
    ------------------------------------------------
@@ -35,12 +38,19 @@ function changeStyle(name){
 /*
  * Wait for the window to be ready
  */
-$(document).ready(function()
-{
-	//Which windows should be initially visible?
-	toggleNewApplication(false);
-		
-});
+//$(document).ready(function()
+//{
+//	//Which windows should be initially visible?
+//	toggleNewApplication(false);
+//	
+//	alert(document.body.innerHTML);
+//		
+//});
+function isDocumentReady(func){
+	$(document).ready(func);
+}
+
+
 /*
    ------------------------------------------------
        INTERFACE WINDOW FUNCTIONS
@@ -108,30 +118,34 @@ function Confirm(_msg,func_yes,func_no){
 	New button clicked
 	**/
 function newClicked(ask){
-	if(ask)
-	{
-		Confirm("Are you sure you would like to create a new project? you will lose any unsaved changes.",
-		function(){
+if(AUTHENTICATED){
+		if(ask)
+		{
+			Confirm("Are you sure you would like to create a new project? you will lose any unsaved changes.",
+			function(){
 			/*
 				User clicked YES
 			*/
-			FileIO.New();
-			toggleNewApplication(true);
+				FileIO.New();
+				toggleNewApplication(true);
 		
-		},function(){
+			},function(){
 			/*
 				User clicked NO
 			*/
 		
-		});
-	}else{ toggleNewApplication(true); }
+			});
+		}else{ toggleNewApplication(true); }
+}
 }
 
 /**
 	Save button clicked
 		**/
 function saveClicked(){
-	FileIO.Save();
+	if(AUTHENTICATED){
+		FileIO.Save();
+	}
 	
 }
 
@@ -141,37 +155,78 @@ function saveClicked(){
 	Run button clicked
 	**/
 function runClicked(obj){
-	//Generate commands
-	var commands = Generate();
+	if(AUTHENTICATED){
+		//Generate commands
+		var commands = Generate();
 	
-	/**
-		We need to check if the commands were generated successfully
-	**/
-	if(commands.length>0){
-			ShowMessage("Robot commands generated. Executing Program..");
+		/**
+			We need to check if the commands were generated successfully
+		**/
+		if(commands.length>0){
+				ShowMessage("Robot commands generated. Executing Program..");
 			
-			//Send command data to the server as a JSON
-			sendApplicationJSON(commands);
+				//Send command data to the server as a JSON
+				sendApplicationJSON(commands);
 		
-	}else{ ShowError("Unable to run program,caused by an error generating robot commands. You either created too many STARTROBOT blocks, or you need to create one."); }
+		}else{ ShowError("Unable to run program,caused by an error generating robot commands. You either created too many STARTROBOT blocks, or you need to create one."); }
+	}
 	
 }	
 /**
 	Stop button clicked
 	**/
 function stopClicked(obj){
-	ShowMessage("Robot stopped successfully.");
+	if(AUTHENTICATED){
+		ShowMessage("Robot stopped successfully.");
+	}
 	
 }
 /**
 	Demo button clicked
 	**/
 function demoClicked(obj,demo_name){
-	ShowMessage("Starting demo: " + demo_name);
+	if(AUTHENTICATED){
+		ShowMessage("Starting demo: " + demo_name);
+	}
 }
 
-
-
+/**
+	Authenticate button clicked
+	**/
+function authButtonClicked(){
+	var given_pass = document.getElementById('pass_box').value;
+	alert(given_pass);
+	SendData(given_pass,function(data){
+		var auth = data;
+		
+		/*
+			password not accepted
+		*/
+		if(auth == "NO"){
+			/*
+				We need to hide the main edit area
+			*/
+			document.getElementById('editor_visual_content').style.display = 'none';
+			toggleGettingStarted(false);
+			toggleNewApplication(false);
+			AUTHENTICATED = false;
+			
+			
+		}
+		/*
+			password accepted
+		*/
+		else{
+			document.getElementById('editor_visual_content').style.display = 'block';
+			toggleGettingStarted(true);
+			toggleNewApplication(true);
+			AUTHENTICATED = true;
+			//Hide the login form
+			$('#login_form').window('close');
+			
+		}
+	});
+}
 
 
 

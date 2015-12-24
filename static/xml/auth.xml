@@ -1,0 +1,3 @@
+<User limit="10">
+	<Password required="true">KUKA</password>
+</User>
