@@ -12,9 +12,9 @@ urls = (
 
 #Holds session information
 session = Session()
+#Used for saving/opening existing programs
+program = Program()
 
-
-    
 
 class index:
     def GET(self):
@@ -38,6 +38,26 @@ class index:
         #
         if(_type == 'PASSCHECK'):
             return session.checkPassword(json,web.ctx.ip)
+        #
+        # Check if SAVE data was given
+        #
+        if(_type == "APPSAVE"):
+            #Save the program using the given data
+            program.Save(json);
+        #
+        # Check if OPEN data was given
+        #
+        if(_type == "APPOPEN"):
+            #Open program using given program name
+            #We need to get the application name
+            _name = json.getData('attribute');
+        #
+        # User requests list of saved applications
+        #
+        if(_type == "APPLIST"):
+            #We need return a JSON object containing a list of saved applications
+            return program.getSaved()
+        
       
 
 if __name__ == "__main__":

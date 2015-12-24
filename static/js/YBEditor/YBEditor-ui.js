@@ -151,6 +151,15 @@ function saveClicked(){
 	
 }
 
+/**
+	Open button clicked
+	**/
+function openClicked(){
+	AuthUser();
+	if(AUTHENTICATED){
+		FileIO.Open();
+	}
+}
 
 
 /**

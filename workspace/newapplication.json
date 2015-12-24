@@ -1,0 +1,1 @@
+{"attribute": "newapplication", "type": "APPDATA", "value": "<xml xmlns=\"http://www.w3.org/1999/xhtml\">\n  <block type=\"start_robot\" x=\"290\" y=\"110\">\n    <next>\n      <block type=\"move\">\n        <field name=\"DIRECTION\">LEFT</field>\n        <field name=\"AMOUNT\">0</field>\n      </block>\n    </next>\n  </block>\n</xml>"}

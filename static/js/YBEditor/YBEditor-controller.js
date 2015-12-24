@@ -12,7 +12,25 @@
 //Send application data to the server
 function SendApplicationData(appdata){
 	//var json = createJSON("APPDATA",appdata);
-	SendData(createJSON("APPDATA",FileIO.Name,appdata));
+	SendData(createJSON("APPSAVE",FileIO.Name,appdata));
+}
+
+//Load application data from the server
+function LoadApplicationData(appname){
+	
+	SendData(createJSON("APPOPEN",appname,""),function(data){
+			alert(data);
+	});
+	
+}
+
+//Request a list of applications saved locally on the server
+function RequestApplicationList(){
+	
+	SendData(createJSON("APPLIST","",""),function(data){
+			alert(data);
+	});
+	
 }
 
 //Create JSON data to send to the server

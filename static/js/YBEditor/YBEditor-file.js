@@ -11,7 +11,7 @@ var FileIO =
 {
 	'Name':"newapplication", //Project name.
 	'Commands':[], //Array for holding the commands
-	//Create a new project -- reset the values
+	//Create a new program -- reset the values
 	'New':function() 
 	{
 		this.Filename = null;
@@ -19,7 +19,7 @@ var FileIO =
 		alert("values reset");
 		
 	},
-	//Save the project
+	//Save the program
 	'Save':function()
 	{
 		//We need the XML document
@@ -36,6 +36,13 @@ var FileIO =
 		SendApplicationData(_string);
 		//Show completion message
 		ShowMessage("Application successfully saved to file.");
+	},
+	//Open an existing program
+	'Open':function(_name){
+		//Request a list of currently saved applications
+		apps = RequestApplicationList()
+		
+		
 	}
 }
 
