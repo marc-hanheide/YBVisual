@@ -13,7 +13,7 @@ var AUTHENTICATED = false;
 /**
 	Do we need to display the authenticate window?
 **/
-function AuthenticateUser(){
+function AuthUser(){
 	SendData("AUTHCHECK",function(data){
 		var auth = data;
 		
@@ -21,27 +21,56 @@ function AuthenticateUser(){
 			User is not authenticated
 		*/
 		if(auth == "NO"){
-			/*
-				We need to hide the main edit area
-			*/
-			document.getElementById('editor_visual_content').style.display = 'none';
-			toggleGettingStarted(false);
-			toggleNewApplication(false);
+
 			AUTHENTICATED  =false;
-			
+			showLoginForm();
 			
 		}
 		/*
 			User is already authenticated - We don't need to hide content
 		*/
 		else{
-			document.getElementById('editor_visual_content').style.display = 'block';
-			toggleGettingStarted(true);
-			toggleNewApplication(true);
 			AUTHENTICATED = true;
-			$('#login_form').window('close');
+			hideLoginForm();
 			
 		}
 	});
 }
 
+/**
+	Used to check the given password
+	**/
+function CheckPassword(){
+	var given_pass = document.getElementById('pass_box').value;
+	alert(given_pass);
+	SendData(given_pass,function(data){
+		var auth = data;
+		
+		/*
+			User is not authenticated
+		*/
+		if(auth == "NO"){
+
+			AUTHENTICATED  =false;
+			showLoginForm();
+			
+		}
+		/*
+			User is already authenticated - We don't need to hide content
+		*/
+		else{
+			AUTHENTICATED = true;
+			hideLoginForm();
+			
+		}
+	});
+}
+
+/**
+	Show the login form
+	**/
+function showLoginForm(){ $('#login_form').window('open'); }
+/**
+	Hide the login form
+	**/
+function hideLoginForm(){ $('#login_form').window('close'); }

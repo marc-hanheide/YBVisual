@@ -118,6 +118,7 @@ function Confirm(_msg,func_yes,func_no){
 	New button clicked
 	**/
 function newClicked(ask){
+	AuthUser();
 if(AUTHENTICATED){
 		if(ask)
 		{
@@ -143,6 +144,7 @@ if(AUTHENTICATED){
 	Save button clicked
 		**/
 function saveClicked(){
+	AuthUser();
 	if(AUTHENTICATED){
 		FileIO.Save();
 	}
@@ -155,6 +157,7 @@ function saveClicked(){
 	Run button clicked
 	**/
 function runClicked(obj){
+	AuthUser();
 	if(AUTHENTICATED){
 		//Generate commands
 		var commands = Generate();
@@ -176,6 +179,7 @@ function runClicked(obj){
 	Stop button clicked
 	**/
 function stopClicked(obj){
+	AuthUser();
 	if(AUTHENTICATED){
 		ShowMessage("Robot stopped successfully.");
 	}
@@ -185,48 +189,13 @@ function stopClicked(obj){
 	Demo button clicked
 	**/
 function demoClicked(obj,demo_name){
+	AuthUser();
 	if(AUTHENTICATED){
 		ShowMessage("Starting demo: " + demo_name);
 	}
 }
 
-/**
-	Authenticate button clicked
-	**/
-function authButtonClicked(){
-	var given_pass = document.getElementById('pass_box').value;
-	alert(given_pass);
-	SendData(given_pass,function(data){
-		var auth = data;
-		
-		/*
-			password not accepted
-		*/
-		if(auth == "NO"){
-			/*
-				We need to hide the main edit area
-			*/
-			document.getElementById('editor_visual_content').style.display = 'none';
-			toggleGettingStarted(false);
-			toggleNewApplication(false);
-			AUTHENTICATED = false;
-			
-			
-		}
-		/*
-			password accepted
-		*/
-		else{
-			document.getElementById('editor_visual_content').style.display = 'block';
-			toggleGettingStarted(true);
-			toggleNewApplication(true);
-			AUTHENTICATED = true;
-			//Hide the login form
-			$('#login_form').window('close');
-			
-		}
-	});
-}
+
 
 
 

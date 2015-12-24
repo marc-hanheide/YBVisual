@@ -58,6 +58,7 @@ and open the template in the editor.
 			<!-- START: menu layout -->
 			<div class="easyui-panel" style="padding:5px" data-options="region:'north' " >
 				<a href="#" class="easyui-menubutton" data-options=" menu:'#file_menu'">File</a>
+				<a href="#" class="easyui-menubutton" data-options=" menu:'#view_menu'">View</a>
 				<a href="#" class="easyui-menubutton" data-options=" menu:'#app_menu'">Application</a>
 				<a href="#" class="easyui-menubutton" data-options=" menu:'#help_menu'">Help</a>
 			</div>
@@ -119,6 +120,18 @@ and open the template in the editor.
 		</div>
 		<!-- END: projects menu items -->
 		
+		<!-- START: view menu items -->
+		<div id="view_menu">
+			<div>
+				<span>Sensor Data</span>
+				<div>
+					<div onclick="">Camera</div>
+				</div>
+			
+			</div>
+		</div>
+		<!-- END: view menu items -->
+		
 		<!-- START: programs menu items -->
 		<div id="app_menu">
 			<div onclick="runClicked(this)">Run</div>
@@ -159,7 +172,6 @@ and open the template in the editor.
 			<category name="Conditions" colour="200">
 				<block type="controls_if"></block>
 			</category>
-			<category name="Variables" colour="330" custom="VARIABLE"></category>
 
 		</xml>
 		<!-- END: Toolbox Data -->
@@ -223,7 +235,7 @@ and open the template in the editor.
 		<!-- END: new application panel -->
 		
 		<!-- START: Login form -->
-		<div id="login_form" class="easyui-window" title="New User" closable="false" maximizable="false" draggable="false" minimizable="false"   style="width:400px">
+		<div id="login_form" class="easyui-window" title="New User" closed="true" closable="false" maximizable="false" draggable="false" minimizable="false"   style="width:400px">
 			<form id="ff" method="post">
 				<table cellpadding="5">
 					<tr>
@@ -233,7 +245,8 @@ and open the template in the editor.
 				</table>
 			</form>
 			<div style="text-align:center;padding:5px">
-				<a href="javascript:void(0)" class="easyui-linkbutton" onclick="authButtonClicked()">Submit</a>
+				<a href="javascript:void(0)" class="easyui-linkbutton" onclick="CheckPassword()">Submit</a>
+				<a href="javascript:void(0)" class="easyui-linkbutton" onclick="hideLoginForm()">Cancel</a>
 			</div>
 	    </div>
 		<!-- END: login form -->
@@ -241,7 +254,7 @@ and open the template in the editor.
 		<script>
 			//Is called when the window is ready and loaded
 			isDocumentReady(function(){
-				AuthenticateUser();
+					
 			});
 		</script>
 		
