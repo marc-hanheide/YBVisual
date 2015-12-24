@@ -1,0 +1,7 @@
+<session>
+	<password>
+		<value>KUKA</value>
+		<required>true</required>
+	</password>
+	<limit>10</limit>
+</session>

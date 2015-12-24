@@ -14,7 +14,7 @@ var AUTHENTICATED = false;
 	Do we need to display the authenticate window?
 **/
 function AuthUser(){
-	SendData("AUTHCHECK",function(data){
+	SendData(createJSON("AUTHCHECK","",""),function(data){
 		var auth = data;
 		
 		/*
@@ -23,6 +23,7 @@ function AuthUser(){
 		if(auth == "NO"){
 
 			AUTHENTICATED  =false;
+			ShowMessage("This robot requires a password.. please log in");
 			showLoginForm();
 			
 		}
@@ -42,8 +43,7 @@ function AuthUser(){
 	**/
 function CheckPassword(){
 	var given_pass = document.getElementById('pass_box').value;
-	alert(given_pass);
-	SendData(given_pass,function(data){
+	SendData(createJSON("PASSCHECK",given_pass,""),function(data){
 		var auth = data;
 		
 		/*

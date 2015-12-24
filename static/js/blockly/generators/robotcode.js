@@ -26,6 +26,17 @@ Blockly.JavaScript['rotate'] = function(block) {
   return code;
 };
 
+//ROTATE JOINT
+//https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#n9qvsj
+Blockly.JavaScript['rotate_joint'] = function(block) {
+  var dropdown_id = block.getFieldValue('ID');
+  var text_amount = block.getFieldValue('AMOUNT');
+  // TODO: Assemble JavaScript into code variable.
+  var code = '...';
+  return code;
+};
+
+
 
 
 
@@ -78,6 +89,16 @@ function Generate(){
 			
 			//Push to the commands array
 			commands.push("ROTATE," + dir + "," + amount);
+		}
+		//Rotate joint command
+		if(col==300){
+			//Get joint id
+			var jointid = block.getFieldValue('ID');
+			//Get amount
+			var amount = block.getFieldValue('AMOUNT');
+			
+			//Push to the commands array
+			commands.push("ROTATEJOINT," + jointid + "," + amount);
 		}
 		
 	}

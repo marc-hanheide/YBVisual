@@ -49,3 +49,20 @@ Blockly.Blocks['rotate'] = {
     this.setHelpUrl('http://www.example.com/');
   }
 };
+
+//ROTATE JOINT
+//https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#n9qvsj
+Blockly.Blocks['rotate_joint'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("ROTATE JOINT")
+        .appendField(new Blockly.FieldDropdown([["joint01", "JOINT01"], ["joint02", "JOINT02"], ["joint03", "JOINT03"], ["joint04", "JOINT04"], ["joint05", "JOINT05"]]), "ID")
+        .appendField("amount")
+        .appendField(new Blockly.FieldTextInput("0"), "AMOUNT");
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setColour(300);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
