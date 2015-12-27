@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
 import web
-from lib.JSONParser import *
-from lib.Session import *
-from lib.Robot import *
+from lib.jsonparser import *
+from lib.session import *
+from lib.robot import *
+from lib.tmux import *
 render = web.template.render('templates/')
 
 urls = (
@@ -69,6 +70,8 @@ class index:
         
       
 
-if __name__ == "__main__":
+if __name__ == "__main__":  
+    tmuxsession = TMUXSession("lib/tsession.yaml")    
+    
     app = web.application(urls,globals())
     app.run()
