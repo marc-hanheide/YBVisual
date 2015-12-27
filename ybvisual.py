@@ -7,6 +7,7 @@
 
 #!/usr/bin/env python
 from lib.tmux import *
+import spwd
 
 if __name__ == "__main__":  
     print "hello world"

@@ -13,7 +13,7 @@ class Session:
         #
         # We need to load the xml session file to get the required information
         #
-        xmlobj = XMLObject('session.xml')
+        xmlobj = XMLObject('lib/session.xml')
         #Retreive session data from the xml file
         pass_parent = xmlobj.elementsByTagName('password')[0]
         _pass_value = pass_parent.getElementsByTagName('value')[0].childNodes[0].data
