@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from XMLParser import *
+from xmlparser import *
 import os
 import json
 

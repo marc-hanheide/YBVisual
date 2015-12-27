@@ -70,8 +70,6 @@ class index:
         
       
 
-if __name__ == "__main__":  
-    tmuxsession = TMUXSession("lib/tsession.yaml")    
-    
+if __name__ == "__main__":      
     app = web.application(urls,globals())
     app.run()

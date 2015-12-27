@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import sys
 import rospy
-from lib.JSONParser import *
+from lib.jsonparser import *
 import moveit_commander
 import moveit_msgs.msg
 import actionlib
