@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import sys
 import rospy
-from JSONParser import *
+from lib.JSONParser import *
 import moveit_commander
 import moveit_msgs.msg
 import actionlib
@@ -128,11 +128,6 @@ class Youbot:
     def Stop(self):
         #stop the base
         self.base.Stop();
-
-
-    
-
-
 #
 # Robot controller
 #
@@ -140,14 +135,17 @@ class RobotController:
     #Initialise
     def __init__(self):
         #Define the youbot object
-        #self.robot = Youbot();
+        self.robot = Youbot();
         self.Processing = False;
     #Process incoming data
     def Process(self,data):
         #Create JSON object using given data
-        json = JSONObject(data);
+        #json_data = JSONObject(data);
+        
         #Get the commands from the json data
-        commands = json.getData('commands');
+        #commands = json.getData('commands');
+        commands_json = JSONObject(data.getData('attribute'))
+        commands = commands_json.getData('commands')
         #Cycle through, and manage the given commands
         for command in commands:
             #

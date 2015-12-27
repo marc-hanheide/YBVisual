@@ -76,7 +76,8 @@ function sendApplicationJSON(commands){
 	data.commands.push(json_halt);
 	
 	//Create a final JSON object using the created json array
-	var json_final = JSON.stringify(data);
+	//var json_final = JSON.stringify(data);
+	var json_final = createJSON("RUN",JSON.stringify(data),"")
 	//Created -- now send the JSON object to the server
 	SendData(json_final);
 	
