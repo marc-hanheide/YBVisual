@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import web
+import sys
 from lib.jsonparser import *
 from lib.session import *
 from lib.robot import *
@@ -8,7 +9,8 @@ from lib.tmux import *
 render = web.template.render('templates/')
 
 urls = (
-    '/', 'index'
+    '/', 'index',
+    '/console','console'
 )
 
 #Holds session information
@@ -19,6 +21,16 @@ program = Program()
 robot = RobotController()
 
 
+#console page
+class console:
+    def GET(self):
+        return render.console()
+    def POST(self):
+        return ""
+
+
+
+#main index page
 class index:
     def GET(self):
         return render.index()
@@ -66,10 +78,14 @@ class index:
         elif(_type=="RUN"):
             #Process given command
             robot.Process(json)
-            
+
         
       
 
-if __name__ == "__main__":      
+if __name__ == "__main__":
+    #We need to check if the console is being requested
+    args = []
+    args = sys.argv
     app = web.application(urls,globals())
     app.run()
+        

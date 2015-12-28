@@ -5,6 +5,12 @@ import os
 import json
 
 #
+# Global variables for use with the server console
+#
+ACCEPTED_CONNECTIONS = []
+
+
+#
 # Controls a session with the robot - is the user able to send data to the robot?
 #
 class Session:
@@ -31,7 +37,7 @@ class Session:
         print "Connected IP: " + ip
 
         #Is this the first client to connect to the server?
-        if(self.connections==[]):
+        if(self.connections == []):
             print "this is the first connected client"
             return "NO"
         else:
@@ -57,11 +63,22 @@ class Session:
         print "Checking given password"
         if( (_pass == self.password)):
             print "Password is correct"
+            print "IP added to connections list:" + connected_ip
             self.connections.append(connected_ip);
+            ACCEPTED_CONNECTIONS.append(connected_ip);
+            self.listConnections()
             return "YES"
         else:
             print "Password is not correct"
             return "NO"
+    #
+    # Print a list of current connections
+    #
+    def listConnections(self):
+        print "Current connections: "
+        for connection in ACCEPTED_CONNECTIONS:
+            print str(connection)
+        
 #
 # Handles reading/writing of robot programs
 #
@@ -102,6 +119,6 @@ class Program:
                 data['applications'].append(str.split(file,".")[0])
         #Return as JSON data
         return json.dumps(data)
-        
+
         
         

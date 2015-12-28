@@ -3,5 +3,8 @@
 		<value>KUKA</value>
 		<required>true</required>
 	</password>
+	<admin_password>
+		<value>ADMIN</value>
+	</admin_password>
 	<limit>10</limit>
 </session>

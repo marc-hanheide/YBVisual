@@ -1,0 +1,121 @@
+
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        	<title>YouBot Visual - Console</title>
+        	<meta charset="UTF-8">
+        	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<link rel="shortcut icon" href="/static/img/favicon.ico">
+			
+			
+			<!--<link rel="stylesheet" type="text/css" href="/static/js/css/base/jquery-ui.css">-->
+			<link id="ui_style" rel="stylesheet" type="text/css" href="/static/css/themes/default/easyui.css">
+			<link  rel="stylesheet" type="text/css" href="/static/css/jqueryui/css/base/jquery-ui.css">
+			
+			
+			
+			<!--
+				JQUERY Scripts
+					-->
+        	<script src="/static/js/jquery/jquery.js"></script>
+			<script src="/static/js/jqueryui/jquery-ui.js"></script>
+			<script src="/static/js/jqueryui/jquery-easyui.js"></script>
+			<script src="/static/js/jqueryui/jquery-easyui-helper.js"></script>
+			
+			<!-- 
+				Blockly Scripts
+					-->
+			<script src="/static/js/blockly/blockly_compressed.js"></script>
+			<script src="/static/js/blockly/blocks_compressed.js"></script>
+			<script src="/static/js/blockly/msg/js/en.js"></script>
+			<script src="/static/js/blockly/generators/robotcode.js"></script>
+			
+        	<!--<script src="/static/js/YBEditor.js"></script>-->
+			
+			<!--
+				YBEditor scripts
+					-->
+        	<script src="/static/js/YBEditor/YBEditor-controller.js"></script>
+			<script src="/static/js/YBEditor/YBEditor-blocks.js"></script>
+			<script src="/static/js/YBEditor/YBEditor-file.js"></script>
+			<script src="/static/js/YBEditor/YBEditor-authentication.js"></script>
+			<script src="/static/js/YBEditor/YBEditor-ui.js"></script>
+		
+    </head>
+    <body>
+		
+		<!-- START: Commands list -->
+		<div id="commands_list" closed="true" class="easyui-window" title="Commands List"  maximizable="false"  minimizable="false"   style="width:400px">
+			<div><strong>LIST</strong> - List all connected clients</div>
+			<div><strong>REJECT</strong> - Reject all connected clients</div>
+			<div><strong>HALT</strong> - Stop the robot, and reject all running programs</div>
+	    </div>
+		<!-- END: Commands list -->
+		
+		<!-- START: Login form -->
+		<div id="login_form" class="easyui-window" title="Admin Login" closed="false" closable="false" maximizable="false" draggable="false" minimizable="false"   style="width:400px">
+			<form id="ff" method="post">
+				<table cellpadding="5">
+					<tr>
+						<td>Enter Password:</td>
+						<td><input id="pass_box" class="easyui-textbox" type="text" name="password" data-options="required:true"></input></td>
+					</tr>
+				</table>
+			</form>
+			<div style="text-align:center;padding:5px">
+				<a href="javascript:void(0)" class="easyui-linkbutton" onclick="CheckPassword()">Submit</a>
+			</div>
+	    </div>
+		<!-- END: login form -->
+		
+		<!-- START: outer div -->
+		<div id="main_interface" style=" width: 1334px; height: 750px; margin: 20px auto; display:none;" id="outer_div">
+			
+			<!-- START: outer layout -->
+			<div class="easyui-layout" style="width:100%; height: 100%; fit:true">
+				<div class="easyui-panel" style="padding:5px; font-size: 30px;" style="height:90%" data-options="region:'center' " >
+					<div>Message</div>
+					<div>Message</div>
+					<div>Message</div>
+					<div>Message</div>
+					<div>Message</div>
+					<div>Message</div>
+					<div>Message</div>
+					<div>Message</div>
+					<div>Message</div>
+					<div>Message</div>
+					<div>Message</div>
+					<div>Message</div>
+					<div>Message</div>
+					<div>Message</div>
+					<div>Message</div>
+					<div>Message</div>
+					<div>Message</div>
+					<div>Message</div>
+					<div>Message</div>
+					<div>Message</div>
+				</div>
+				
+				<div class="easyui-panel" style="padding:5px; height:10% border:none;" data-options="region:'south' " >
+					<div class="easyui-layout" style="width:100%; height:100% fit:true">
+						<input id="pass_box" class="easyui-textbox" type="text" style="width:88%; height:50px; font-size:large" name="password" data-options="region:'west'"></input>
+						<a href="javascript:void(0)" style="height:50px;" class="easyui-linkbutton" onclick="">Submit</a>
+						<a href="javascript:void(0)" style="height:50px;" class="easyui-linkbutton" onclick="">Commands</a>
+					</div>
+				</div>
+			
+				
+			</div>
+			
+			
+		</div>
+     
+    </body>
+        
+</html>
+
