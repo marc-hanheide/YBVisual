@@ -2,7 +2,7 @@
 echo '********************************************'
 echo '                 YBVISUAL                   '
 echo '********************************************'
-echo 'Please for the system to start'
+echo 'Please wait for the system to start'
 echo 'Launching simulation environment'
 sleep 5
 echo 'Done!'
