@@ -47,23 +47,66 @@ function CheckPassword(){
 		var auth = data;
 		
 		/*
-			User is not authenticated
+			The password is not correct
 		*/
 		if(auth == "NO"){
 
 			AUTHENTICATED  =false;
 			showLoginForm();
+			showIndicator();
 			
 		}
 		/*
-			User is already authenticated - We don't need to hide content
+			The password is correct
 		*/
 		else{
 			AUTHENTICATED = true;
 			hideLoginForm();
+			hideIndicator();
 			
 		}
 	});
+}
+
+function CheckAdminPassword(){
+		var given_pass = document.getElementById('pass_box').value;
+		SendData(createJSON("PASSCHECK",given_pass,""),function(data){
+		var auth = data;
+		
+		/*
+			The password is not correct
+		*/
+		if(auth == "NO"){
+			showLoginForm();
+			$('#main_interface').hide();
+			
+		}
+		/*
+			The password is correct
+		*/
+		else{
+			alert('correct')
+			hideLoginForm();
+			$('#main_interface').show();
+			
+			
+		}
+	});
+}
+	
+	
+
+/**
+ * 	Show message with auth check
+ * **/
+function AuthCheck(usage){
+	if(AUTHENTICATED){
+		return true;
+	}else
+	{
+		ShowError("Unable to " + usage + ", you need to login first.") 
+		return false;
+	}
 }
 
 /**
@@ -74,3 +117,14 @@ function showLoginForm(){ $('#login_form').window('open'); }
 	Hide the login form
 	**/
 function hideLoginForm(){ $('#login_form').window('close'); }
+
+/**
+ * Show login indicator
+ * 	**/
+function showIndicator(){ $('#auth_indicator').show(); }
+
+/**
+ * 
+ * Hide login indicator
+ * **/
+function hideIndicator(){ $('#auth_indicator').hide(); }

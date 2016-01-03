@@ -26,6 +26,34 @@ class console:
     def GET(self):
         return render.console()
     def POST(self):
+        #Data will contain the text entered into the console window
+        data =  web.data()
+        print "Received Data: " + data
+        #The received data should be json
+        json = JSONObject(data);
+        #The type will contain the given command
+        _type = json.getData('type')
+        
+        #
+        # AUTH CHECK
+        #        
+        if(_type=="PASSCHECK"):
+            return session.checkAdminPassword(json)
+        
+        
+        #
+        # COMMAND CHECKS
+        #
+        #CONNECTIONS
+        if(_type=="CONNECTIONS"):
+            return session.getConnections();
+        
+        #REJECT
+        if(_type=="REJECT"):
+            session.clearConnections();
+
+                
+        
         return ""
 
 

@@ -24,10 +24,17 @@ class Session:
         pass_parent = xmlobj.elementsByTagName('password')[0]
         _pass_value = pass_parent.getElementsByTagName('value')[0].childNodes[0].data
         _pass_req = pass_parent.getElementsByTagName('required')[0].childNodes[0].data
+        #Also need to retreive the admin password        
+        admin_pass_parent = xmlobj.elementsByTagName('admin_password')[0]
+        _admin_pass_value = admin_pass_parent.getElementsByTagName('value')[0].childNodes[0].data
+        print "ADMIN PASSWORD: " + _admin_pass_value        
+        
         #Holds connected clients
         self.connections = [];
         #The password to authorise communicating with the robot
         self.password = str(_pass_value)
+        #This is the required password for accessing the console        
+        self.admin_password = str(_admin_pass_value)
         #Is the password required for this session?
         self.required = _pass_req
         #Client limit
@@ -71,6 +78,23 @@ class Session:
         else:
             print "Password is not correct"
             return "NO"
+    #Checks if the admin password is correct
+    def checkAdminPassword(self,jsonobj):
+        #
+        # Get the admin password from the JSON object
+        #
+        _pass = jsonobj.getData('attribute');
+        print "Checking given admin password: " + _pass
+        
+        print "Checking against admin password: " + self.admin_password
+        #Correct admin password
+        if( ( _pass == self.admin_password )):
+            print "Password is correct"
+            return "YES" #Return valid
+        #Incorrect admin password
+        else:
+            print "Password is not correct"
+            return "NO" #Return invalid
     #
     # Print a list of current connections
     #
@@ -78,6 +102,26 @@ class Session:
         print "Current connections: "
         for connection in ACCEPTED_CONNECTIONS:
             print str(connection)
+    #
+    # Clear all accepted connections
+    #
+    def clearConnections(self):
+        #Reset the array - it should now be empty
+        self.connections = [];
+    
+    # Get connections as a JSON file
+    def getConnections(self):
+        #array to hold final applications
+        data = {}
+        #Found applications array
+        data['connections'] = []
+        
+        for connection in self.connections:
+            data['connections'].append(str(connection))
+        
+        #Return as JSON data
+        return json.dumps(data)
+        
         
 #
 # Handles reading/writing of robot programs

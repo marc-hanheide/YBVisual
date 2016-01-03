@@ -118,8 +118,7 @@ function Confirm(_msg,func_yes,func_no){
 	New button clicked
 	**/
 function newClicked(ask){
-	AuthUser();
-if(AUTHENTICATED){
+if(AuthCheck("create new application")){
 		if(ask)
 		{
 			Confirm("Are you sure you would like to create a new project? you will lose any unsaved changes.",
@@ -144,8 +143,7 @@ if(AUTHENTICATED){
 	Save button clicked
 		**/
 function saveClicked(){
-	AuthUser();
-	if(AUTHENTICATED){
+	if(AuthCheck("save application")){
 		FileIO.Save();
 	}
 	
@@ -155,8 +153,7 @@ function saveClicked(){
 	Open button clicked
 	**/
 function openClicked(){
-	AuthUser();
-	if(AUTHENTICATED){
+	if(AuthCheck("open application")){
 		FileIO.Open();
 	}
 }
@@ -166,8 +163,7 @@ function openClicked(){
 	Run button clicked
 	**/
 function runClicked(obj){
-	AuthUser();
-	if(AUTHENTICATED){
+	if(AuthCheck("run application")){
 		//Generate commands
 		var commands = Generate();
 	
@@ -188,8 +184,7 @@ function runClicked(obj){
 	Stop button clicked
 	**/
 function stopClicked(obj){
-	AuthUser();
-	if(AUTHENTICATED){
+	if(AuthCheck("stop robot")){
 		ShowMessage("Robot stopped successfully.");
 	}
 	
@@ -198,8 +193,7 @@ function stopClicked(obj){
 	Demo button clicked
 	**/
 function demoClicked(obj,demo_name){
-	AuthUser();
-	if(AUTHENTICATED){
+	if(AuthCheck("start demo: " + demo_name)){
 		ShowMessage("Starting demo: " + demo_name);
 	}
 }
