@@ -44,6 +44,7 @@ and open the template in the editor.
 			<script src="/static/js/YBEditor/YBEditor-blocks.js"></script>
 			<script src="/static/js/YBEditor/YBEditor-file.js"></script>
 			<script src="/static/js/YBEditor/YBEditor-authentication.js"></script>
+			<script src="/static/js/YBEditor/YBEditor-console.js"></script>
 			<script src="/static/js/YBEditor/YBEditor-ui.js"></script>
 		
     </head>
@@ -69,8 +70,20 @@ and open the template in the editor.
 		<div id="main_interface" style=" width: 1334px; height: 750px; margin: 20px auto; display:none;">
 			<!-- START: outer layout -->
 			<div class="easyui-layout" style="width:100%; height: 100%; fit:true">
-				<div id="current_connections_cont" class="easyui-panel" style="width:80%; height:100%" data-options="region:'north' " >
-					<div>user</div>
+				<div id="connections_div" class="easyui-panel" title="Active Connections" style="width:80%; height:100%" data-options="region:'east' " >
+					
+				</div>
+				<div id="commands" class="easyui-panel" title="Commands" style="width:20%; height:100%" data-options="region:'west'">
+					<!-- COMMANDS TREE -->
+					<ul id="commands_tree" class="easyui-tree">
+						<li>
+							<span>Commands</span>
+							<ul>
+								<li><a href="javascript:void(0)" class="easyui-linkbutton" onclick="RejectAll()">REJECT ALL</a></li>
+							</ul>
+						</li>
+					</ul>
+					
 				</div>
 				
 			</div>
@@ -80,27 +93,6 @@ and open the template in the editor.
 		</div>
 		<!-- END: MAIN INT -->
 		
-		<script>
-			var CONNECTIONS_CURRENT = []
-			function updateConnections(){
-				//Try and retrieve the connections list
-				SendData(createJSON("CONNECTIONS","",""),function(data){
-							var _json = JSON.parse(data)
-							var connections = _json.connections;
-							var cont = document.getElementById('current_connections_cont');
-							cont.innerHTML = ""
-							for(var i = 0; i < connections.length;i++)
-							{
-								
-								cont.innerHTML += "<div>" + connections[i] + "</div>";
-							}
-							
-					});
-				
-			} 
-			setInterval(updateConnections,33);
-		
-		</script>
 		
 		
     </body>

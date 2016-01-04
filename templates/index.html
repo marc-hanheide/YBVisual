@@ -98,7 +98,7 @@ and open the template in the editor.
 					<option value="black">Black</option>
 				</select>
 				
-				<a href="javascript:void(0)" class="easyui-linkbutton" onclick="CheckPassword()">Admin</a>
+				<a href="/console" class="easyui-linkbutton" >Admin</a>
 				
 			</div>
 			<!-- END: footer layout -->
@@ -218,7 +218,7 @@ and open the template in the editor.
 		<!-- END: getting started window -->
 	
 		<!-- START: new application panel -->
-		<div id="new_app" class="easyui-window" title="New Application" style="width:250px; height:150px; padding:10px; ">
+		<div id="new_app" class="easyui-window" closed="true" title="New Application" style="width:250px; height:150px; padding:10px; ">
 						<div>Name: <input class="easyui-textbox" type="text" name="appname" data-options="required:true"></input></div>
 						
 						<hr />
@@ -255,6 +255,11 @@ and open the template in the editor.
 		<script>
 			//Is called when the window is ready and loaded
 			isDocumentReady(function(){
+				isStillAuth();
+				
+				function procLoop(){
+					isStillAuth();
+				} setInterval(procLoop,2 * 1000);
 					
 			});
 		</script>

@@ -47,9 +47,13 @@ class console:
         #CONNECTIONS
         if(_type=="CONNECTIONS"):
             return session.getConnections();
-        
         #REJECT
-        if(_type=="REJECT"):
+        if(_type=='REJECT'):
+            #The attribute is the user ip..
+            session.removeConnection(str(json.getData('attribute')))
+        
+        #REJECTALL
+        if(_type=="REJECTALL"):
             session.clearConnections();
 
                 

@@ -46,16 +46,19 @@ class Session:
         #Is this the first client to connect to the server?
         if(self.connections == []):
             print "this is the first connected client"
+            self.listConnections()
             return "NO"
         else:
             #Cycle through and check the clients that have tried to connect this session
             for connection in self.connections:
                 #Has the client already tried to connect this session?
-                if(connection==ip):
+                if(connection==str(ip)):
                      print "Client has already connected this session"
+                     self.listConnections()
                      return "YES"
                 else:
                      print "This is a new client"
+                     self.listConnections()
                      return "NO"
         print "Already authenticated..."
         return "YES"
@@ -71,8 +74,7 @@ class Session:
         if( (_pass == self.password)):
             print "Password is correct"
             print "IP added to connections list:" + connected_ip
-            self.connections.append(connected_ip);
-            ACCEPTED_CONNECTIONS.append(connected_ip);
+            self.connections.append(str(connected_ip))
             self.listConnections()
             return "YES"
         else:
@@ -100,7 +102,7 @@ class Session:
     #
     def listConnections(self):
         print "Current connections: "
-        for connection in ACCEPTED_CONNECTIONS:
+        for connection in self.connections:
             print str(connection)
     #
     # Clear all accepted connections
@@ -121,6 +123,12 @@ class Session:
         
         #Return as JSON data
         return json.dumps(data)
+    #Remove an active connection from the session
+    def removeConnection(self,ip):
+        print "Attempting to remove connection: " + str(ip)
+        for connection in self.connections:
+            if (str(connection)==ip):
+                self.connections.remove(connection)
         
         
 #

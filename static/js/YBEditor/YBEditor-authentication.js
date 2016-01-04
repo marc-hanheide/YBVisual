@@ -10,6 +10,31 @@
 //Holds true if user is authenticated
 var AUTHENTICATED = false;
 
+function isStillAuth(){
+	SendData(createJSON("AUTHCHECK","",""),function(data){
+		var auth = data;
+		
+		/*
+			User is not authenticated
+		*/
+		if(auth == "NO"){
+
+			AUTHENTICATED  =false;
+			showIndicator();
+			
+		}
+		/*
+			User is already authenticated - We don't need to hide content
+		*/
+		else{
+			AUTHENTICATED = true;
+			hideIndicator();
+			
+		}
+	});
+	
+}
+
 /**
 	Do we need to display the authenticate window?
 **/
@@ -25,6 +50,7 @@ function AuthUser(){
 			AUTHENTICATED  =false;
 			ShowMessage("This robot requires a password.. please log in");
 			showLoginForm();
+			showIndicator();
 			
 		}
 		/*
@@ -33,6 +59,7 @@ function AuthUser(){
 		else{
 			AUTHENTICATED = true;
 			hideLoginForm();
+			hideIndicator();
 			
 		}
 	});
@@ -85,7 +112,6 @@ function CheckAdminPassword(){
 			The password is correct
 		*/
 		else{
-			alert('correct')
 			hideLoginForm();
 			$('#main_interface').show();
 			
@@ -100,14 +126,17 @@ function CheckAdminPassword(){
  * 	Show message with auth check
  * **/
 function AuthCheck(usage){
+	isStillAuth();
 	if(AUTHENTICATED){
 		return true;
 	}else
 	{
 		ShowError("Unable to " + usage + ", you need to login first.") 
+		showIndicator();
 		return false;
 	}
 }
+
 
 /**
 	Show the login form
