@@ -34,7 +34,7 @@ function RequestApplicationList(){
 			alert(data);
 	});
 	
-}
+} 
 
 //Create JSON data to send to the server
 function createJSON(_type,_att,_val){
