@@ -38,14 +38,7 @@ function changeStyle(name){
 /*
  * Wait for the window to be ready
  */
-//$(document).ready(function()
-//{
-//	//Which windows should be initially visible?
-//	toggleNewApplication(false);
-//	
-//	alert(document.body.innerHTML);
-//		
-//});
+
 function isDocumentReady(func){
 	$(document).ready(func);
 }
@@ -185,6 +178,7 @@ function runClicked(obj){
 	**/
 function stopClicked(obj){
 	if(AuthCheck("stop robot")){
+		SendStopCommand();
 		ShowMessage("Robot stopped successfully.");
 	}
 	

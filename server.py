@@ -70,11 +70,11 @@ class index:
     
     def POST(self):
         data = web.data()
-        print "Received Data: " + data
+        #print "Received Data: " + data
         #Create JSON object using given data - if required
         json = JSONObject(data);
         _type = json.getData('type')
-        print "Received JSON data with type: " + _type
+        #print "Received JSON data with type: " + _type
         #
         # Check if received data is an auth check
         #

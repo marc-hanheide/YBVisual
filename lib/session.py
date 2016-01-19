@@ -41,26 +41,26 @@ class Session:
         self.limit = 10;
     #Checks if the connected ip is authorised
     def isAuth(self,ip):
-        print "Connected IP: " + ip
+        #print "Connected IP: " + ip
 
         #Is this the first client to connect to the server?
         if(self.connections == []):
-            print "this is the first connected client"
-            self.listConnections()
+            #print "this is the first connected client"
+            #self.listConnections()
             return "NO"
         else:
             #Cycle through and check the clients that have tried to connect this session
             for connection in self.connections:
                 #Has the client already tried to connect this session?
                 if(connection==str(ip)):
-                     print "Client has already connected this session"
-                     self.listConnections()
+                     #print "Client has already connected this session"
+                     #self.listConnections()
                      return "YES"
                 else:
-                     print "This is a new client"
-                     self.listConnections()
+                     #print "This is a new client"
+                     #self.listConnections()
                      return "NO"
-        print "Already authenticated..."
+        #print "Already authenticated..."
         return "YES"
     #Checks if the given password is valid
     def checkPassword(self,jsonobj,connected_ip):

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        	<title>YouBot Visual</title>
+        	<meta charset="UTF-8">
+        	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<link rel="shortcut icon" href="/static/img/favicon.ico">
+			<!--<link rel="stylesheet" type="text/css" href="/static/js/css/base/jquery-ui.css">-->
+			<link id="ui_style" rel="stylesheet" type="text/css" href="/static/css/themes/default/easyui.css">
+			<link  rel="stylesheet" type="text/css" href="/static/css/jqueryui/css/base/jquery-ui.css">
+			<link rel="stylesheet" type="text/css" href="/static/css/styles.css">
+			<!--
+				JQUERY Scripts
+					-->
+        	<script src="/static/js/jquery/jquery.js"></script>
+			<script src="/static/js/jqueryui/jquery-ui.js"></script>
+			<script src="/static/js/jqueryui/jquery-easyui.js"></script>
+			<script src="/static/js/jqueryui/jquery-easyui-helper.js"></script>
+			<!-- 
+				Blockly Scripts
+					-->
+			<script src="/static/js/blockly/blockly_compressed.js"></script>
+			<script src="/static/js/blockly/blocks_compressed.js"></script>
+			<script src="/static/js/blockly/msg/js/en.js"></script>
+			<script src="/static/js/blockly/generators/robotcode.js"></script>
+			<!--
+				YBEditor scripts
+					-->
+        	<script src="/static/js/YBEditor/YBEditor-controller.js"></script>
+			<script src="/static/js/YBEditor/YBEditor-blocks.js"></script>
+			<script src="/static/js/YBEditor/YBEditor-file.js"></script>
+			<script src="/static/js/YBEditor/YBEditor-authentication.js"></script>
+			<script src="/static/js/YBEditor/YBEditor-ui.js"></script>
+    </head>
+    <body>
+	
+		
+		
+		
+		
+		<!-- START: workspace container -->
+		<div id="workspace" class="full-screen" style="position: fixed; left:0px; top: 0px;"><!--workspace--></div>
+		<!-- END: workspace container -->
+		
+		
+		
+
+		<!-- START: toolbox -->
+		<xml id="toolbox" style="display: none">
+			<category name="Statements" colour="100">
+				<block type="start_robot"></block>
+				<category name="Base" colour="110">
+					<block type="move"></block>
+					<block type="rotate"></block>
+				</category>
+				
+				<category name="Arm" colour="120">
+					<block type="rotate_joint"></block>
+				</category>
+			</category>
+			<category name="Conditions" colour="200">
+				<block type="controls_if"></block>
+			</category>
+
+		</xml>
+		<!-- END: toolbox -->
+		
+	
+		<!-- START: workspace data -->
+		<script>workspace = Blockly.inject('workspace', { toolbox: document.getElementById('toolbox'), grid: { spacing: 20, length: 3, colour: 'lightgray', snap:true } } );</script>
+		<!-- END: workspace data -->
+		
+		<div id="top_nav">
+			<a onclick="" class="btn" href="#">New</a>
+			<a onclick="" class="btn" href="#">Open</a>
+			<a onclick="" class="btn" href="#">Save</a>
+			<a onclick="toggleGettingStarted(true)" class="btn" href="#">About</a>
+		</div>
+		
+		<!-- START: RUN BUTTON -->
+			<div onclick="runClicked();" id="run_button"><a href="#" class="btn">RUN</a></div>
+		<!-- END: RUN BUTTON -->
+		
+		<!-- START: GETTING STARTED WINDOW -->
+		<div id="getting_started" class="easyui-window" maximizable="false" minimizable="false" modal="true" collapsible="false" resizable="false" title="Getting Started" style="width:700px;height:300px;padding:10px; ">	
+			<div class="easyui-tabs" style="width:100%; height:100%;">
+				<div title="About" style="padding:10px;">
+					<div><h1>YB Visual</h1></div>
+					<div>YB Visual is a visual program framework for the KUKA Youbot, providing an easy interface for developing robotic programs.</div>
+					<div><strong>Use the "LINKS" tab to access tutorials, and further documentation for this tool.</strong></div>
+					<hr />
+					<div>Create a new program:</div>
+					<a href="#" onclick="Y" class="easyui-linkbutton">New</a>
+					<div>Open an existing program:</div>
+					<a href="#" class="easyui-linkbutton">Open</a>
+				</div>
+				<div title="Links" style="padding:10px;">
+					<div>Access the official documentation: </div>
+					<a href="#" class="easyui-linkbutton">Official Documentation</a>
+					<div>View the tutorials: </div>
+					<a href="#" class="easyui-linkbutton">Tutorials</a>
+					<div>KUKA Robotics Website: </div>
+					<a href="http://www.kuka-robotics.com/united_kingdom/en/" class="easyui-linkbutton">KUKA Robotics</a>
+				</div>
+			</div>
+		</div>
+		<!-- END: GETTING STARTED WINDOW -->
+		
+		<!-- START: Login form -->
+		<div id="login_form" class="easyui-window" title="New User" closed="true" closable="false" maximizable="false" draggable="false" minimizable="false"   style="width:400px">
+			<form id="ff" method="post">
+				<table cellpadding="5">
+					<tr>
+						<td>Enter Password:</td>
+						<td><input id="pass_box" class="easyui-textbox" type="text" name="password" data-options="required:true"></input></td>
+					</tr>
+				</table>
+			</form>
+			<div style="text-align:center;padding:5px">
+				<a href="javascript:void(0)" class="easyui-linkbutton" onclick="CheckPassword()">Submit</a>
+				<a href="javascript:void(0)" class="easyui-linkbutton" onclick="hideLoginForm()">Cancel</a>
+			</div>
+	    </div>
+		<!-- END: login form -->
+		
+		<!-- START: AUTH INDICATOR -->
+		<div id="auth_indicator">
+			<strong>You need to login for this session:</strong>
+			<a onclick="AuthUser();" href="#" class="btn" >LOGIN</a>
+		</div>
+		<!-- END: AUTH INDICATOR -->
+		<script>
+			//Is called when the window is ready and loaded
+			isDocumentReady(function(){
+				isStillAuth();
+				
+				function procLoop(){
+					isStillAuth();
+				} setInterval(procLoop,2 * 1000);
+					
+			});
+		</script>
+		
+		
+	</body>
+        
+</html>

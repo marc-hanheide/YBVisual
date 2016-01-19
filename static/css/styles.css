@@ -11,177 +11,76 @@ and open the template in the editor.
 /* We don't need the default padding, or margins' */
 *{ padding: 0px; margin: 0px; }
 
-div
-{
-	-webkit-transition: all 0.05s;
-	transition: all 0.05s;
+/* We can make a button style */
+.btn{  
+  background: #3498db;
+  background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
+  background-image: -moz-linear-gradient(top, #3498db, #2980b9);
+  background-image: -ms-linear-gradient(top, #3498db, #2980b9);
+  background-image: -o-linear-gradient(top, #3498db, #2980b9);
+  background-image: linear-gradient(to bottom, #3498db, #2980b9);
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 20px;
+  padding: 10px 20px 10px 20px;
+  text-decoration: none;
+  background: rgba(100,100,100,0.3)
 }
-
-/* This is the page background */
-body {
-  background: linear-gradient(to bottom, black, skyblue) fixed;
+.btn:hover{ 
+  background: #3cb0fd;
+  background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+  text-decoration: none;
 }
-
-
-/*
-   ------------------------------------------------
-        TOP NAVIGATION BAR STYLE
-   ------------------------------------------------
-*/
-
-/*
-    This is the style for the top navigation bar
-*/
-#top_bar
-{
-    width: 100%;
-    height: 50px;
-    background: transparent;
-    padding: 10px;
-    position:fixed;
-    top: 0px;
-}
-/*
-    Contains the content within the top navigation bar
-*/
-#top_bar_content
-{
-    margin: 0px auto;
-    width: 1000px;
-    height: 50px;
-    background: transparent;
-    
-}
-/* The top bar header */
-#top_bar_content h1
-{
-    display: inline-block;
-    float: left;
-    margin: 5px 0px;
-	background: white;
-}
-/* Top bar button */
-#top_bar_content div
-{
-    height: 30px;
-    width: 60px;
-    background: lightgray;
-    display: inline-block;
-    float: left;
-    border: 1px solid black;
-    margin: 5px 5px;
-    padding: 2px;
-    cursor: pointer;
-    font-size: 20px;
-    
-}
-#top_bar_content div:hover
-{
-    background: darkgray;
-}
+.btn:link{ text-decoration: none; }
+.btn:visited{ text-decoration: none; }
+.btn:active{ text-decoration: none; }
 
 
-/*
-   ------------------------------------------------
-        SIDE BAR STYLE
-   ------------------------------------------------
-*/
-#bottom_bar_outer
-{
-	width: 100%;
-	height: 50px;
+
+/* Full-screen div */
+.full-screen{
 	position: fixed;
-	bottom: 0px;
+	left: 0px;
+	top: 0px;
+	height:100%;
+	width:100%;
 }
 
-#bottom_bar_content
-{
-	height: 100%;
-	width: 800px;
-	margin: 0px auto;
-	background: gray;
-}
-.bottom_bar_content_item
-{
+/* Run button */
+#run_button{
+	width:100%;
+	height:50px;
+	position: fixed;
+	bottom: 10px;
 	text-align: center;
-	background: darkgray;
-	width: 200px;
-	height: 100%;
-	font-size: 30px;
-	cursor: pointer;
-	display: inline-block;
-	float: left;
-}
-.bottom_bar_content_item:hover
-{
-	background: lightgray;
-}
-#bottom_bar_preview_outer
-{
-	height: 50px;
-	width: 1000px;
-	position: fixed;
-	bottom: 50px;
-	left: 50%;
-	transform:translate(-50%,-50%);
+	padding: 25px;
 	
 }
+#run_button a{ }
 
-.bottom_bar_preview_section > div
-{
-	height: 50px;
-	width:  200px;
-	background: lightgray;
-	display: inline-block;
-	font-size: 25px;
-	cursor: pointer;
+/* Top navigation */
+#top_nav{
+	width:500px;
+	height:80px;
+	position:fixed;
+	top:20px;
+	left: 50%;
 	text-align: center;
-}
-.bottom_bar_preview_section > div:hover
-{
-	background: white;
-}
-
-/*
-   ------------------------------------------------
-        EDITOR CONTENT STYLES
-   ------------------------------------------------
-*/
-#editor_content{ background: transparent; height: 800px; width: 1500px; margin: 50px auto; border: 1px solid black;}
-#editor_visual_content{ 
-    background: transparent;
-    height: 100%;
-    width: 100%
-}
-#editor_text_content{ 
-	background: transparent;
-    height: 100%;
-    width: 49%;
-    float: right;
-    border: 1px solid black;
-	color: white;
-}
-.code_line
-{ width: 100%; height: 50px;  }
-
-.clear{ clear: both; height: 1px; overflow: hidden; font-size: 0pt; margin-top: -1px; }
-
-
-/*
-   ------------------------------------------------
-        VISUAL PART STYLES
-   ------------------------------------------------
-*/
-.vis_part{ border: 1px dotted black; }
-.vis_part h1{ font-size: 20px; }
-.vis_part_move
-{
-	background:lightblue;
-	width: 200px;
-} 
-.vis_part_rot
-{
-	background:skyblue;
-	width: 200px;
+	-webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    -o-transform: translateX(-50%);
+    transform: translateX(-50%);
 }
 
+/* Authentication indicator */
+#auth_indicator{
+	position: fixed;
+	bottom: 10px;
+	left: 10px;
+	display: none;
+} #auth_indicator > div{ padding: 10px; }

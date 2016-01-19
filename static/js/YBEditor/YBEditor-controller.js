@@ -53,6 +53,7 @@ function sendApplicationJSON(commands){
 	var data = new Object();
 	data.commands = [];
 	
+	console.log('Sending application JSON')
 	
 	//Cycle through the commands
 	for(var i = 0;i < commands.length;i++){
@@ -84,6 +85,21 @@ function sendApplicationJSON(commands){
 	//Created -- now send the JSON object to the server
 	SendData(json_final);
 	
+}
+
+//Send a stop command to the robot
+function SendStopCommand(){
+	var data = new Object();
+	data.commands = [];
+	
+	var type = "HALT"
+	var attribute = ""
+	var val = ""
+	var _json = createJSON(type,attribute,val)
+	data.commands.push(_json)
+	
+	var json_final = createJSON("RUN",JSON.stringify(data),"")
+	SendData(json_final)
 }
 
 

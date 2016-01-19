@@ -10,18 +10,18 @@
 //Holds true if user is authenticated
 var AUTHENTICATED = false;
 
+
+
+
 function isStillAuth(){
 	SendData(createJSON("AUTHCHECK","",""),function(data){
 		var auth = data;
-		
 		/*
 			User is not authenticated
 		*/
 		if(auth == "NO"){
-
 			AUTHENTICATED  =false;
 			showIndicator();
-			
 		}
 		/*
 			User is already authenticated - We don't need to hide content
@@ -29,10 +29,8 @@ function isStillAuth(){
 		else{
 			AUTHENTICATED = true;
 			hideIndicator();
-			
 		}
 	});
-	
 }
 
 /**
@@ -41,17 +39,14 @@ function isStillAuth(){
 function AuthUser(){
 	SendData(createJSON("AUTHCHECK","",""),function(data){
 		var auth = data;
-		
 		/*
 			User is not authenticated
 		*/
 		if(auth == "NO"){
-
 			AUTHENTICATED  =false;
 			ShowMessage("This robot requires a password.. please log in");
 			showLoginForm();
 			showIndicator();
-			
 		}
 		/*
 			User is already authenticated - We don't need to hide content
@@ -60,7 +55,6 @@ function AuthUser(){
 			AUTHENTICATED = true;
 			hideLoginForm();
 			hideIndicator();
-			
 		}
 	});
 }
@@ -81,7 +75,6 @@ function CheckPassword(){
 			AUTHENTICATED  =false;
 			showLoginForm();
 			showIndicator();
-			
 		}
 		/*
 			The password is correct
@@ -90,7 +83,6 @@ function CheckPassword(){
 			AUTHENTICATED = true;
 			hideLoginForm();
 			hideIndicator();
-			
 		}
 	});
 }
@@ -106,16 +98,13 @@ function CheckAdminPassword(){
 		if(auth == "NO"){
 			showLoginForm();
 			$('#main_interface').hide();
-			
 		}
 		/*
 			The password is correct
 		*/
 		else{
 			hideLoginForm();
-			$('#main_interface').show();
-			
-			
+			$('#main_interface').show();	
 		}
 	});
 }

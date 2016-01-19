@@ -11,6 +11,7 @@ import move_base_msgs.msg
 from move_base_msgs.msg import *
 from actionlib_msgs.msg import *
 from std_msgs.msg import *
+import time
 
 
 #
@@ -32,10 +33,17 @@ class RobotBase:
         rospy.loginfo("Started move_base action server");
         #Created!    
         rospy.loginfo("Created robot base");
+    #Process given cmdVel command
+    def procCmdVel(self,twist):
+        for i in range(30):
+            self.cmd_vel_publisher.publish(twist)
+    
     #Stop moving the base - cancel all goals
     def Stop(self):
-        self.Move(0,0,0,0);
-        self.move_base_server.cancel_goal();
+        #Now stop the robot
+        rospy.loginfo("Attempting to stop robot")
+        self.procCmdVel(geometry_msgs.msg.Twist())        
+
     #Create a goal message
     def CreateGoal(self,x,y,z,w):
         #Create msg object
@@ -48,28 +56,18 @@ class RobotBase:
         g.target_pose.pose.orientation.w = w; #We need to specify an orientation > 0
         return g
     #Move base in direction
-    def Move(self,lx,ly,lz,az):
-        #Create a twist message
+    def Move(self,lx,ly,az,amount):
+        #Create the twist message
         twist = geometry_msgs.msg.Twist()
         twist.linear.x = lx
         twist.linear.y = ly
-        twist.linear.z = lz
-        twist.angular.x = 0
-        twist.angular.y = 0
         twist.angular.z = az
-        #log event
-        rospy.loginfo("Driving Youbot")
-        
-        #publish
-        self.cmd_vel_publisher.publish(twist)
-             
-        
-        
-        #now publish
-        #fo i in range(30):
-           #self.cmd_vel_publisher.publish(twist)
-           #rospy.sleep(0.1) # 30*0.1 = 3.0
-    
+        self.procCmdVel(twist)        
+        #Robot is moving 1 m/s, so we should wait for specified given distance
+        time.sleep(amount)
+        #Stop the robot after waiting
+        self.Stop()
+
     #Move the base to a goal
     def MoveTo(self,x,y,z):
         #Create the goal 
@@ -117,9 +115,9 @@ class Youbot:
         print self.robot.get_current_state()
         print " "
     #Drive the robot
-    def Drive(self,lx,ly,lz,az):
+    def Drive(self,lx,ly,az,amount):
         #Create a twist message
-        self.base.Move(lx,ly,lz,az);
+        self.base.Move(lx,ly,az,amount);
     #Drive the robot to a goal
     def DriveTo(self,x,y,z):
         #Create appropriate ROS message
@@ -148,6 +146,9 @@ class RobotController:
         commands = commands_json.getData('commands')
         #Cycle through, and manage the given commands
         for command in commands:
+            #Ensure the robot is stopped before running more commands
+            self.robot.Stop()            
+            
             #
             # We may get, and print command info 
             #
@@ -174,38 +175,40 @@ class RobotController:
             if(_type == "MOVE"):
                     print "Move command";
                     #Get amount value
-                    amount = float(_val);
+                    amount = float(int(_val));
                     print "Amount: " + str(amount);
                     if(_att == "FORWARDS"):
                         print "Move forward command";
-                        #self.robot.Drive(1,0,0,0,0,0);
-                        self.robot.DriveTo(amount,0,0);
+                        self.robot.Drive(1,0,0,amount)
+                        #self.robot.DriveTo(amount,0,0);
                         #Process the data here - move the robot forward
                     if(_att == "BACK"):
                         print "Move backward command";
-                        #self.robot.Drive(-1,0,0,0,0,0);
-                        self.robot.DriveTo(-amount,0,0);
+                        self.robot.Drive(-1,0,0,amount)
+                        #self.robot.DriveTo(-amount,0,0);
                         #Move the robot back
                     if(_att == "LEFT"):
                         print "Move left command";
-                        #self.robot.Drive(0,1,0,0,0,0);
-                        self.robot.DriveTo(0,amount,0);
+                        print "Moving left with amount:"  + str(amount)
+                        self.robot.Drive(0,-1,0,amount)
+                        time.sleep(5)
+                        #self.robot.DriveTo(0,amount,0);
                         #Move the robot left
                     if(_att == "RIGHT"):
                         print "Move right command";
-                        #self.robot.Drive(0,-1,0,0,0,0);
-                        self.robot.DriveTo(0,-amount,0);
+                        self.robot.Drive(0,1,0,amount)
+                        #self.robot.DriveTo(0,-amount,0);
                         #Move the robot right
             #Rotate type command
             if(_type == "ROTATE"):
                     if(_att == "RIGHT"):
                         #Rotate the robot right
                         print "Rotate right command";
-                        self.robot.Drive(0,0,0,1);
+                        self.robot.Drive(0,0,0,1,amount);
                     if(_att == "LEFT"):
                         #Rotate the robot left
                         print "Rotate left command";
-                        self.robot.Drive(0,0,0,-1);
+                        self.robot.Drive(0,0,0,-1,amount);
             #halt type command
             if(_type == "HALT"):
                 print "Halt command";
