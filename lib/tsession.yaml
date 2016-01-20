@@ -17,7 +17,7 @@ windows:
     - shell_command:
       - echo "Waiting.."
       - sleep 10
-      - roslaunch youbot_navigation_local move_base_local.launch
+      - roslaunch youbot_nav youbot_nav.launch
     - shell_command:
       - echo "Waiting.."
       - sleep 15

@@ -66,3 +66,20 @@ Blockly.Blocks['rotate_joint'] = {
     this.setHelpUrl('http://www.example.com/');
   }
 };
+
+//MOVE ARM PRE
+//https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#j8ting
+Blockly.Blocks['move_arm_pre'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("MOVE ARM")
+        .appendField(new Blockly.FieldTextInput("position name.."), "POSNAME");
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setColour(310);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
+

@@ -37,6 +37,14 @@ Blockly.JavaScript['rotate_joint'] = function(block) {
 };
 
 
+//MOVE ARM PRE
+//https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#j8ting
+Blockly.JavaScript['move_arm_pre'] = function(block) {
+  var text_posname = block.getFieldValue('POSNAME');
+  // TODO: Assemble JavaScript into code variable.
+  var code = '...';
+  return code;
+};
 
 
 
@@ -91,7 +99,7 @@ function Generate(){
 			commands.push("ROTATE," + dir + "," + amount);
 		}
 		//Rotate joint command
-		if(col==300){
+		if(col===300){
 			//Get joint id
 			var jointid = block.getFieldValue('ID');
 			//Get amount
@@ -99,6 +107,14 @@ function Generate(){
 			
 			//Push to the commands array
 			commands.push("ROTATEJOINT," + jointid + "," + amount);
+		}
+		//Move arm to pre-defined position command
+		if(col===310){
+			//Get defined position name
+			var posname = block.getFieldValue('POSNAME')
+			
+			//Push to the commands array
+			commands.push("MOVEARM," + "DEFPOS" + "," + posname);
 		}
 		
 	}
