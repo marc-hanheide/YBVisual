@@ -4,6 +4,7 @@ from lib.thread import *
 from multiprocessing import Process
 import threading
 from lib.input import *
+import time
 
 #
 # Import the curses module to accept user input
@@ -16,9 +17,13 @@ class Demo:
     def __init__(self,name,func):
         self.name = str(name) #Demo name
         self.func = func #Demo function
+        self.isPaused = False
     def Run(self,robot):
         if(self.func!=None):
-            self.func(robot)
+            if(self.isPaused==False):
+                self.isPaused = self.func(robot)
+    def Pause(self):
+        self.isPaused = True
 
 #
 # Define the standard demo functions
@@ -40,9 +45,39 @@ def func_d_keyboard(robot):
        robot.base._Move(0,-1,0)
    else:
        robot.Stop()
-    
-     
+   #Should this only be run once,if so return true?
+   return False
+#Hello world demo
+def func_d_helloworld(robot):
+    os.system('clear')
+    print "##############################"
+    print "      HELLO WORLD DEMO "
+    print "##############################"
+    #Show base movements
+    #robot.DriveTo(1,0,0)
+    #time.sleep(3)
+    #robot.Stop()
+    #robot.DriveTo(-1,0,0)
+    #time.sleep(3)
+    #robot.Stop()
+    #robot.DriveTo(0,1,0)
+    #time.sleep(3)
+    #robot.Stop()
+    #robot.DriveTo(0,-1,0)
+    #time.sleep(3)
+    #robot.Stop()
+    #Show arm movements
+    #unfold arm
+    print "Unfolding arm"
+    robot.Reach("unfolded")
+    robot.Drop()
+    print "Folding arm"
+    robot.Reach("folded")
+    robot.Grab()
+    return True
+  
 d_keyboard = Demo("Keyboard",func_d_keyboard)
+d_helloworld = Demo("Helloworld",func_d_helloworld)
 
 #
 # Is used to play the given demo -- uses multiprocessing
@@ -75,7 +110,7 @@ class DemoStore:
     #Initialise
     def __init__(self):
         print "Creating demo store"
-        self.store = [d_keyboard]
+        self.store = [d_keyboard,d_helloworld]
     #Get demo of specified name
     def Get(self,name):
         #Valid given name?

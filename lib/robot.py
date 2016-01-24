@@ -6,6 +6,7 @@ import moveit_commander
 import moveit_msgs.msg
 import actionlib
 import geometry_msgs.msg
+import control_msgs.msg
 from geometry_msgs import *
 import move_base_msgs.msg
 from move_base_msgs.msg import *
@@ -14,119 +15,64 @@ from std_msgs.msg import *
 import time
 import brics_actuator.msg
 from lib.demomanager import *
+import math
 
 #
 # Robotarm is used to control the robot arm
 #
 class RobotArm:
-    #
-    # Nested Class is used to define default arm positions
-    #
-    class Position:
+    #Gripper
+    class Gripper:
         #Initialise
-        def __init__(self,name,data):
-            self.name = name
-            self.data = data
-            rospy.loginfo("Created default position: " + str(name) + " with data: " + str(data))
+        def __init__(self):
+            self.group = moveit_commander.MoveGroupCommander("arm_1_gripper")
+        #Open gripper
+        def Open(self):
+            rospy.loginfo("Opening gripper")
+            self.group.set_named_target("open")
+            self.group.go()
+            rospy.sleep(3)
+        #Close gripper
+        def Close(self):
+            rospy.loginfo("Closing gripper")
+            self.group.set_named_target("close")
+            self.group.go()
+            rospy.sleep(3)
+        #Toggle gripper
+        def Toggle(self,flag):
+            rospy.loginfo("Toggling gripper")
+            if(flag==True):
+                self.Open() #true == Open
+            else:
+                self.Close() #false == Close   
     #Initialise
     def __init__(self):
         #Log
         rospy.loginfo("Creating robot arm controller");
-        #Init move group object
+        #Move group for arm joints
         self.group = moveit_commander.MoveGroupCommander("arm_1")
         #Display trajectory publisher
         self.display_trajectory_publisher = rospy.Publisher('/move_group/display_planned_path',moveit_msgs.msg.DisplayTrajectory)        
         #Arm joint names
         self.joint_names = ['arm_joint_1','arm_joint_2','arm_joint_3','arm_joint_4','arm_joint_5']
-        #Arm publisher
-        self.armPublisher = rospy.Publisher("/arm_1/arm_controller/position_command",brics_actuator.msg.JointPositions,queue_size=1)
-        #Gripper publisher
-        self.gripperPublisher = rospy.Publisher("/arm_1/gripper_controller/position_command",brics_actuator.msg.JointPositions,queue_size=1)
-        
-        #Define some standard arm positions
-        rospy.loginfo("Creating standard arm positions")
-        helloworld = RobotArm.Position("helloworld",[3.0,2.61,-0.91,0.25,2.88,0.0115,0.0])
-        zero = RobotArm.Position("candle",[0,0,0,0,0,0,0])
-        search = RobotArm.Position("search",[0,0,0,0,0,0,0])
-        self.standard_positions = [helloworld,zero,search]
-    
-    #Get standard position based on given name                          
-    def GetStandardPosition(self,name):
-        rospy.loginfo("Attempting to get standard position by name: " + name)
-        #Search for the given name
-        for i in range(0,len(self.standard_positions)):
-            #Get the position
-            position = None
-            position = self.standard_positions[i]
-            #Only carry on if the position is not null
-            if(position!=None):
-                pname = position.name
-                #Check if the position is equal to the given name
-                if(pname==name):
-                    #If so - the position was found - return the position object
-                    return position
-        #If this is reach - there was no position found, and we should return null
-        rospy.loginfo("Could not find default position: " + name)
-        #Return null
-        return None
+        #Gripper
+        self.gripper = RobotArm.Gripper()
+    #Moves to specified move group
+    def MoveTo(self,name):
+        rospy.loginfo("Moving to group: " + name)
+        self.group.set_named_target(str(name))
+        self.group.go()
+        rospy.sleep(3)
+    #Toggle the gripper
+    def ToggleGripper(self,flag):
+        self.gripper.Toggle(flag)
+    #Open the gripper
+    def OpenGripper(self):
+        self.gripper.Open()
+    #Close the gripper
+    def CloseGripper(self):
+        self.gripper.Close()
 
-    #Set joint positions using given data     
-    def SetJointPositions(self,data):
-        rospy.loginfo("Moving arm using given joint position data")
-        #Cycle through joint names
-        #arm_joint_1 ... arm_joint_5
-        for i in range(0,len(self.joint_names)):
-            arm = brics_actuator.msg.JointPositions()
-            #Set value for current joint
-            rospy.loginfo("Setting value for joint: " + self.joint_names[i])
-            joint = brics_actuator.msg.JointValue() #Joint value
-            joint.joint_uri = self.joint_names[i] #Joint name
-            joint.unit = 'rad' #Value type
-            joint.value = data[i] #Value
-            arm.positions.append(joint)
-            rospy.loginfo(arm)
-            self.armPublisher.publish(arm)
-            rospy.sleep(1)
-        rospy.loginfo("Finished moving arm to joint positions")
-    def SetJointSpaceGoal(self,data):
-        rospy.loginfo("Moving arm to joint space goal")
-        #Clear current target
-        self.group.clear_pose_targets()
-        #Get current joint values
-        joint_values = self.group.get_current_joint_values()
-        rospy.loginfo("Current joint values: " + str(joint_values))
-        
-        #Use data to set joint values -- if it is valid
-        if(data!=None):
-            #Set values of each joint
-            joint_values[0] = data[0] #1
-            joint_values[1] = data[1] #2
-            joint_values[2] = data[2] #3
-            joint_values[3] = data[3] #4
-            joint_values[4] = data[4] #5
-            #Now set the joint value target
-            self.group.set_joint_value_target(joint_values)
-            #Now plan a route to the target
-            plan = self.group.plan()
-            self.group.go()
-            #Wait while robot moves to position
-            rospy.sleep(5) 
-    #Move to standard position using given name
-    def ToStandardPosition(self,name):
-        #Try and get the position data
-        position = self.GetStandardPosition(name)
-        #Only attempt to move to position if it was found
-        if(position!=None):
-            #Set joint positions using position data
-            self.SetJointPositions(position.data)
-    #Move to standard joint space goal
-    def ToStandardJointSpaceGoal(self,name):
-        #Try and get the position data
-        position = self.GetStandardPosition(name)
-        #Only attempt to move to position if it is found
-        if(position!=None):
-            #Set joint position space goal
-            self.SetJointSpaceGoal(position.data)
 
 #
 # Robotbase is used to send goals to the base
@@ -229,6 +175,11 @@ class Youbot:
         rospy.loginfo("Youbot initialised")      
         #Finally - print the initial state of the youbot        
         self.Print_State()
+    
+    #############################################
+    # BASE SPECIFIC COMMANDS
+    #############################################
+    
     #print the current robot state
     def Print_State(self):
         rospy.loginfo("Displaying current robot state")
@@ -246,6 +197,21 @@ class Youbot:
     def Stop(self):
         #stop the base
         self.base.Stop();
+        
+        
+    #############################################
+    # ARM SPECIFIC COMMANDS
+    #############################################
+    #Attempt to reach a pre-specified position using the robot arm
+    def Reach(self,name):
+        self.arm.MoveTo(name)
+    #Grab (Close gripper)
+    def Grab(self):
+        self.arm.CloseGripper()
+    #Drop (Open gripper)
+    def Drop(self):
+        self.arm.OpenGripper()
+    
 #
 # Robot controller
 #
