@@ -64,28 +64,6 @@ function toggleNewApplication(flag){
 	}
 }
 
-var CURRENT_DEMO = ' '
-var DEMO_RUNNING = false
-function showDemoWindow(){
-	toggleDemoWindow(true)
-	DEMO_RUNNING = true
-}
-function closeDemoWindow(name){
-	SendDemoStopRequest()
-	toggleDemoWindow(false)
-	DEMO_RUNNING = false
-	CURRENT_DEMO = ' '
-}	
-function toggleDemoWindow(flag){
-	if(CURRENT_DEMO!=' '){
-		if(flag){
-			$('#' + CURRENT_DEMO).window('open');
-		}else{
-			$('#' + CURRENT_DEMO).window('close');
-		}
-	}
-}
-
 
 
 /*
@@ -210,38 +188,9 @@ function stopClicked(obj){
 	**/
 function demoClicked(obj,demo_name){
 	if(AuthCheck("start demo: " + demo_name)){
-		CURRENT_DEMO_CONT = demo_name + '_cont' 
 		ShowMessage("Starting demo: " + demo_name);
-		SendDemoStartRequest(demo_name)
-		showDemoWindow()
 	}
 }
-
-
-/*
-   ------------------------------------------------
-      KEYBOARD INPUT FUNCTIONS
-   ------------------------------------------------
-*/
-//shift+r == run
-Mousetrap.bind('shift+r',function(){
-	runClicked()
-});
-
-
-//ESC == close opened window
-Mousetrap.bind('escape',function(){
-	console.log('escape pressed')
-	if(DEMO_RUNNING){
-		SendDemoStopRequest()
-		closeDemoWindow()
-	}
-});
-
-
-	
-	
-
 
 
 

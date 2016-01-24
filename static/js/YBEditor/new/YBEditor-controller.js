@@ -102,35 +102,6 @@ function SendStopCommand(){
 	SendData(json_final)
 }
 
-//Send a demo start request
-function SendDemoStartRequest(name){
-	var data = new Object();
-	data.commands = [];
-	var demo_json = createJSON("DEMO","START",name)
-	data.commands.push(demo_json)
-	var json_final = createJSON("RUN",JSON.stringify(data),"")
-	SendData(json_final)
-}
-//Send a demo stop request
-function SendDemoStopRequest(){
-	var data = new Object();
-	data.commands = [];
-	var demo_json = createJSON("DEMO","STOP","")
-	data.commands.push(demo_json)
-	var json_final = createJSON("RUN",JSON.stringify(data),"")
-	SendData(json_final)
-}
-
-//Send a key event
-function SendKeyEvent(type,key){
-	var _type = ''
-	if(type==="PRESS"){
-		_type = 'PRESS'
-	}else{ _type = 'RELEASE' }
-	
-	SendData(createJSON("KEYEVENT",_type,key))
-}
-
 
 //Send data as POST request
 function SendData(_data)

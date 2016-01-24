@@ -9,7 +9,7 @@ windows:
     layout: tiled
     panes:
     - shell_command:
-      - roslaunch picksie_simulation picksie_sim.launch 
+      - roslaunch youbot_gazebo_robot youbot.launch 
     - shell_command:
       - echo "Waiting.."
       - sleep 10
@@ -17,7 +17,7 @@ windows:
     - shell_command:
       - echo "Waiting.."
       - sleep 10
-      - roslaunch youbot_nav youbot_nav.launch
+      - roslaunch youbot_navigation_local move_base_local.launch
     - shell_command:
       - echo "Waiting.."
       - sleep 15

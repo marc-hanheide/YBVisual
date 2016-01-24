@@ -6,12 +6,16 @@ from lib.jsonparser import *
 from lib.session import *
 from lib.robot import *
 from lib.tmux import *
+from lib.keyboard import *
 render = web.template.render('templates/')
 
 urls = (
     '/', 'index',
     '/console','console'
 )
+
+web.config.debug = False
+
 
 #Holds session information
 session = Session()
@@ -74,6 +78,8 @@ class index:
         #Create JSON object using given data - if required
         json = JSONObject(data);
         _type = json.getData('type')
+        _att = json.getData('attribute');
+        _val = json.getData('value');
         #print "Received JSON data with type: " + _type
         #
         # Check if received data is an auth check
@@ -104,6 +110,8 @@ class index:
         elif(_type == "APPLIST"):
             #We need return a JSON object containing a list of saved applications
             return program.getSaved()
+            
+            
         #
         # Else we can process robot specific commands
         #

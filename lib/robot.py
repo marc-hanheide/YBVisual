@@ -13,6 +13,7 @@ from actionlib_msgs.msg import *
 from std_msgs.msg import *
 import time
 import brics_actuator.msg
+from lib.demomanager import *
 
 #
 # Robotarm is used to control the robot arm
@@ -181,6 +182,13 @@ class RobotBase:
         time.sleep(amount)
         #Stop the robot after waiting
         self.Stop()
+    def _Move(self,lx,ly,az):
+        #Create the twist message
+        twist = geometry_msgs.msg.Twist()
+        twist.linear.x = lx
+        twist.linear.y = ly
+        twist.angular.z = az
+        self.procCmdVel(twist)        
 
     #Move the base to a goal
     def MoveTo(self,x,y,z):
@@ -246,7 +254,8 @@ class RobotController:
     def __init__(self):
         #Define the youbot object
         self.robot = Youbot();
-        self.Processing = False;
+        #Demo manager
+        self.demo_manager = DemoManager(self.robot)
     #Process incoming data
     def Process(self,data):
         #Create JSON object using given data
@@ -277,12 +286,30 @@ class RobotController:
             #
             # Now we need to check the given type, and use the data appropriately
             #
+            #Application request command
             if(_type == "APPDATA"):
                 # -- Now process the application data, and save it to file
                 xml_file = open(_data + ".xml","wb");
                 xml_file.write(_data02);
                 xml_file.close();
                 print xml_file
+            #Demo request command
+            if(_type == "DEMO"):
+                print "Demo command"
+                # -- Demo start
+                if(_att == "START"):
+                    print "Demo start request"
+                    #Get the demo name
+                    name = str(_val)
+                    rospy.loginfo("Trying to start demo using given name: " + str(_val))
+                    self.demo_manager.LaunchDemo(name)
+                # --Demo stop
+                if(_att == "STOP"):
+                    print "Demo stop request"
+                    rospy.loginfo("Trying to stop currently running demo")
+                    time.sleep(10)
+                    #Stop the currently running demo
+                    self.demo_manager.StopDemo()
             #Move type command
             if(_type == "MOVE"):
                     print "Move command";
