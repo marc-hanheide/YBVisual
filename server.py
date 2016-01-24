@@ -14,7 +14,6 @@ urls = (
     '/console','console'
 )
 
-web.config.debug = False
 
 
 #Holds session information
@@ -70,8 +69,6 @@ class console:
 class index:
     def GET(self):
         return render.index()
-        
-    
     def POST(self):
         data = web.data()
         #print "Received Data: " + data

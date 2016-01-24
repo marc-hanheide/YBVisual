@@ -79,9 +79,9 @@ function closeDemoWindow(name){
 function toggleDemoWindow(flag){
 	if(CURRENT_DEMO!=' '){
 		if(flag){
-			$('#' + CURRENT_DEMO).window('open');
+			$('#demo_window').window('open');
 		}else{
-			$('#' + CURRENT_DEMO).window('close');
+			$('#demo_window').window('close');
 		}
 	}
 }
@@ -210,7 +210,7 @@ function stopClicked(obj){
 	**/
 function demoClicked(obj,demo_name){
 	if(AuthCheck("start demo: " + demo_name)){
-		CURRENT_DEMO_CONT = demo_name + '_cont' 
+		CURRENT_DEMO = demo_name + '_cont' 
 		ShowMessage("Starting demo: " + demo_name);
 		SendDemoStartRequest(demo_name)
 		showDemoWindow()

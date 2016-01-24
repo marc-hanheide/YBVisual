@@ -306,10 +306,9 @@ class RobotController:
                 # --Demo stop
                 if(_att == "STOP"):
                     print "Demo stop request"
-                    rospy.loginfo("Trying to stop currently running demo")
-                    time.sleep(10)
                     #Stop the currently running demo
                     self.demo_manager.StopDemo()
+                    Keyboard.Restore()
             #Move type command
             if(_type == "MOVE"):
                     print "Move command";
