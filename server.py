@@ -107,14 +107,19 @@ class index:
         elif(_type == "APPLIST"):
             #We need return a JSON object containing a list of saved applications
             return program.getSaved()
-            
-            
+        #
+        # Emergency stop
+        #
+        elif(_type =="ESTOP"):
+            print "Halt key pressed"
+            #Ensure robot is stopped when e-stop is called
+            robot.EMERGENCY_STOP = True
         #
         # Else we can process robot specific commands
         #
-        elif(_type=="RUN"):
+        elif(_type =="RUN"):
             #Process given command
-            robot.Process(json)
+            robot.SetData(json)
 
         
       

@@ -10,7 +10,7 @@ Blockly.Blocks['start_robot'] = {
     this.appendDummyInput()
         .appendField("START ROBOT");
     this.setNextStatement(true);
-    this.setColour(0);
+    this.setColour(100);
     this.setTooltip('');
     this.setHelpUrl('http://www.example.com/');
   }
@@ -56,7 +56,7 @@ Blockly.Blocks['rotate_joint'] = {
   init: function() {
     this.appendDummyInput()
         .appendField("ROTATE JOINT")
-        .appendField(new Blockly.FieldDropdown([["joint01", "JOINT01"], ["joint02", "JOINT02"], ["joint03", "JOINT03"], ["joint04", "JOINT04"], ["joint05", "JOINT05"]]), "ID")
+        .appendField(new Blockly.FieldDropdown([["arm_joint_1", "arm_joint_1"], ["arm_joint_2", "arm_joint_2"], ["arm_joint_3", "arm_joint_3"], ["arm_joint_4", "arm_joint_4"], ["arm_joint_5", "arm_joint_5"]]), "ID")
         .appendField("amount")
         .appendField(new Blockly.FieldTextInput("0"), "AMOUNT");
     this.setPreviousStatement(true);
@@ -77,6 +77,21 @@ Blockly.Blocks['move_arm_pre'] = {
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(310);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
+//GRIPPER STATUS
+//https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#j8ting
+Blockly.Blocks['gripper_status'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("GRIPPER")
+        .appendField(new Blockly.FieldDropdown([["OPEN", "GRIPPER_OPEN"], ["CLOSE", "GRIPPER_CLOSE"]]), "GRIPPER_STATUS");
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setColour(350);
     this.setTooltip('');
     this.setHelpUrl('http://www.example.com/');
   }

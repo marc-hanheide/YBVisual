@@ -42,10 +42,9 @@ and open the template in the editor.
 			<!--
 				YBEditor scripts
 					-->
-        	<script src="/static/js/YBEditor/YBEditor-controller.js"></script>
+        		<script src="/static/js/YBEditor/YBEditor-controller.js"></script>
 			<script src="/static/js/YBEditor/YBEditor-blocks.js"></script>
 			<script src="/static/js/YBEditor/YBEditor-file.js"></script>
-			<script src="/static/js/YBEditor/YBEditor-authentication.js"></script>
 			<script src="/static/js/YBEditor/YBEditor-ui.js"></script>
 		
     </head>
@@ -156,17 +155,20 @@ and open the template in the editor.
 		<xml id="toolbox" style="display: none">
 			<category name="Statements" colour="100">
 				<block type="start_robot"></block>
-				<category name="Base" colour="110">
+				<category name="Base" colour="200">
 					<block type="move"></block>
 					<block type="rotate"></block>
 				</category>
 				
-				<category name="Arm" colour="120">
+				<category name="Arm" colour="300">
 					<block type="move_arm_pre"></block>
 					<block type="rotate_joint"></block>
+					<category name="Gripper" colour="350">
+						<block type="gripper_status">
+					</category>
 				</category>
 			</category>
-			<category name="Conditions" colour="200">
+			<category name="Conditions" colour="20">
 				<block type="controls_if"></block>
 			</category>
 
@@ -238,42 +240,7 @@ and open the template in the editor.
 						</div>
 		</div>
 		<!-- END: new application panel -->
-		
-		<!-- START: Login form -->
-		<div id="login_form" class="easyui-window" title="New User" closed="true" closable="false" maximizable="false" draggable="false" minimizable="false"   style="width:400px">
-			<form id="ff" method="post">
-				<table cellpadding="5">
-					<tr>
-						<td>Enter Password:</td>
-						<td><input id="pass_box" class="easyui-textbox" type="text" name="password" data-options="required:true"></input></td>
-					</tr>
-				</table>
-			</form>
-			<div style="text-align:center;padding:5px">
-				<a href="javascript:void(0)" class="easyui-linkbutton" onclick="CheckPassword()">Submit</a>
-				<a href="javascript:void(0)" class="easyui-linkbutton" onclick="hideLoginForm()">Cancel</a>
-			</div>
-	    </div>
-		<!-- END: login form -->
-		
-		<!-- START: AUTH INDICATOR -->
-		<div id="auth_indicator" style="position:fixed; top:0px; left:0px;">
-			<strong>You need to login for this session:</strong>
-			<div onclick="AuthUser();"style="padding: 10px;"><a href="#" class="easyui-linkbutton" onclick="AuthUser();">LOGIN</a></div>
-		</div>
-		<!-- END: AUTH INDICATOR -->
-		
-		<script>
-			//Is called when the window is ready and loaded
-			isDocumentReady(function(){
-				isStillAuth();
-				
-				function procLoop(){
-					isStillAuth();
-				} setInterval(procLoop,2 * 1000);
-					
-			});
-		</script>
+
 		
     </body>
         

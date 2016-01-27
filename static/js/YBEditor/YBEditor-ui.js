@@ -158,9 +158,9 @@ if(AuthCheck("create new application")){
 	Save button clicked
 		**/
 function saveClicked(){
-	if(AuthCheck("save application")){
+
 		FileIO.Save();
-	}
+	
 	
 }
 
@@ -168,9 +168,9 @@ function saveClicked(){
 	Open button clicked
 	**/
 function openClicked(){
-	if(AuthCheck("open application")){
+
 		FileIO.Open();
-	}
+	
 }
 
 
@@ -178,7 +178,7 @@ function openClicked(){
 	Run button clicked
 	**/
 function runClicked(obj){
-	if(AuthCheck("run application")){
+
 		//Generate commands
 		var commands = Generate();
 	
@@ -192,29 +192,29 @@ function runClicked(obj){
 				sendApplicationJSON(commands);
 		
 		}else{ ShowError("Unable to run program,caused by an error generating robot commands. You either created too many STARTROBOT blocks, or you need to create one."); }
-	}
+	
 	
 }	
 /**
 	Stop button clicked
 	**/
 function stopClicked(obj){
-	if(AuthCheck("stop robot")){
+
 		SendStopCommand();
 		ShowMessage("Robot stopped successfully.");
-	}
+	
 	
 }
 /**
 	Demo button clicked
 	**/
 function demoClicked(obj,demo_name){
-	if(AuthCheck("start demo: " + demo_name)){
+
 		CURRENT_DEMO = demo_name + '_cont' 
 		ShowMessage("Starting demo: " + demo_name);
 		SendDemoStartRequest(demo_name)
 		showDemoWindow()
-	}
+	
 }
 
 
@@ -236,6 +236,8 @@ Mousetrap.bind('escape',function(){
 		SendDemoStopRequest()
 		closeDemoWindow()
 	}
+	//If escape is pressed -- a stop command must be sent to the robot
+	SendStopCommand()
 });
 
 

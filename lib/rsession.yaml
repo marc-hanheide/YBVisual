@@ -9,7 +9,7 @@ windows:
     layout: tiled
     panes:
     - shell_command:
-      - roslaunch picksie_simulation picksie_sim.launch
+      - roslaunch youbot_driver_ros_interface youbot_driver.launch
     - shell_command:
       - echo "Waiting.."
       - sleep 10

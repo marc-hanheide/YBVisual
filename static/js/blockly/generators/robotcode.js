@@ -47,6 +47,14 @@ Blockly.JavaScript['move_arm_pre'] = function(block) {
 };
 
 
+//GRIPPER STATUS
+//https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#j8ting
+Blockly.JavaScript['gripper_status'] = function(block) {
+  var dropdown_gripper_status = block.getFieldValue('GRIPPER_STATUS');
+  // TODO: Assemble JavaScript into code variable.
+  var code = '...';
+  return code;
+};
 
 /*
 	Used to convert the program into workable data
@@ -54,7 +62,7 @@ Blockly.JavaScript['move_arm_pre'] = function(block) {
 function Generate(){
 	
 	//Get the block collection
-	var blocks = getBlockArray(0);
+	var blocks = getBlockArray(100);
 	//We need a collection which contains the final commands
 	var commands = [];
 	
@@ -72,7 +80,7 @@ function Generate(){
 			We can use the blocks colour to check its type
 		**/
 		//Move command type
-		if(col === 210){
+		if(col === 110){
 			//Get direction
 			var dir = block.getFieldValue('DIRECTION');
 			//Get amount
@@ -102,6 +110,7 @@ function Generate(){
 		if(col===300){
 			//Get joint id
 			var jointid = block.getFieldValue('ID');
+				
 			//Get amount
 			var amount = block.getFieldValue('AMOUNT');
 			
@@ -115,6 +124,15 @@ function Generate(){
 			
 			//Push to the commands array
 			commands.push("MOVEARM," + "DEFPOS" + "," + posname);
+		}
+		//Toggle gripper status
+		if(col==350){
+			//Get chosen status
+			var grip_status = block.getFieldValue('GRIPPER_STATUS');
+			grip_status = grip_status.split("_")[1]
+			
+			//Push to the commands array
+			commands.push("GRIPPER," + "SET" + "," + grip_status);
 		}
 		
 	}

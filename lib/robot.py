@@ -8,6 +8,8 @@ import actionlib
 import geometry_msgs.msg
 import control_msgs.msg
 from geometry_msgs import *
+from brics_actuator.msg import JointPositions
+from brics_actuator.msg import JointValue
 import move_base_msgs.msg
 from move_base_msgs.msg import *
 from actionlib_msgs.msg import *
@@ -16,6 +18,7 @@ import time
 import brics_actuator.msg
 from lib.demomanager import *
 import math
+from threading import Thread
 
 #
 # Robotarm is used to control the robot arm
@@ -25,26 +28,33 @@ class RobotArm:
     class Gripper:
         #Initialise
         def __init__(self):
-            self.group = moveit_commander.MoveGroupCommander("arm_1_gripper")
+            self._GripperCmdPublisher = rospy.Publisher("/arm_1/gripper_controller/position_command",JointPositions, queue_size=1)
+            self.joint_name = 'gripper_finger_joint_r'
         #Open gripper
         def Open(self):
             rospy.loginfo("Opening gripper")
-            self.group.set_named_target("open")
-            self.group.go()
-            rospy.sleep(3)
+            self.Set(0.0115)
         #Close gripper
         def Close(self):
             rospy.loginfo("Closing gripper")
-            self.group.set_named_target("close")
-            self.group.go()
-            rospy.sleep(3)
+            self.Set(0)
         #Toggle gripper
         def Toggle(self,flag):
             rospy.loginfo("Toggling gripper")
             if(flag==True):
                 self.Open() #true == Open
             else:
-                self.Close() #false == Close   
+                self.Close() #false == Close
+        #Set joint value
+        def Set(self,value):
+            grp_cmd = JointPositions()
+            j_cmd = JointValue()
+            j_cmd.joint_uri = self.joint_name
+            j_cmd.unit = 'm'
+            j_cmd.value = value
+            grp_cmd.positions.append(j_cmd)
+            print "Sending gripper command: " + str(j_cmd.value)
+            self._GripperCmdPublisher.publish(grp_cmd)
     #Initialise
     def __init__(self):
         #Log
@@ -52,9 +62,12 @@ class RobotArm:
         #Move group for arm joints
         self.group = moveit_commander.MoveGroupCommander("arm_1")
         #Display trajectory publisher
-        self.display_trajectory_publisher = rospy.Publisher('/move_group/display_planned_path',moveit_msgs.msg.DisplayTrajectory)        
+        self.display_trajectory_publisher = rospy.Publisher('/move_group/display_planned_path',moveit_msgs.msg.DisplayTrajectory)
+        #Arm cmd publisher
+        self._ArmCmdPublisher = rospy.Publisher("/arm_1/arm_controller/position_command",JointPositions,queue_size=1)
         #Arm joint names
         self.joint_names = ['arm_joint_1','arm_joint_2','arm_joint_3','arm_joint_4','arm_joint_5']
+        self.joint_limits = [[0.0100692,5.84014],[0.0100692,2.61799],[-5.02655,-0.015708],[0.0221239,3.4292],[0.110619,5.64159]]
         #Gripper
         self.gripper = RobotArm.Gripper()
     #Moves to specified move group
@@ -62,7 +75,46 @@ class RobotArm:
         rospy.loginfo("Moving to group: " + name)
         self.group.set_named_target(str(name))
         self.group.go()
-        rospy.sleep(3)
+	#Pause execution until the robot reaches the target group
+        rospy.sleep(5)
+    #Stop moving the arm
+    def Stop(self):
+        self.group.stop()
+    def SetJointValue(self,joint_id,value):
+        #Check given joint id
+        if(joint_id > 0  and joint_id <= 5):
+            #Get the joint limits
+            joint_limit_min = self.joint_limits[joint_id-1][0]
+            joint_limit_max = self.joint_limits[joint_id-1][1]
+            #Check that given value is in joint limit range
+            if(value > joint_limit_min and value < joint_limit_max):
+                vals = self.group.get_current_joint_values()
+                vals[joint_id-1] = float(value)
+                self.group.set_joint_value_target(vals)
+                self.group.go()
+            #Else return error
+            else:
+                print "Value out of joint range: " + str(value) + ", for joint: "  + str(joint_id)
+                print "Min: " + str(joint_limit_min)
+                print "Max: " + str(joint_limit_max)
+        #Else return error
+        else:
+            print "Invalid joint_id: " + str(joint_id)
+        rospy.sleep(1)
+    def SetJointValues(self,j1,j2,j3,j4,j5):
+        self.SetJointValue(1,j1) #joint 1
+        self.SetJointValue(2,j2) #joint 2
+        self.SetJointValue(3,j3) #joint 3
+        self.SetJointValue(4,j4) #joint 4
+        self.SetJointValue(5,j5) #joint 5
+    def JointIdByName(self,name):
+        rospy.loginfo("Finding joint id using given name: " + str(name))
+        for index in range(len(self.joint_names)):
+            if(str(name)==str(self.joint_names[index])):
+                rospy.loginfo("Found id : " + str(index+1) + " for joint name: " + str(name))
+                return index+1
+        
+    
     #Toggle the gripper
     def ToggleGripper(self,flag):
         self.gripper.Toggle(flag)
@@ -195,6 +247,8 @@ class Youbot:
         self.base.MoveTo(x,y,z);
     #Stop the robot
     def Stop(self):
+        #Stop the arm
+        self.arm.Stop();
         #stop the base
         self.base.Stop();
         
@@ -222,6 +276,24 @@ class RobotController:
         self.robot = Youbot();
         #Demo manager
         self.demo_manager = DemoManager(self.robot)
+        self.data = None
+        self.EMERGENCY_STOP = False
+        #Start process data checks
+        self.Start()
+    #Halt execution -- acts as an emergency stop
+    def Halt(self):
+        while True:
+            if self.EMERGENCY_STOP != False:
+                print "Emergency stop requested"
+                #We don't need the process data anymore
+                self.data = None
+                #Try and stop the robot
+                self.robot.Stop()
+                print "#########################"
+                print " EMERGENCY STOP CALLED "
+                print " Robot stopped "
+                print "#########################"
+                self.EMERGYENCY_STOP = False
     #Process incoming data
     def Process(self,data):
         #Create JSON object using given data
@@ -308,11 +380,29 @@ class RobotController:
                         print "Rotate left command";
                         self.robot.Drive(0,0,0,-1,amount);
             #Move arm type command
-            if(_type== "MOVEARM"):
+            if(_type == "MOVEARM"):
                     #Is this is a 'move to pre-defined position' command?
                     if(_att == "DEFPOS"):
                         #If so - attempt to move the robot to the given position name
-                        self.robot.arm.ToStandardJointSpaceGoal(str(_val))
+                        #self.robot.arm.ToStandardJointSpaceGoal(str(_val))
+			self.robot.arm.MoveTo(str(_val))
+	    #Rotate joint command
+	    if(_type == "ROTATEJOINT"):
+                    #Rotate the joint
+                    joint_name = str(_att)
+                    value = float(_val)
+                    self.robot.arm.SetJointValue(self.robot.arm.JointIdByName(joint_name),value)
+	    #Set gripper command
+	    if(_type =="GRIPPER"):
+                    #What type of gripper command is this?
+                    #Set gripper status command
+                    if(_att == "SET"):
+                        #Has the user chosen to open, or close the gripper?
+                        choice = str(_val)
+                        if(choice == "OPEN"):
+                            self.robot.Drop()
+                        elif(choice == "CLOSE"):
+                             self.robot.Grab()
             
             #halt type command
             if(_type == "HALT"):
@@ -324,3 +414,28 @@ class RobotController:
                 
         #Stop the robot once execution has finished
         self.robot.Stop();
+        #Reset data
+        self.data = None
+    #Set data
+    def SetData(self,data):
+        rospy.loginfo("Setting process data")
+        if(data!=None):
+            self.data = data
+    #Thread function
+    def _ThreadFunc(self):
+        while True:
+            if self.data != None:
+                rospy.loginfo("Found process data")
+                self.Process(self.data)
+    #Start processing data
+    def Start(self):
+        rospy.loginfo("Starting process thread")
+        ##THREAD01 - Process execution
+        thread = Thread(target=self._ThreadFunc,args = ())
+        print "Starting thread 01 - processing"
+        thread.start()
+        #Another thread is required to keep checking if the emergency stop is needded
+        #THREAD02 - EMERGENCY STOP
+        thread02 = Thread(target=self.Halt,args = ())
+        print "Starting thread 02 - emergency stop"
+        thread02.start()

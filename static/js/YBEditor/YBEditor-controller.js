@@ -92,14 +92,12 @@ function SendStopCommand(){
 	var data = new Object();
 	data.commands = [];
 	
-	var type = "HALT"
+	var type = "ESTOP"
 	var attribute = ""
 	var val = ""
 	var _json = createJSON(type,attribute,val)
-	data.commands.push(_json)
 	
-	var json_final = createJSON("RUN",JSON.stringify(data),"")
-	SendData(json_final)
+	SendData(_json)
 }
 
 //Send a demo start request

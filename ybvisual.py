@@ -12,5 +12,5 @@ import spwd
 if __name__ == "__main__":  
     print "hello world"
     manager = TMUXManager()
-    manager.Load("lib/tsession.yaml")
+    manager.Load("lib/rsession.yaml")
 
