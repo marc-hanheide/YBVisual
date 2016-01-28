@@ -29,8 +29,25 @@ class RobotArm:
     class Gripper:
         #Initialise
         def __init__(self):
+            self.state = 'open'
             self._GripperCmdPublisher = rospy.Publisher("/arm_1/gripper_controller/position_command",JointPositions, queue_size=1)
+            self._GripperCmdSubscriber = rospy.Subscriber("/arm_1/gripper_controller/position_command",JointPositions,self.Callback)
             self.joint_name = 'gripper_finger_joint_r'
+        #Callback is used to check the state of the gripper
+        def Callback(self,data):
+            j_cmd_length = len(data.positions)
+            j_cmd = data.positions[0].value
+            print j_cmd
+            rospy.loginfo("Recevied gripper data: " + str(j_cmd))
+            if(j_cmd == 0.0115):
+                self.state = 'open'
+            else:
+                self.state = 'closed'
+            print "The gripper is " + self.state
+        #Prints the status of the gripper
+        def PrintStatus(self):
+            rospy.loginfo("Gripper status")
+            rospy.loginfo(str(self.state))
         #Open gripper
         def Open(self):
             rospy.loginfo("Opening gripper")
@@ -56,6 +73,24 @@ class RobotArm:
             grp_cmd.positions.append(j_cmd)
             print "Sending gripper command: " + str(j_cmd.value)
             self._GripperCmdPublisher.publish(grp_cmd)
+        #Check if the gripper is open
+        def IsOpen(self):
+            if(self.state == 'open'):
+                print "Gripper is open"
+                return True
+        #Check if the gripper is closed
+        def IsClosed(self):
+            if(self.state == 'closed'):
+                print "Gripper is closed"
+                return False
+        #Return the gripper state as a boolean value
+        def CheckState(self):
+            if(self.state == 'open'):
+                print "Gripper is open"
+                return True #True == open
+            else:
+                print "Gripper is closed"
+                return False #False == closed
     #Initialise
     def __init__(self):
         #Log
@@ -114,7 +149,9 @@ class RobotArm:
             if(str(name)==str(self.joint_names[index])):
                 rospy.loginfo("Found id : " + str(index+1) + " for joint name: " + str(name))
                 return index+1
-        
+    #
+    # Gripper functions
+    #
     
     #Toggle the gripper
     def ToggleGripper(self,flag):
@@ -125,6 +162,12 @@ class RobotArm:
     #Close the gripper
     def CloseGripper(self):
         self.gripper.Close()
+    #Print gripper status
+    def PrintGripperStatus(self):
+        self.gripper.PrintStatus()
+    #Get the status of the gripper
+    def GetGripperStatus(self):
+        return self.gripper.CheckState()
 
 
 #
@@ -214,10 +257,6 @@ class EStop:
     #Trigger the emergency stop
     def Trigger(self):
         self.pub.publish(String("ON"))
-    
-    
-
-
 
 #
 # Primary Youbot class
@@ -288,6 +327,15 @@ class Youbot:
     #Drop (Open gripper)
     def Drop(self):
         self.arm.OpenGripper()
+    #Print the status of the gripper
+    def PrintGripperStatus(self):
+        self.arm.PrintGripperStatus()
+    #Check if the gripper is open
+    def IsGripperOpen(self):
+        return (self.arm.GetGripperStatus() == True)
+    #Check if the gripper is closed
+    def IsGripperClosed(self):
+        return (self.arm.GetGripperStatus() == False)
     
 #
 # Robot controller
@@ -317,11 +365,16 @@ class RobotController:
         #commands = json.getData('commands');
         commands_json = JSONObject(data.getData('attribute'))
         commands = commands_json.getData('commands')
+
+        #These variables are used to check for a condition
+        condition_current = ' ' #The current condition to check
+        condition_valid = True #The result of the condition
+    
+        
         #Cycle through, and manage the given commands
         for command in commands:
             #Ensure the robot is stopped before running more commands
-            self.robot.Stop()            
-            
+            self.robot.Stop()               
             #
             # We may get, and print command info 
             #
@@ -333,98 +386,133 @@ class RobotController:
             print "TYPE: "  + _type;
             print "ATTRIBUTE: " + _att;
             print "VALUE: " + _val;
-       
 
+            #Print the status of the gripper - for debugging
+            self.robot.PrintGripperStatus()
+
+            
+            
+            #Check if the given data is a condition
+            if(_type == "COND"):
+                rospy.loginfo("Found condition")
+                #Initially - the condition isn't valid
+                condition_valid = False
+                #Check the type of the condition
+                if(_att == "GRIPPERSTATE"):
+                    rospy.loginfo("Gripper state condition")
+                    #Check the state of the gripper
+                    #Which state are we checking for?
+                    state_check = str(_val)
+                    if(state_check=="OPEN"):
+                        print "Checking gripper open condition"
+                        #Check if the gripper is open
+                        if(self.robot.IsGripperOpen()):
+                            #Gripper is open
+                            condition_valid = True
+                    elif(state_check=="CLOSED"):
+                        print "Checking gripper closed condition"
+                        #Check if the gripper is closed
+                        if(self.robot.IsGripperClosed()):
+                            #Gripper is closed
+                            condition_valid = True
+                            
+            #We may carry on if condition is valid
+            if(condition_valid == True):
+                rospy.loginfo("Condition is valid, executing command..")
+            
             #
             # Now we need to check the given type, and use the data appropriately
             #
             #Application request command
-            if(_type == "APPDATA"):
-                # -- Now process the application data, and save it to file
-                xml_file = open(_data + ".xml","wb");
-                xml_file.write(_data02);
-                xml_file.close();
-                print xml_file
-            #Demo request command
-            if(_type == "DEMO"):
-                print "Demo command"
-                # -- Demo start
-                if(_att == "START"):
-                    print "Demo start request"
-                    #Get the demo name
-                    name = str(_val)
-                    rospy.loginfo("Trying to start demo using given name: " + str(_val))
-                    self.demo_manager.LaunchDemo(name)
-                # --Demo stop
-                if(_att == "STOP"):
-                    print "Demo stop request"
-                    #Stop the currently running demo
-                    self.demo_manager.StopDemo()
-                    Keyboard.Restore()
-            #Move type command
-            if(_type == "MOVE"):
-                    print "Move command";
-                    #Get amount value
-                    amount = float(int(_val));
-                    print "Amount: " + str(amount);
-                    if(_att == "FORWARDS"):
-                        print "Move forward command";
-                        self.robot.DriveTo(amount,0,0);
-                        #Process the data here - move the robot forward
-                    if(_att == "BACK"):
-                        print "Move backward command";
-                        self.robot.DriveTo(-amount,0,0);
-                        #Move the robot back
-                    if(_att == "LEFT"):
-                        print "Move left command";
-                        self.robot.DriveTo(0,amount,0);
-                        #Move the robot left
-                    if(_att == "RIGHT"):
-                        print "Move right command";
-                        self.robot.DriveTo(0,-amount,0);
-                        #Move the robot right
-            #Rotate type command
-            if(_type == "ROTATE"):
-                    if(_att == "RIGHT"):
-                        #Rotate the robot right
-                        print "Rotate right command";
-                        self.robot.Drive(0,0,0,1,amount);
-                    if(_att == "LEFT"):
-                        #Rotate the robot left
-                        print "Rotate left command";
-                        self.robot.Drive(0,0,0,-1,amount);
-            #Move arm type command
-            if(_type == "MOVEARM"):
-                    #Is this is a 'move to pre-defined position' command?
-                    if(_att == "DEFPOS"):
-                        #If so - attempt to move the robot to the given position name
-                        #self.robot.arm.ToStandardJointSpaceGoal(str(_val))
-			self.robot.arm.MoveTo(str(_val))
-	    #Rotate joint command
-	    if(_type == "ROTATEJOINT"):
-                    #Rotate the joint
-                    joint_name = str(_att)
-                    value = float(_val)
-                    self.robot.arm.SetJointValue(self.robot.arm.JointIdByName(joint_name),value)
-	    #Set gripper command
-	    if(_type =="GRIPPER"):
-                    #What type of gripper command is this?
-                    #Set gripper status command
-                    if(_att == "SET"):
-                        #Has the user chosen to open, or close the gripper?
-                        choice = str(_val)
-                        if(choice == "OPEN"):
-                            self.robot.Drop()
-                        elif(choice == "CLOSE"):
-                             self.robot.Grab()
+                if(_type == "APPDATA"):
+                    # -- Now process the application data, and save it to file
+                    xml_file = open(_data + ".xml","wb");
+                    xml_file.write(_data02);
+                    xml_file.close();
+                    print xml_file
+                #Demo request command
+                if(_type == "DEMO"):
+                    print "Demo command"
+                    # -- Demo start
+                    if(_att == "START"):
+                        print "Demo start request"
+                        #Get the demo name
+                        name = str(_val)
+                        rospy.loginfo("Trying to start demo using given name: " + str(_val))
+                        self.demo_manager.LaunchDemo(name)
+                    # --Demo stop
+                    if(_att == "STOP"):
+                        print "Demo stop request"
+                        #Stop the currently running demo
+                        self.demo_manager.StopDemo()
+                        Keyboard.Restore()
             
-            #halt type command
-            if(_type == "HALT"):
-                print "Halt command";
-                self.robot.Stop();
+                #Move type command
+                if(_type == "MOVE"):
+                        print "Move command";
+                        #Get amount value
+                        amount = float(int(_val));
+                        print "Amount: " + str(amount);
+                        if(_att == "FORWARDS"):
+                            print "Move forward command";
+                            self.robot.DriveTo(amount,0,0);
+                            #Process the data here - move the robot forward
+                        if(_att == "BACK"):
+                            print "Move backward command";
+                            self.robot.DriveTo(-amount,0,0);
+                            #Move the robot back
+                        if(_att == "LEFT"):
+                            print "Move left command";
+                            self.robot.DriveTo(0,amount,0);
+                            #Move the robot left
+                        if(_att == "RIGHT"):
+                            print "Move right command";
+                            self.robot.DriveTo(0,-amount,0);
+                            #Move the robot right
+                #Rotate type command
+                if(_type == "ROTATE"):
+                        if(_att == "RIGHT"):
+                            #Rotate the robot right
+                            print "Rotate right command";
+                            self.robot.Drive(0,0,0,1,amount);
+                        if(_att == "LEFT"):
+                            #Rotate the robot left
+                            print "Rotate left command";
+                            self.robot.Drive(0,0,0,-1,amount);
+                #Move arm type command
+                if(_type == "MOVEARM"):
+                        #Is this is a 'move to pre-defined position' command?
+                        if(_att == "DEFPOS"):
+                            #If so - attempt to move the robot to the given position name
+                            #self.robot.arm.ToStandardJointSpaceGoal(str(_val))
+                            self.robot.arm.MoveTo(str(_val))
+                #Rotate joint command
+                if(_type == "ROTATEJOINT"):
+                        #Rotate the joint
+                        joint_name = str(_att)
+                        value = float(_val)
+                        self.robot.arm.SetJointValue(self.robot.arm.JointIdByName(joint_name),value)
+                #Set gripper command
+                if(_type =="GRIPPER"):
+                        #What type of gripper command is this?
+                        #Set gripper status command
+                        if(_att == "SET"):
+                            #Has the user chosen to open, or close the gripper?
+                            choice = str(_val)
+                            if(choice == "OPEN"):
+                                self.robot.Drop()
+                            elif(choice == "CLOSE"):
+                                 self.robot.Grab()
             
-            #Pause before starting next command
-            rospy.sleep(0.2);
+                #halt type command
+                if(_type == "HALT"):
+                    print "Halt command";
+                    self.robot.Stop();
+            
+                #Pause before starting next command
+                rospy.sleep(0.2);
+            else:
+                print "Unable to execute command.. condition is not valid"
                 
         #Stop the robot once execution has finished
         self.robot.Stop();

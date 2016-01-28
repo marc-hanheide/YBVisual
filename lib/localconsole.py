@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+import rospy
+import os
 
 #
 # Local console may be used for changing, and requesting basic information locally on the robot
@@ -23,6 +25,9 @@ class LocalConsole:
             #Password change requested
             elif(_input=='password'):
                 self.Password()
+            #Shutdown requested
+            elif(_input=="shutdown"):
+                self.Shutdown()
     #
     # Help requested
     #
@@ -30,11 +35,21 @@ class LocalConsole:
         print 'Commands list: '
         print 'Help - View available commands'
         print 'password - Change system password'
+        print "shutdown - Shutdown the server"
+
     #
     # Password change requested
     #
     def Password(self):
         _pass = raw_input ("Enter new system password: ")
+    #
+    # Server shutdown
+    #
+    def Shutdown(self):
+        print "Server shutdown"
+        rospy.signal_shutdown("Done!")
+        #Find server process - and kill it
+        os.system("pkill -1 -f server.py")
 
 if __name__ == "__main__":
     console = LocalConsole()

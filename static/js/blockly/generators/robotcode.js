@@ -56,6 +56,19 @@ Blockly.JavaScript['gripper_status'] = function(block) {
   return code;
 };
 
+
+//IF GRIPPER STATE
+//https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#aa6qba
+Blockly.JavaScript['if_gripperstate'] = function(block) {
+  var dropdown_name = block.getFieldValue('NAME');
+  // TODO: Assemble JavaScript into code variable.
+  var code = '...';
+  return code;
+};
+
+
+
+
 /*
 	Used to convert the program into workable data
 */
@@ -65,8 +78,7 @@ function Generate(){
 	var blocks = getBlockArray(100);
 	//We need a collection which contains the final commands
 	var commands = [];
-	
-	
+
 	/**
 		Cycle through, and check each block
 	**/
@@ -133,6 +145,18 @@ function Generate(){
 			
 			//Push to the commands array
 			commands.push("GRIPPER," + "SET" + "," + grip_status);
+		}
+
+		// ---
+		// CONDITIONS
+		// ---
+
+		//Gripper state condition
+		if(col==1){
+			//Which gripper state is being checked
+			var gripper_cond = block.getFieldValue("GRIPPER_S")
+			//Push to the commands array
+			commands.push("COND," + "GRIPPERSTATE" + "," + gripper_cond)
 		}
 		
 	}

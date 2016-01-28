@@ -97,4 +97,21 @@ Blockly.Blocks['gripper_status'] = {
   }
 };
 
+//IF GRIPPER STATE
+//https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#aa6qba
+Blockly.Blocks['if_gripperstate'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("IF")
+        .appendField("GRIPPER STATE")
+        .appendField(new Blockly.FieldDropdown([["CLOSED", "CLOSED"], ["OPEN", "OPEN"]]), "GRIPPER_S")
+        .appendField("THEN");
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setColour(1);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
 

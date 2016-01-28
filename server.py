@@ -7,7 +7,6 @@ from lib.session import *
 from lib.robot import *
 from lib.tmux import *
 from lib.keyboard import *
-from lib.console import ServerConsole
 render = web.template.render('templates/')
 
 urls = (
