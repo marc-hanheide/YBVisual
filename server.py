@@ -7,6 +7,7 @@ from lib.session import *
 from lib.robot import *
 from lib.tmux import *
 from lib.keyboard import *
+from lib.console import ServerConsole
 render = web.template.render('templates/')
 
 urls = (
@@ -14,15 +15,22 @@ urls = (
     '/console','console'
 )
 
-
-
 #Holds session information
 session = Session()
 #Used for saving/opening existing programs
 program = Program()
 #Robot controller - Processes robot specific commands
 robot = RobotController()
+#Web application
+app = web.application(urls,globals())
 
+
+#Create the ros shutdown event
+def onShutdown():
+    print "Ros shutdown detected, shutting down server."
+    app.stop()
+    robot.Shutdown()
+rospy.on_shutdown(onShutdown)
 
 #console page
 class console:
@@ -59,8 +67,6 @@ class console:
         if(_type=="REJECTALL"):
             session.clearConnections();
 
-                
-        
         return ""
 
 
@@ -78,6 +84,13 @@ class index:
         _att = json.getData('attribute');
         _val = json.getData('value');
         #print "Received JSON data with type: " + _type
+        #Sever control commands
+        if(_type == "SERVER"):
+            #Was this a shutdown request?
+            if(_att == "SHUTDOWN"):
+                #Shutdown the server
+                print "Attempting to shutdown the server.."
+                onShutdown()
         #
         # Check if received data is an auth check
         #
@@ -113,7 +126,7 @@ class index:
         elif(_type =="ESTOP"):
             print "Halt key pressed"
             #Ensure robot is stopped when e-stop is called
-            robot.EMERGENCY_STOP = True
+            robot.Halt()
         #
         # Else we can process robot specific commands
         #
@@ -121,13 +134,9 @@ class index:
             #Process given command
             robot.SetData(json)
 
-        
-      
-
 if __name__ == "__main__":
-    #We need to check if the console is being requested
-    args = []
-    args = sys.argv
-    app = web.application(urls,globals())
     app.run()
-        
+    print "Server shutdown"
+    #Find server process - and kill it
+    os.system("pkill -1 -f server.py")
+                         

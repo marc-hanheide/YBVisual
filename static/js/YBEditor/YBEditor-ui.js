@@ -227,6 +227,11 @@ function demoClicked(obj,demo_name){
 Mousetrap.bind('shift+r',function(){
 	runClicked()
 });
+//shift+c == shutdown
+Mousetrap.bind('shift+c',function(){
+	SendServerRequest("SHUTDOWN")
+	window.close()
+});
 
 
 //ESC == close opened window

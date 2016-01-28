@@ -19,6 +19,7 @@ import brics_actuator.msg
 from lib.demomanager import *
 import math
 from threading import Thread
+from std_msgs.msg import String
 
 #
 # Robotarm is used to control the robot arm
@@ -198,7 +199,21 @@ class RobotBase:
         #get result
         goalresult= self.move_base_server.wait_for_result(rospy.Duration(50));
         #stop when reached
-        self.Stop();            
+        self.Stop();
+#Min class is used for triggering an emergency stop
+class EStop:
+    #Initialise
+    def __init__(self):
+        #We can subscribe to a ros topic which holds whether the estop was pressed
+        self.sub = rospy.Subscriber("chatter",String,self._Callback)
+        #We also need a publisher
+        self.pub = rospy.Publisher("chatter",String)
+    #Callback function
+    def _Callback(self,data):
+        print data        
+    #Trigger the emergency stop
+    def Trigger(self):
+        self.pub.publish(String("ON"))
     
     
 
@@ -227,6 +242,14 @@ class Youbot:
         rospy.loginfo("Youbot initialised")      
         #Finally - print the initial state of the youbot        
         self.Print_State()
+        #Estop used for emergency stops
+        self.estop = EStop()
+
+    #############################################
+    # GENERAL, ROBOT SPECIFIC COMMANDS
+    #############################################
+    def EmergencyStop(self):
+        self.estop.Trigger()
     
     #############################################
     # BASE SPECIFIC COMMANDS
@@ -278,22 +301,13 @@ class RobotController:
         self.demo_manager = DemoManager(self.robot)
         self.data = None
         self.EMERGENCY_STOP = False
+        #Thread used for processing data
+        self.thread = Thread(target=self._ThreadFunc,args = ())
         #Start process data checks
         self.Start()
     #Halt execution -- acts as an emergency stop
     def Halt(self):
-        while True:
-            if self.EMERGENCY_STOP != False:
-                print "Emergency stop requested"
-                #We don't need the process data anymore
-                self.data = None
-                #Try and stop the robot
-                self.robot.Stop()
-                print "#########################"
-                print " EMERGENCY STOP CALLED "
-                print " Robot stopped "
-                print "#########################"
-                self.EMERGYENCY_STOP = False
+        self.robot.EmergencyStop()
     #Process incoming data
     def Process(self,data):
         #Create JSON object using given data
@@ -427,15 +441,11 @@ class RobotController:
             if self.data != None:
                 rospy.loginfo("Found process data")
                 self.Process(self.data)
+                time.sleep(1)
     #Start processing data
     def Start(self):
         rospy.loginfo("Starting process thread")
-        ##THREAD01 - Process execution
-        thread = Thread(target=self._ThreadFunc,args = ())
-        print "Starting thread 01 - processing"
-        thread.start()
-        #Another thread is required to keep checking if the emergency stop is needded
-        #THREAD02 - EMERGENCY STOP
-        thread02 = Thread(target=self.Halt,args = ())
-        print "Starting thread 02 - emergency stop"
-        thread02.start()
+        self.thread.deamon = True
+        self.thread.start()
+    def Shutdown(self):
+        rospy.signal_shutdown("Done!")

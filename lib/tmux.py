@@ -6,16 +6,21 @@ import tmuxp
 # TMUX sessions manager
 #
 class TMUXManager:
+    Server = None
     #
     # Initialise
     #
     def __init__(self):
-        self.server = tmuxp.Server()
+        TMUXManager.Server = tmuxp.Server()
         #Ensure that there are no currently running sessions
-        self.server.kill_server()
-        self.server
+        TMUXManager.Server.kill_server()
+        #self.server
     #
     # Creates a session from config file
     #
     def Load(self,cfg):
         os.system("tmuxp load " + cfg)
+    @staticmethod
+    def Shutdown():
+        print "Shutting down tmux server"
+        TMUXManager.Server.kill_server()

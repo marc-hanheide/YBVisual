@@ -129,6 +129,12 @@ function SendKeyEvent(type,key){
 	SendData(createJSON("KEYEVENT",_type,key))
 }
 
+//Send sever control command
+function SendServerRequest(type){
+	var _json = createJSON("SERVER",type,"")
+	SendData(_json)
+}
+
 
 //Send data as POST request
 function SendData(_data)
