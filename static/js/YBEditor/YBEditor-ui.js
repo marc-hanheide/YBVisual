@@ -181,7 +181,8 @@ function runClicked(obj){
 
 		//Generate commands
 		var commands = Generate();
-	
+		alert(commands.length)		
+
 		/**
 			We need to check if the commands were generated successfully
 		**/

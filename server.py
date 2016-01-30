@@ -1,141 +1,138 @@
 #!/usr/bin/env python
 
+#
+# Standard import
+#
 import web
 import sys
-from lib.jsonparser import *
-from lib.session import *
-from lib.robot import *
-from lib.tmux import *
-from lib.keyboard import *
-render = web.template.render('templates/')
+import rospy
+import os
 
-urls = (
-    '/', 'index',
-    '/console','console'
-)
+#
+# Robot lib imports
+#
+from lib.ybvisual.jsonparser import JSONObject
+from lib.ybvisual.session import Session
+from lib.ybvisual.program import Program
+from lib.ybvisual.robot.robotcontroller import RobotController
 
-#Holds session information
-session = Session()
-#Used for saving/opening existing programs
-program = Program()
-#Robot controller - Processes robot specific commands
-robot = RobotController()
-#Web application
-app = web.application(urls,globals())
-
-
-#Create the ros shutdown event
-def onShutdown():
-    print "Ros shutdown detected, shutting down server."
-    app.stop()
-    robot.Shutdown()
-rospy.on_shutdown(onShutdown)
-
-#console page
-class console:
-    def GET(self):
-        return render.console()
-    def POST(self):
-        #Data will contain the text entered into the console window
-        data =  web.data()
-        print "Received Data: " + data
-        #The received data should be json
-        json = JSONObject(data);
-        #The type will contain the given command
-        _type = json.getData('type')
+#
+# Primary robot server class
+#
+class Server:
+    #
+    # Use a try-except to catch any errors while initialising these variables
+    #
+    try:
+        #Holds session information
+        _Session = Session()
+        #Used for saving/opening existing programs
+        _Program = Program()
+        #Robot controller - Processes robot specific commands
+        Robot = RobotController()    
+        #Define templates folder
+        Templates = web.template.render("templates/")
+        #Define urls
+        Urls = ('/','index')
+        #Server app    
+        App = web.application(Urls,globals())
+    except Exception as e:
+        print "Found error, killing process.."
+        print e
+        os.system("pkill -1 -f server.py")
         
-        #
-        # AUTH CHECK
-        #        
-        if(_type=="PASSCHECK"):
-            return session.checkAdminPassword(json)
-        
-        
-        #
-        # COMMAND CHECKS
-        #
-        #CONNECTIONS
-        if(_type=="CONNECTIONS"):
-            return session.getConnections();
-        #REJECT
-        if(_type=='REJECT'):
-            #The attribute is the user ip..
-            session.removeConnection(str(json.getData('attribute')))
-        
-        #REJECTALL
-        if(_type=="REJECTALL"):
-            session.clearConnections();
+    
+    #Start the server
+    @staticmethod
+    def Start():
+        Server.App.run()
+    
+    #Function is used to stop the server
+    @staticmethod
+    def Shutdown():
+        print "Ros shutdown detected, shutting down server."
+        Server.App.stop()
+        #Also shutdown the robot
+        Server.Robot.Shutdown()
+    
+    #
+    #Define command options for the server API as classes
+    #These include the functions called by the command
+    #And the required String
+    #SERVER COMMAND    
+    class ServerCmd:
+        ReqString = "SERVER"
+        @staticmethod
+        def Run(data):
+            rospy.loginfo("Received SERVER command")
+            #Is this a shutdown request
+            Server.Shutdown() if (JSONObject.HasAttribute(data) == True) else None
+        def __call__(self,data):
+            Server.SeverCmd.Run(data) if (JSONObject.IsType(data,Server.ServerCmd.ReqString) == True) else None 
+    SERVERCMD = ServerCmd()
+    
+    #PASSWORD COMMAND
+    class PasswordCmd:
+        ReqString = "PASSCHECK"
+        @staticmethod
+        def Run(data):
+            rospy.loginfo("Received PASSWORD CHECK command")
+            return Server._Session.checkPassword(data,web.ctx.ip)
+        def __call__(self,data):
+            Server.PasswordCmd.Run(data) if (JSONObject.IsType(data,Server.PasswordCmd.ReqString) == True) else None
+    PASSWORDCMD = PasswordCmd()
+    #RUN COMMAND
+    class RunCmd:
+        ReqString = "RUN"
+        @staticmethod
+        def Run(data):
+            rospy.loginfo("Received RUN command")
+            #The robot will process the given command
+            Server.Robot.SetData(data)
+        def __call__(self,data):
+            Server.RunCmd.Run(data) if (JSONObject.IsType(data,Server.RunCmd.ReqString) == True) else None
+    RUNCMD = RunCmd()
+    
+            
 
-        return ""
-
-
-
-#main index page
+    #The API variable handles POST messages sent to the main index page
+    @staticmethod
+    def CheckData(data):
+        #Server command
+        Server.SERVERCMD(data)
+        #Password command
+        Server.PASSWORDCMD(data)
+        #Run command
+        Server.RUNCMD(data)
+            
+#
+# Index page structure
+#
 class index:
     def GET(self):
-        return render.index()
+        #Return page contents
+        return Server.Templates.index()
     def POST(self):
+        #Get received data
         data = web.data()
-        #print "Received Data: " + data
-        #Create JSON object using given data - if required
-        json = JSONObject(data);
-        _type = json.getData('type')
-        _att = json.getData('attribute');
-        _val = json.getData('value');
-        #print "Received JSON data with type: " + _type
-        #Sever control commands
-        if(_type == "SERVER"):
-            #Was this a shutdown request?
-            if(_att == "SHUTDOWN"):
-                #Shutdown the server
-                print "Attempting to shutdown the server.."
-                onShutdown()
-        #
-        # Check if received data is an auth check
-        #
-        if(_type == 'AUTHCHECK'):
-            return session.isAuth(web.ctx.ip)    
-        #
-        # Check if this is a password check
-        #
-        elif(_type == 'PASSCHECK'):
-            return session.checkPassword(json,web.ctx.ip)
-        #
-        # Check if SAVE data was given
-        #
-        elif(_type == "APPSAVE"):
-            #Save the program using the given data
-            program.Save(json);
-        #
-        # Check if OPEN data was given
-        #
-        elif(_type == "APPOPEN"):
-            #Open program using given program name
-            #We need to get the application name
-            _name = json.getData('attribute');
-        #
-        # User requests list of saved applications
-        #
-        elif(_type == "APPLIST"):
-            #We need return a JSON object containing a list of saved applications
-            return program.getSaved()
-        #
-        # Emergency stop
-        #
-        elif(_type =="ESTOP"):
-            print "Halt key pressed"
-            #Ensure robot is stopped when e-stop is called
-            robot.Halt()
-        #
-        # Else we can process robot specific commands
-        #
-        elif(_type =="RUN"):
-            #Process given command
-            robot.SetData(json)
+        #Init given data as a JSON object
+        json = JSONObject(data)
+        #Check given data
+        Server.CheckData(json)
 
+#Set callback for ROS shutdown
+rospy.on_shutdown(Server.Shutdown)
+
+#Main method
 if __name__ == "__main__":
-    app.run()
-    print "Server shutdown"
-    #Find server process - and kill it
-    os.system("pkill -1 -f server.py")
-                         
+    try:
+        Server.Start()
+        print "Server shutdown"
+        #Find server process - and kill it
+        os.system("pkill -1 -f server.py")
+    except Exception as e:
+        print "Exception found"
+        print e
+        os.system("pkill -1 -f server.py")
+        
+        

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import sys
 import rospy
-from lib.jsonparser import *
+from lib.ybvisual.jsonparser import *
 import moveit_commander
 import moveit_msgs.msg
 import actionlib
@@ -16,7 +16,7 @@ from actionlib_msgs.msg import *
 from std_msgs.msg import *
 import time
 import brics_actuator.msg
-from lib.demomanager import *
+from lib.ybvisual.demomanager import *
 import math
 from threading import Thread
 from std_msgs.msg import String
