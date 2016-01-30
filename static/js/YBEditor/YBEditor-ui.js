@@ -42,6 +42,9 @@ function changeStyle(name){
 function isDocumentReady(func){
 	$(document).ready(func);
 }
+isDocumentReady(function(){
+	Blockly.Xml.domToWorkspace(workspace,document.getElementById('default_blocks'))
+});
 
 
 /*
@@ -180,8 +183,7 @@ function openClicked(){
 function runClicked(obj){
 
 		//Generate commands
-		var commands = Generate();
-		alert(commands.length)		
+		var commands = Generate();	
 
 		/**
 			We need to check if the commands were generated successfully

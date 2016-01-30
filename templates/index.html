@@ -154,7 +154,7 @@ and open the template in the editor.
 		<!-- START: Toolbox Data -->
 		<xml id="toolbox" style="display: none">
 			<category name="Statements" colour="100">
-				<block type="start_robot"></block>
+				<!--<block type="start_robot" ></block>-->
 				<category name="Base" colour="200">
 					<block type="move"></block>
 					<block type="rotate"></block>
@@ -172,6 +172,10 @@ and open the template in the editor.
 
 		</xml>
 		<!-- END: Toolbox Data -->
+
+		<xml id="default_blocks" style="display:none">
+		     <block type="start_robot" moveable="false" deletable="false" inline="true" x="500" y="250"></block>
+		</xml>
 		
 		<!-- START: Init editor workspace -->
 		<script>
@@ -194,7 +198,7 @@ and open the template in the editor.
 		<!-- END: Init editor workspace -->
 		
 		<!-- START: getting started window -->
-			<div id="getting_started" class="easyui-window" title="Getting Started" data-options="modal:false" style="width:700px;height:300px;padding:10px; ">
+			<div id="getting_started" class="easyui-window" title="Getting Started" data-options="modal:false" style="width:700px;height:300px;padding:10px; " closed="true">
 				
 				
 				<div class="easyui-tabs" style="width:100%; height:100%;">

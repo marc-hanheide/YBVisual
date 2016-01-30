@@ -68,6 +68,39 @@ class Robot:
         rospy.loginfo("Displaying current robot state")
         print self.robot.get_current_state()
         print " "
+    def DriveForward(self,amount):
+        self.base.MoveDistance(1,0,amount)
+    def DriveBack(self,amount):
+        self.base.MoveDistance(-1,0,amount)
+    def DriveLeft(self,amount):
+        self.base.MoveDistance(0,1,amount)
+    def DriveRight(self,amount):
+        self.base.MoveDistance(0,-1,amount)
+    def RotateLeft(self,amount):
+        self.base.RotateDistance(1,amount)
+    def RotateRight(self,amount):
+        self.base.RotateDistance(-1,amount)
+    #Move robot based on given string command
+    def DriveByCmd(self,cmd,amount):
+        if(str(cmd) == self.base.cmd_move_forwards):
+            self.DriveForward(amount)
+        elif(str(cmd) == self.base.cmd_move_back):
+            self.DriveBack(amount)
+        elif(str(cmd) == self.base.cmd_move_left):
+            self.DriveLeft(amount)
+        elif(str(cmd) == self.base.cmd_move_right):
+            self.DriveRight(amount)
+        else:
+            print "Invalid cmd string"
+    #Rotate robot based on given string command
+    def RotateByCmd(self,cmd,amount):
+        if(str(cmd) == self.base.cmd_rotate_left):
+            self.RotateLeft(amount)
+        elif(str(cmd) == self.base.cmd_rotate_right):
+            self.RotateRight(amount)
+        else:
+            print "Invalid cmd string"
+    
     #Drive the robot a specified distance        
     def DriveDistance(self,lx,ly,amount):
         #Move the base

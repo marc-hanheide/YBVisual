@@ -28,8 +28,8 @@ Blockly.Blocks['move'] = {
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(210);
-    this.setTooltip('');
-    this.setHelpUrl('http://www.example.com/');
+    this.setTooltip('Move the robot by amount, in specified direction');
+    this.setHelpUrl('http://ybvisual.adamwcs.co.uk');
   }
 }; MOVE_COLOUR = 210
 
@@ -45,8 +45,8 @@ Blockly.Blocks['rotate'] = {
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(220);
-    this.setTooltip('');
-    this.setHelpUrl('http://www.example.com/');
+    this.setTooltip('Rotate the robot by amount, in specified direction');
+    this.setHelpUrl('http://ybvisual.adamwcs.co.uk');
   }
 }; ROTATE_COLOUR = 220
  
@@ -62,8 +62,8 @@ Blockly.Blocks['rotate_joint'] = {
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(300);
-    this.setTooltip('');
-    this.setHelpUrl('http://www.example.com/');
+    this.setTooltip('Rotate specified joint by given joint space value');
+    this.setHelpUrl('http://ybvisual.adamwcs.co.uk');
   }
 }; ROTATE_JOINT_COLOUR = 300
 
@@ -77,8 +77,8 @@ Blockly.Blocks['move_arm_pre'] = {
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(310);
-    this.setTooltip('');
-    this.setHelpUrl('http://www.example.com/');
+    this.setTooltip('Move arm to pre-defined position (E.G candle,folded)');
+    this.setHelpUrl('http://ybvisual.adamwcs.co.uk');
   }
 }; MOVE_ARM_PRE_COLOUR = 310
 
@@ -92,8 +92,8 @@ Blockly.Blocks['gripper_status'] = {
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(350);
-    this.setTooltip('');
-    this.setHelpUrl('http://www.example.com/');
+    this.setTooltip('Set gripper status');
+    this.setHelpUrl('http://ybvisual.adamwcs.co.uk');
   }
 }; GRIPPER_STATUS_COLOUR = 350
 
@@ -109,8 +109,8 @@ Blockly.Blocks['if_gripperstate'] = {
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(1);
-    this.setTooltip('');
-    this.setHelpUrl('http://www.example.com/');
+    this.setTooltip('IF condition - checks gripper state');
+    this.setHelpUrl('http://ybvisual.adamwcs.co.uk');
   }
 }; GRIPPER_STATE_COLOUR = 1
 
@@ -122,7 +122,6 @@ function Generate(){
 	//Get the block collection
 	var blocks = getBlockArray(100);
 	//We need a collection which contains the final commands
-	alert(blocks.length)
 	var commands = [];
 
 	/**

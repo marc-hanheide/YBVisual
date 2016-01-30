@@ -9,6 +9,7 @@ from actionlib_msgs.msg import *
 from nav_msgs.msg import Odometry
 import time
 from std_msgs.msg import String
+import math
 
 
 #
@@ -30,11 +31,19 @@ class RobotBase:
         self.move_base_server.wait_for_server(rospy.Duration(60));
         rospy.loginfo("Started move_base action server");
         #Linear velocity
-        self.linear_velocity =0.2
+        self.linear_velocity = 0.3
         #Angular velocity
-        self.angular_velcoity = 0.2        
+        self.angular_velocity = 0.5        
         #Created!    
         rospy.loginfo("Created robot base");
+        #Variables can be used to command robot by giving a string
+        self.cmd_move_forwards = "FORWARDS"
+        self.cmd_move_back = "BACK"
+        self.cmd_move_left = "LEFT"
+        self.cmd_move_right = "RIGHT"
+        self.cmd_rotate_left = "LEFT"
+        self.cmd_rotate_right = "RIGHT"
+        
     #Process given cmdVel command
     def procCmdVel(self,twist):
         for i in range(30):
@@ -94,7 +103,24 @@ class RobotBase:
             self.procCmdVel(twist)
         rospy.loginfo("Reached!")
         self.Stop()
-        
+    #Rotate specified distance (degrees given, converted to radians
+    def RotateDistance(self,az,dist):
+        _dist = math.radians(dist)
+        rospy.loginfo("Rotating distance: " + str(dist) + "degrees" + " or " + str(_dist) + " radians")
+        duration = _dist / self.angular_velocity
+        rospy.loginfo("Rotation should take: " + str(duration))
+        twist = geometry_msgs.msg.Twist()
+        if az == 1:
+            twist.angular.z = self.angular_velocity
+        elif az == -1:
+            twist.angular.z = -self.angular_velocity
+        else:
+            twist.angular.z = 0
+        start_time = time.time()
+        while( (time.time() - start_time) < duration):
+            self.procCmdVel(twist)
+        rospy.loginfo("Reached!")
+        self.Stop()     
     def _Move(self,lx,ly,az):
         #Create the twist message
         twist = geometry_msgs.msg.Twist()

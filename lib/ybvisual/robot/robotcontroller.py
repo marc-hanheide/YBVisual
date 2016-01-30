@@ -126,36 +126,13 @@ class RobotController:
                         #Get amount value
                         amount = float(int(_val));
                         print "Amount: " + str(amount);
-                        if(_att == "FORWARDS"):
-                            print "Move forward command";
-                            #self.robot.DriveTo(amount,0,0);
-                            self.robot.DriveDistance(1,0,amount)
-                            #Process the data here - move the robot forward
-                        if(_att == "BACK"):
-                            print "Move backward command";
-                            #self.robot.DriveTo(-amount,0,0);
-                            self.robot.DriveDistance(-1,0,amount)
-                            #Move the robot back
-                        if(_att == "LEFT"):
-                            print "Move left command";
-                            #self.robot.DriveTo(0,amount,0);
-                            self.robot.DriveDistance(0,1,amount)
-                            #Move the robot left
-                        if(_att == "RIGHT"):
-                            print "Move right command";
-                            #self.robot.DriveTo(0,-amount,0);
-                            self.robot.DriveDistance(0,-1,amount)
-                            #Move the robot right
+                        self.robot.DriveByCmd(str(_att),amount)
                 #Rotate type command
                 if(_type == "ROTATE"):
-                        if(_att == "RIGHT"):
-                            #Rotate the robot right
-                            print "Rotate right command";
-                            self.robot.Drive(0,0,0,1,amount);
-                        if(_att == "LEFT"):
-                            #Rotate the robot left
-                            print "Rotate left command";
-                            self.robot.Drive(0,0,0,-1,amount);
+                        #Get amount value
+                        amount = float(int(_val));
+                        print "Amount: " + str(amount);
+                        self.robot.RotateByCmd(str(_att),amount)
                 #Move arm type command
                 if(_type == "MOVEARM"):
                         #Is this is a 'move to pre-defined position' command?
