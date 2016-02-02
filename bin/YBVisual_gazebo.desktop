@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=YBVisual_gazebo
+Comment=This is my comment
+Exec=gnome-terminal -e "python /home/adam/YBVisual/ybvisual.py 1"
+Icon=/home/adam/YBVisual/static/img/favicon_sim.ico
+Path=/home/adam/YBVisual
+Terminal=false
+Type=Application
+Categories=Application

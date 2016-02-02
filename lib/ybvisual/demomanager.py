@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-from lib.thread import *
+from lib.ybvisual.thread import *
 from multiprocessing import Process
 import threading
-from lib.input import *
+from lib.ybvisual.input import *
 import time
 
 #
