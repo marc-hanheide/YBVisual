@@ -38,11 +38,11 @@ function changeStyle(name){
 /*
  * Wait for the window to be ready
  */
-
 function isDocumentReady(func){
 	$(document).ready(func);
 }
 isDocumentReady(function(){
+	//Set default block
 	Blockly.Xml.domToWorkspace(workspace,document.getElementById('default_blocks'))
 });
 

@@ -162,7 +162,17 @@ class RobotController:
                 if(_type == "HALT"):
                     print "Halt command";
                     self.robot.Stop();
-            
+                
+                #Process a util command
+                if(_type == "UTIL"):
+                    print "Util command"
+                    #Wait command
+                    if(_att == "WAIT"):
+                        #Get the wait time
+                        _time = int(_val)
+                        print "Waiting for.." + str(_time) + " seconds"
+                        time.sleep(_time)
+                        print "Finished waiting!"
                 #Pause before starting next command
                 rospy.sleep(0.2);
             else:

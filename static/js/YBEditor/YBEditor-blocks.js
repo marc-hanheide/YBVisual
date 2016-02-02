@@ -3,23 +3,73 @@
 	YBEDITOR Blocks - Contains definitions,and handling for blocks
 */
 
+/*
+ * Contains identification strings for each block
+ * */
+RBLOCKS = {
+	 //Start robot block
+	'start_robot':{ id:'start_robot',output:function(block){return RBLOCKS.createcommand("","","")}},
+	//Move robot
+	'move':{ id:'move',output:function(block){ 
+			return RBLOCKS.createVelCommand("MOVE",block.getFieldValue("DIRECTION"),block.getFieldValue("AMOUNT"))
+		} },
+	//Rotate robot
+	'rotate':{ id:'rotate',output:function(block){ 
+			return RBLOCKS.createVelCommand("ROTATE",block.getFieldValue("DIRECTION"),block.getFieldValue("AMOUNT"))
+		} },
+	//Rotate joint
+	'rotate_joint':{ id:'rotate_joint',output:function(block){ 
+			return RBLOCKS.createcommand("ROTATEJOINT",block.getFieldValue("ID"),block.getFieldValue("AMOUNT"))
+		} },
+	//Move arm to pre-defined position
+	'move_arm_pre':{ id:'move_arm_pre',output:function(block){ 
+			return RBLOCKS.createcommand("MOVEARM","DEFPOS",block.getFieldValue("POSNAME"))
+		} },
+	//Toggle gripper status
+	'gripper_status':{ id:'gripper_status',output:function(block){  
+			return RBLOCKS.createcommand("GRIPPER","SET",block.getFieldValue("GRIPPER_STATUS"))
+		} },
+	//Gripper state condition
+	'gripper_state_cond':{ id:'gripper_state_cond',output:function(block){  
+			return RBLOCKS.createcommand("","","")
+		} },
+	//Wait command
+	'wait':{ id:'wait',output:function(block){
+			var _amount = block.getFieldValue("AMOUNT")
+			return RBLOCKS.createcommand("UTIL","WAIT",block.getFieldValue("AMOUNT"))
+		
+		 }},	
+	
+	//Create command structure
+	createcommand:function(type,att,val){
+		console.log("Sending command values")
+		console.log("Type: " + type)
+		console.log("Attribute: " + att)
+		console.log("Value: " + val)
+		return type + "," + att + "," + val
+	},
+	//Create a vel dependent command
+	createVelCommand:function(type,dir,amount){ return RBLOCKS.createcommand(type,dir,amount) }
+}
 //START ROBOT
 ////https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#svhneq
-Blockly.Blocks['start_robot'] = {
+Blockly.Blocks[RBLOCKS.start_robot.id] = {
   init: function() {
+	this.id = RBLOCKS.start_robot.id
     this.appendDummyInput()
         .appendField("START ROBOT");
     this.setNextStatement(true);
-    this.setColour(100);
+    this.setColour(500);
     this.setTooltip('');
     this.setHelpUrl('http://www.example.com/');
   }
-}; START_COLOUR = 100
+}; 
 
 //MOVE
 //https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#cckrgt
-Blockly.Blocks['move'] = {
+Blockly.Blocks[RBLOCKS.move.id] = {
   init: function() {
+	this.id = RBLOCKS.move.id
     this.appendDummyInput()
         .appendField(" MOVE")
         .appendField(new Blockly.FieldDropdown([["left", "LEFT"], ["right", "RIGHT"], ["forwards", "FORWARDS"], ["back", "BACK"]]), "DIRECTION")
@@ -27,16 +77,17 @@ Blockly.Blocks['move'] = {
         .appendField(new Blockly.FieldTextInput("0"), "AMOUNT");
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(210);
+    this.setColour(100);
     this.setTooltip('Move the robot by amount, in specified direction');
     this.setHelpUrl('http://ybvisual.adamwcs.co.uk');
   }
-}; MOVE_COLOUR = 210
+}; 
 
 //ROTATE
 //https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#mbz6sk
-Blockly.Blocks['rotate'] = {
+Blockly.Blocks[RBLOCKS.rotate.id] = {
   init: function() {
+    this.id = RBLOCKS.rotate.id
     this.appendDummyInput()
         .appendField("ROTATE")
         .appendField(new Blockly.FieldDropdown([["left", "LEFT"], ["right", "RIGHT"]]), "DIRECTION")
@@ -44,16 +95,17 @@ Blockly.Blocks['rotate'] = {
         .appendField(new Blockly.FieldTextInput("0"), "AMOUNT");
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(220);
+    this.setColour(120);
     this.setTooltip('Rotate the robot by amount, in specified direction');
     this.setHelpUrl('http://ybvisual.adamwcs.co.uk');
   }
-}; ROTATE_COLOUR = 220
+}; 
  
 //ROTATE JOINT
 //https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#n9qvsj
-Blockly.Blocks['rotate_joint'] = {
+Blockly.Blocks[RBLOCKS.rotate_joint.id] = {
   init: function() {
+	this.id = RBLOCKS.rotate_joint.id
     this.appendDummyInput()
         .appendField("ROTATE JOINT")
         .appendField(new Blockly.FieldDropdown([["arm_joint_1", "arm_joint_1"], ["arm_joint_2", "arm_joint_2"], ["arm_joint_3", "arm_joint_3"], ["arm_joint_4", "arm_joint_4"], ["arm_joint_5", "arm_joint_5"]]), "ID")
@@ -61,46 +113,49 @@ Blockly.Blocks['rotate_joint'] = {
         .appendField(new Blockly.FieldTextInput("0"), "AMOUNT");
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(300);
+    this.setColour(200);
     this.setTooltip('Rotate specified joint by given joint space value');
     this.setHelpUrl('http://ybvisual.adamwcs.co.uk');
   }
-}; ROTATE_JOINT_COLOUR = 300
+}; 
 
 //MOVE ARM PRE
 //https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#j8ting
-Blockly.Blocks['move_arm_pre'] = {
+Blockly.Blocks[RBLOCKS.move_arm_pre.id] = {
   init: function() {
+	this.id = RBLOCKS.move_arm_pre.id
     this.appendDummyInput()
         .appendField("MOVE ARM")
         .appendField(new Blockly.FieldTextInput("position name.."), "POSNAME");
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(310);
+    this.setColour(210);
     this.setTooltip('Move arm to pre-defined position (E.G candle,folded)');
     this.setHelpUrl('http://ybvisual.adamwcs.co.uk');
   }
-}; MOVE_ARM_PRE_COLOUR = 310
+}; 
 
 //GRIPPER STATUS
 //https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#j8ting
-Blockly.Blocks['gripper_status'] = {
+Blockly.Blocks[RBLOCKS.gripper_status.id] = {
   init: function() {
+	this.id = RBLOCKS.gripper_status.id
     this.appendDummyInput()
         .appendField("GRIPPER")
         .appendField(new Blockly.FieldDropdown([["OPEN", "GRIPPER_OPEN"], ["CLOSE", "GRIPPER_CLOSE"]]), "GRIPPER_STATUS");
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(350);
+    this.setColour(310);
     this.setTooltip('Set gripper status');
     this.setHelpUrl('http://ybvisual.adamwcs.co.uk');
   }
-}; GRIPPER_STATUS_COLOUR = 350
+}; 
 
 //IF GRIPPER STATE
 //https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#aa6qba
-Blockly.Blocks['if_gripperstate'] = {
+Blockly.Blocks[RBLOCKS.gripper_state_cond.id] = {
   init: function() {
+	this.id = RBLOCKS.gripper_state_cond.id
     this.appendDummyInput()
         .appendField("IF")
         .appendField("GRIPPER STATE")
@@ -108,105 +163,50 @@ Blockly.Blocks['if_gripperstate'] = {
         .appendField("THEN");
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(1);
+    this.setColour(320);
     this.setTooltip('IF condition - checks gripper state');
     this.setHelpUrl('http://ybvisual.adamwcs.co.uk');
   }
-}; GRIPPER_STATE_COLOUR = 1
+}; 
+
+//WAIT
+Blockly.Blocks[RBLOCKS.wait.id] = {
+	init: function(){
+		this.id = RBLOCKS.wait.id
+		this.appendDummyInput()
+			.appendField("WAIT")
+			.appendField(new Blockly.FieldDropdown([["1", "1"], ["2", "2"],["3","3"],["4","4"],["5","5"],["6","6"],
+			["7","7"],["8","8"],["9","9"],["10","10"]]), "AMOUNT")
+			.appendField("SECONDS")
+		this.setPreviousStatement(true)
+		this.setNextStatement(true)
+		this.setColour(330)
+		this.setTooltip('Wait for specified time')
+		this.setHelpUrl('http://ybvisual.adamwcs.co.uk')
+	}
+}
 
 /*
 	Used to convert the program into workable data
 */
 function Generate(){
-	
 	//Get the block collection
 	var blocks = getBlockArray(100);
 	//We need a collection which contains the final commands
 	var commands = [];
-
 	/**
 		Cycle through, and check each block
 	**/
 	for(var i = 0; i  < blocks.length;i++){
 		//We need to get the blocks type
 		var block = blocks[i];
+		//alert(block.id)
 		block.select();
-		var col = block.getColour();
-		
-		/**
-			We can use the blocks colour to check its type
-		**/
-		//Move command type
-		if(col===MOVE_COLOUR){
-			//Get direction
-			var dir = block.getFieldValue('DIRECTION');
-			//Get amount
-			var amount = block.getFieldValue('AMOUNT');
-			
-			//For debugging
-			//alert('move found');
-			
-			//Push to the commands array
-			commands.push("MOVE," + dir + "," + amount);
-			
-		}
-		//Rotate command type
-		if(col===ROTATE_COLOUR){
-			//Get direction
-			var dir = block.getFieldValue('DIRECTION');
-			//Get amount
-			var amount = block.getFieldValue('AMOUNT');
-			
-			//For debugging
-			//alert('rotate found');
-			
-			//Push to the commands array
-			commands.push("ROTATE," + dir + "," + amount);
-		}
-		//Rotate joint command
-		if(col===ROTATE_JOINT_COLOUR){
-			//Get joint id
-			var jointid = block.getFieldValue('ID');
-				
-			//Get amount
-			var amount = block.getFieldValue('AMOUNT');
-			
-			//Push to the commands array
-			commands.push("ROTATEJOINT," + jointid + "," + amount);
-		}
-		//Move arm to pre-defined position command
-		if(col===MOVE_ARM_PRE_COLOUR){
-			//Get defined position name
-			var posname = block.getFieldValue('POSNAME')
-			
-			//Push to the commands array
-			commands.push("MOVEARM," + "DEFPOS" + "," + posname);
-		}
-		//Toggle gripper status
-		if(col==GRIPPER_STATUS_COLOUR){
-			//Get chosen status
-			var grip_status = block.getFieldValue('GRIPPER_STATUS');
-			grip_status = grip_status.split("_")[1]
-			
-			//Push to the commands array
-			commands.push("GRIPPER," + "SET" + "," + grip_status);
-		}
-
-		// ---
-		// CONDITIONS
-		// ---
-
-		//Gripper state condition
-		if(col==GRIPPER_STATE_COLOUR){
-			//Which gripper state is being checked
-			var gripper_cond = block.getFieldValue("GRIPPER_S")
-			//Push to the commands array
-			commands.push("COND," + "GRIPPERSTATE" + "," + gripper_cond)
-		}
-		
+		//var col = block.getColour();
+		var id = block.id
+		//Push output command
+		commands.push(RBLOCKS[id]['output'](block))
 	}
-	
-	
 	/*
 		Finally - the function should return the final commands list
 	*/
@@ -225,8 +225,8 @@ function getBlockArray(top_col){
 	
 	//Cycle through the top blocks
 	for(var i = 0; i < blocks.length;i++){
-		//Check the colour of the block.. is it a start_robot block?
-		if(blocks[i].getColour()===top_col){
+		//Check the id of the block.. is it a start_robot block?
+		if(blocks[i].id==RBLOCKS.start_robot.id){
 			//If true, add to the array
 			//start_blocks = blocks[i];
 			start_blocks.push(blocks[i]);
