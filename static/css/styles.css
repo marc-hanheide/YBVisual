@@ -11,3 +11,15 @@ and open the template in the editor.
 	background-color: red;
 
 }
+
+.filter_option{
+	padding: 10px;
+	font-size: 20px;
+	margin: 10px auto;
+	text-align: center;
+	width: 100px;
+	height: 50px;
+
+} .filter_option[data-selected="false"]:hover{ border: 1px solid black; cursor:pointer; }
+.filter_option[data-selected="true"]{ border: 1px solid black; }
+.filter_option[data-selected="false"]{ border: 1px dotted black; }

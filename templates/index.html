@@ -223,10 +223,42 @@ and open the template in the editor.
 		
 		</script>
 		<!-- END: Init editor workspace -->
+	
+		<script>
+			function filter_selected(id){
+				//Reset all
+				document.getElementById('filter_none').setAttribute("data-selected","false")
+				document.getElementById('filter_sobel').setAttribute("data-selected","false")
+				//Set selected
+				document.getElementById(id).setAttribute("data-selected","true")
+				
+				
+			}
+		</script>
 		
 		<!-- START: camera viewer -->
-		<div id="camera_viewer" class="easyui-window" title="Camera Viewer" data-options="modal:false" style="width:512px;height:512px;overflow:hidden;" closed="true">
-			<img id="camera_viewer_src" style="width:100%; height:100%"></img>
+		<div id="camera_viewer" class="easyui-window" title="Camera Viewer" data-options="modal:false" style="width:1280px;height:720px;overflow:hidden;" closed="true">
+				<div class="easyui-layout" style="width:100%; height: 100%; fit:true">
+					<div class="easyui-panel" title="Output" style="overflow:hidden;" data-options="region:'center' " >
+						<img id="camera_viewer_src" style="width:100%; height:100%"></img>
+					</div>
+					<div class="easyui-panel" title="Modifications" style="height:100%; width:200px;overflow:hidden;" data-options="region:'west'">
+						<div class="easyui-tabs" style="width:100%; height:100%">
+							<div title="Filters">
+								<div id="filter_none" data-selected="true" onclick="filter_selected('filter_none')" class="filter_option" >NONE</div>
+								<div id="filter_sobel" data-selected="false" onclick="filter_selected('filter_sobel')" class="filter_option" >SOBEL</div>
+							</div>
+							<div title="Channels">
+								
+							</div>
+							<div title="Properties">
+							
+							</div>
+						</div>
+					</div>
+				</div>
+			
+			</div>
 		</div>
 		<!-- END: camera viewer -->
 		

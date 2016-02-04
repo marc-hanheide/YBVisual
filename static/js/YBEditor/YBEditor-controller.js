@@ -4,7 +4,7 @@
 */
 
 
-
+SENDING_DATA = false
 
 
 /*
@@ -128,6 +128,10 @@ function SendCameraViewRequest(){
 	SendData(_json,function(data){
 		img_src = 'data:image/jpg;base64,'+data+''
 		document.getElementById('camera_viewer_src').src = img_src
+		
+		//Also add to filter previews
+		document.getElementById('camera_viewer_filter_none').src = img_src
+		
 		})
 }
 
@@ -150,7 +154,7 @@ function SendServerRequest(type){
 
 //Send data as POST request
 function SendData(_data)
-{  $.ajax({ type:"POST",data: _data } ); }
+{  $.ajax({ type:"POST",data: _data } );  request.done(function(){}) }
 
 function SendData(_data,callback)
 {  var request = $.ajax({ type:"POST",data: _data } );

@@ -66,10 +66,10 @@ class Server:
         def Run(data):
             rospy.loginfo("Received SERVER command")
             #Is this a shutdown request
-            Server.Shutdown() if (JSONObject.HasAttribute(data) == True) else None
+            Server.Shutdown() if (JSONObject.HasAttribute(data,"SHUTDOWN") == True) else None
             return ' '
         def __call__(self,data):
-            return Server.SeverCmd.Run(data) if (JSONObject.IsType(data,Server.ServerCmd.ReqString) == True) else None 
+            return Server.ServerCmd.Run(data) if (JSONObject.IsType(data,Server.ServerCmd.ReqString) == True) else None 
     SERVERCMD = ServerCmd()
     
     #PASSWORD COMMAND

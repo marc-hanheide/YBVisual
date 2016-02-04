@@ -2,7 +2,7 @@
 	YBEDITOR UI- I/O - Functions to define the user interface
 
 */
-USING_CAMERA_VIEWER = false
+USING_CAMERA_VIEWER = false;
 
 /*
    ------------------------------------------------
@@ -233,9 +233,10 @@ function demoClicked(obj,demo_name){
 		showDemoWindow()
 	
 }
+
 function cameraProcLoop(){
-	if(USING_CAMERA_VIEWER==true){SendCameraViewRequest()}
-} setInterval(cameraProcLoop,500);
+			if(USING_CAMERA_VIEWER==true){SendCameraViewRequest()}
+} 			setInterval(cameraProcLoop,500);
 
 /**
  *  Camera button clicked
@@ -252,14 +253,17 @@ function cameraButtonClicked(){
    ------------------------------------------------
 */
 //shift+r == run
-Mousetrap.bind('shift+r',function(){
-	runClicked()
-});
+Mousetrap.bind('shift+r',runClicked)
+//shift+s == stop
+Mousetrap.bind('shift+s',stopClicked)
+
 //shift+c == shutdown
 Mousetrap.bind('shift+c',function(){
 	SendServerRequest("SHUTDOWN")
-	window.close()
 });
+
+//shift+1 = Open camera viewer
+Mousetrap.bind('shift+1',cameraButtonClicked)
 
 
 //ESC == close opened window
@@ -269,6 +273,11 @@ Mousetrap.bind('escape',function(){
 		SendDemoStopRequest()
 		closeDemoWindow()
 	}
+	if(USING_CAMERA_VIEWER){
+		toggleCameraViewer()
+		USING_CAMERA_VIEWER = false
+	}
+	
 	//If escape is pressed -- a stop command must be sent to the robot
 	SendStopCommand()
 });
