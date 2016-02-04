@@ -10,6 +10,7 @@ from std_msgs.msg import String
 #
 from lib.ybvisual.robot.robotarm import RobotArm
 from lib.ybvisual.robot.robotbase import RobotBase
+from lib.ybvisual.robot.robotsensors import RobotSensors
 
 #Min class is used for triggering an emergency stop
 class EStop:
@@ -46,6 +47,10 @@ class Robot:
         self.base = RobotBase();
         #robot arm        
         self.arm = RobotArm();
+        #robot sensors
+        self.sensors = RobotSensors()
+        #By default - we will include a camera sensor
+        self.sensors.AddCamera()        
         #Youbot has been initialised
         rospy.loginfo("Youbot initialised")      
         #Finally - print the initial state of the youbot        
@@ -125,8 +130,15 @@ class Robot:
     # ARM SPECIFIC COMMANDS
     #############################################
     #Attempt to reach a pre-specified position using the robot arm
+    #If name == 'random' attempt to reach random pos
     def Reach(self,name):
-        self.arm.MoveTo(name)
+        #Check input
+        if(str(name)=="random"):
+            #Attempt to move to random position
+            self.arm.Random()
+        else:
+            #Ensure that given value is a string
+            self.arm.MoveTo(str(name))
     #Grab (Close gripper)
     def Grab(self):
         self.arm.CloseGripper()
@@ -142,5 +154,22 @@ class Robot:
     #Check if the gripper is closed
     def IsGripperClosed(self):
         return (self.arm.GetGripperStatus() == False)
+    
+    #############################################
+    # SENSOR SPECIFIC COMMANDS
+    #############################################
+    def GetCameraData(self):
+        #First check if the robot is using a camera
+        if(self.sensors.UsingCamera):
+            #Get the camera object
+            camera = self.sensors.GetCamera()
+            cam_data = camera.Download()
+            print len(cam_data)
+            #Return camera data as string
+            return cam_data
+        else:
+            rospy.loginfo("Unable to download camera data, robot is not using a camera sensor")
+            return ' '
+            
 
 

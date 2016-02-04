@@ -67,8 +67,9 @@ class Server:
             rospy.loginfo("Received SERVER command")
             #Is this a shutdown request
             Server.Shutdown() if (JSONObject.HasAttribute(data) == True) else None
+            return ' '
         def __call__(self,data):
-            Server.SeverCmd.Run(data) if (JSONObject.IsType(data,Server.ServerCmd.ReqString) == True) else None 
+            return Server.SeverCmd.Run(data) if (JSONObject.IsType(data,Server.ServerCmd.ReqString) == True) else None 
     SERVERCMD = ServerCmd()
     
     #PASSWORD COMMAND
@@ -79,7 +80,7 @@ class Server:
             rospy.loginfo("Received PASSWORD CHECK command")
             return Server._Session.checkPassword(data,web.ctx.ip)
         def __call__(self,data):
-            Server.PasswordCmd.Run(data) if (JSONObject.IsType(data,Server.PasswordCmd.ReqString) == True) else None
+            return Server.PasswordCmd.Run(data) if (JSONObject.IsType(data,Server.PasswordCmd.ReqString) == True) else None
     PASSWORDCMD = PasswordCmd()
     #RUN COMMAND
     class RunCmd:
@@ -89,21 +90,39 @@ class Server:
             rospy.loginfo("Received RUN command")
             #The robot will process the given command
             Server.Robot.SetData(data)
+            return ' '
         def __call__(self,data):
-            Server.RunCmd.Run(data) if (JSONObject.IsType(data,Server.RunCmd.ReqString) == True) else None
+            return Server.RunCmd.Run(data) if (JSONObject.IsType(data,Server.RunCmd.ReqString) == True) else None
     RUNCMD = RunCmd()
-    
+    #SENSORS COMMAND
+    class SensorsCmd:
+        ReqString = "SENSORS"
+        @staticmethod
+        def Run(data):
+            rospy.loginfo("Received sensors request command")
+            _att = data.getData('attribute')
+            _val = data.getData('value')
+            result = Server.Robot.HandleSensorRequest(_att,_val)
+            return result
+        def __call__(self,data):
+            return Server.SensorsCmd.Run(data) if (JSONObject.IsType(data,Server.SensorsCmd.ReqString) == True) else None
+    SENSORSCMD = SensorsCmd()
             
 
     #The API variable handles POST messages sent to the main index page
     @staticmethod
     def CheckData(data):
+        #Return value        
+        ret = ' '
         #Server command
-        Server.SERVERCMD(data)
+        ret = Server.SERVERCMD(data)
         #Password command
-        Server.PASSWORDCMD(data)
+        ret = Server.PASSWORDCMD(data)
         #Run command
-        Server.RUNCMD(data)
+        ret = Server.RUNCMD(data)
+        #Sensors command
+        ret = Server.SENSORSCMD(data)
+        return ret
             
 #
 # Index page structure
@@ -115,10 +134,12 @@ class index:
     def POST(self):
         #Get received data
         data = web.data()
+        print data
         #Init given data as a JSON object
         json = JSONObject(data)
         #Check given data
-        Server.CheckData(json)
+        res = Server.CheckData(json)
+        return res
 
 #Set callback for ROS shutdown
 rospy.on_shutdown(Server.Shutdown)

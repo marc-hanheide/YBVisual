@@ -2,6 +2,8 @@
 
 	YBEDITOR Blocks - Contains definitions,and handling for blocks
 */
+//The help URL for all YBEditor blocks
+HELP_URL =  'http://ybvisual.adamwcs.co.uk'
 
 /*
  * Contains identification strings for each block
@@ -25,6 +27,10 @@ RBLOCKS = {
 	'move_arm_pre':{ id:'move_arm_pre',output:function(block){ 
 			return RBLOCKS.createcommand("MOVEARM","DEFPOS",block.getFieldValue("POSNAME"))
 		} },
+	//Move the arm to a valid random position
+	'move_arm_random':{ id:'move_arm_random',output:function(block){ 
+			return RBLOCKS.createcommand("MOVEARM","RANDOM","")
+		} },
 	//Toggle gripper status
 	'gripper_status':{ id:'gripper_status',output:function(block){  
 			return RBLOCKS.createcommand("GRIPPER","SET",block.getFieldValue("GRIPPER_STATUS"))
@@ -35,8 +41,12 @@ RBLOCKS = {
 		} },
 	//Wait command
 	'wait':{ id:'wait',output:function(block){
-			var _amount = block.getFieldValue("AMOUNT")
 			return RBLOCKS.createcommand("UTIL","WAIT",block.getFieldValue("AMOUNT"))
+		
+		 }},
+	//Camera follow command
+	'camera_follow':{ id:'camera_follow',output:function(block){
+			return RBLOCKS.createcommand("CAMERA","FOLLOW",block.getFieldValue("STATUS"))
 		
 		 }},	
 	
@@ -61,7 +71,7 @@ Blockly.Blocks[RBLOCKS.start_robot.id] = {
     this.setNextStatement(true);
     this.setColour(500);
     this.setTooltip('');
-    this.setHelpUrl('http://www.example.com/');
+    this.setHelpUrl(HELP_URL);
   }
 }; 
 
@@ -79,7 +89,7 @@ Blockly.Blocks[RBLOCKS.move.id] = {
     this.setNextStatement(true);
     this.setColour(100);
     this.setTooltip('Move the robot by amount, in specified direction');
-    this.setHelpUrl('http://ybvisual.adamwcs.co.uk');
+    this.setHelpUrl(HELP_URL);
   }
 }; 
 
@@ -97,7 +107,7 @@ Blockly.Blocks[RBLOCKS.rotate.id] = {
     this.setNextStatement(true);
     this.setColour(120);
     this.setTooltip('Rotate the robot by amount, in specified direction');
-    this.setHelpUrl('http://ybvisual.adamwcs.co.uk');
+    this.setHelpUrl(HELP_URL);
   }
 }; 
  
@@ -115,7 +125,7 @@ Blockly.Blocks[RBLOCKS.rotate_joint.id] = {
     this.setNextStatement(true);
     this.setColour(200);
     this.setTooltip('Rotate specified joint by given joint space value');
-    this.setHelpUrl('http://ybvisual.adamwcs.co.uk');
+    this.setHelpUrl(HELP_URL);
   }
 }; 
 
@@ -131,9 +141,25 @@ Blockly.Blocks[RBLOCKS.move_arm_pre.id] = {
     this.setNextStatement(true);
     this.setColour(210);
     this.setTooltip('Move arm to pre-defined position (E.G candle,folded)');
-    this.setHelpUrl('http://ybvisual.adamwcs.co.uk');
+    this.setHelpUrl(HELP_URL);
   }
 }; 
+
+//MOVE ARM RANDOM
+Blockly.Blocks[RBLOCKS.move_arm_random.id] = {
+  init: function() {
+	this.id = RBLOCKS.move_arm_random.id
+    this.appendDummyInput()
+        .appendField("MOVE ARM")
+	.appendField("RANDOM")
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setColour(210);
+    this.setTooltip('Move arm to a random valid position');
+    this.setHelpUrl(HELP_URL);
+  }
+}; 
+
 
 //GRIPPER STATUS
 //https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#j8ting
@@ -145,9 +171,9 @@ Blockly.Blocks[RBLOCKS.gripper_status.id] = {
         .appendField(new Blockly.FieldDropdown([["OPEN", "GRIPPER_OPEN"], ["CLOSE", "GRIPPER_CLOSE"]]), "GRIPPER_STATUS");
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(310);
+    this.setColour(250);
     this.setTooltip('Set gripper status');
-    this.setHelpUrl('http://ybvisual.adamwcs.co.uk');
+    this.setHelpUrl(HELP_URL);
   }
 }; 
 
@@ -165,7 +191,7 @@ Blockly.Blocks[RBLOCKS.gripper_state_cond.id] = {
     this.setNextStatement(true);
     this.setColour(320);
     this.setTooltip('IF condition - checks gripper state');
-    this.setHelpUrl('http://ybvisual.adamwcs.co.uk');
+    this.setHelpUrl(HELP_URL);
   }
 }; 
 
@@ -182,9 +208,24 @@ Blockly.Blocks[RBLOCKS.wait.id] = {
 		this.setNextStatement(true)
 		this.setColour(330)
 		this.setTooltip('Wait for specified time')
-		this.setHelpUrl('http://ybvisual.adamwcs.co.uk')
+		this.setHelpUrl(HELP_URL)
 	}
-}
+};
+
+//CAMERA FOLLOW
+Blockly.Blocks[RBLOCKS.camera_follow.id] = {
+  init: function() {
+	this.id = RBLOCKS.camera_follow.id
+    this.appendDummyInput()
+        .appendField("CAMERA FOLLOW")
+        .appendField(new Blockly.FieldDropdown([["UTIL_REACHED", "UTIL_REACHED"], ["NO_TIMEOUT", "NO_TIMEOUT"]]), "STATUS")
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setColour(320);
+    this.setTooltip('Camera - track, and follow object using Whycon');
+    this.setHelpUrl(HELP_URL);
+  }
+}; 
 
 /*
 	Used to convert the program into workable data

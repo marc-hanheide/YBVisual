@@ -29,6 +29,18 @@ class RobotController:
     #Halt execution -- acts as an emergency stop
     def Halt(self):
         self.robot.EmergencyStop()
+    #Handle sensor requests
+    def HandleSensorRequest(self,sname,rtype):
+        rospy.loginfo("Handling sensor request")        
+        rospy.loginfo("For sensor: " + str(sname))
+        rospy.loginfo("And request type: " + str(rtype))
+        #Camera
+        if(sname=="CAMERA"):
+            #Check the request type
+            if(rtype=="VIEW"):
+                #Return camera data
+                return self.robot.GetCameraData()
+        
     #Process incoming data
     def Process(self,data):
         #Create JSON object using given data
@@ -139,7 +151,12 @@ class RobotController:
                         if(_att == "DEFPOS"):
                             #If so - attempt to move the robot to the given position name
                             #self.robot.arm.ToStandardJointSpaceGoal(str(_val))
-                            self.robot.arm.MoveTo(str(_val))
+                            #self.robot.arm.MoveTo(str(_val))
+                            self.robot.Reach(str(_val))
+                        #Is this a 'move to random position' command?
+                        if(_att == "RANDOM"):
+                            #Attempt to move the robot arm to a random valid position
+                            self.robot.Reach("random")
                 #Rotate joint command
                 if(_type == "ROTATEJOINT"):
                         #Rotate the joint
@@ -157,12 +174,20 @@ class RobotController:
                                 self.robot.Drop()
                             elif(choice == "CLOSE"):
                                  self.robot.Grab()
-            
                 #halt type command
                 if(_type == "HALT"):
                     print "Halt command";
                     self.robot.Stop();
                 
+                #
+                # -- Sensor commands
+                #
+                #Is this a camera command?
+                if(_type == "CAMERA"):
+                    #Check the camera command type (att)
+                    #Is this a follow type camera command?
+                    if(_att == "FOLLOW"):
+                        print "following"
                 #Process a util command
                 if(_type == "UTIL"):
                     print "Util command"

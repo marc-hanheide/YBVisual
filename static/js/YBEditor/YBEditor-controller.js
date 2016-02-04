@@ -119,6 +119,18 @@ function SendDemoStopRequest(){
 	SendData(json_final)
 }
 
+//Send a camera view request
+function SendCameraViewRequest(){
+	var type = "SENSORS"
+	var attribute = "CAMERA"
+	var val = "VIEW"
+	var _json = createJSON(type,attribute,val)
+	SendData(_json,function(data){
+		img_src = 'data:image/jpg;base64,'+data+''
+		document.getElementById('camera_viewer_src').src = img_src
+		})
+}
+
 //Send a key event
 function SendKeyEvent(type,key){
 	var _type = ''

@@ -2,6 +2,7 @@
 	YBEDITOR UI- I/O - Functions to define the user interface
 
 */
+USING_CAMERA_VIEWER = false
 
 /*
    ------------------------------------------------
@@ -44,6 +45,12 @@ function isDocumentReady(func){
 isDocumentReady(function(){
 	//Set default block
 	Blockly.Xml.domToWorkspace(workspace,document.getElementById('default_blocks'))
+	//Needs to handle camera viewer close event
+	$('#camera_viewer').window({ collapsible:false,minimizable:false,maximizable:false,resizable:false,onBeforeClose:function(){USING_CAMERA_VIEWER=false},
+		tools:[{iconCls:'icon-cancel',handler:function(){ 
+			alert('exit')
+			USING_CAMERA_VIEWER = false
+			}}]  })
 });
 
 
@@ -64,6 +71,13 @@ function toggleNewApplication(flag){
 		$('#new_app').window('open');
 	}else{
 		$('#new_app').window('close');
+	}
+}
+function toggleCameraViewer(flag){
+	if(flag){
+		$('#camera_viewer').window('open');
+	}else{
+		$('#camera_viewer').window('close');
 	}
 }
 
@@ -218,6 +232,17 @@ function demoClicked(obj,demo_name){
 		SendDemoStartRequest(demo_name)
 		showDemoWindow()
 	
+}
+function cameraProcLoop(){
+	if(USING_CAMERA_VIEWER==true){SendCameraViewRequest()}
+} setInterval(cameraProcLoop,500);
+
+/**
+ *  Camera button clicked
+ * **/
+function cameraButtonClicked(){
+	toggleCameraViewer(true)
+	USING_CAMERA_VIEWER = true
 }
 
 

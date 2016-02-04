@@ -86,6 +86,58 @@ class RobotArm:
             else:
                 print "Gripper is closed"
                 return False #False == closed
+    #Custom arm state struct
+    class ArmState:
+        #Initialise
+        def __init__(self,name,j1,j2,j3,j4,j5):
+            self.name = name #state name
+            self.j1 = j1 #joint 1
+            self.j2 = j2 #joint 2
+            self.j3 = j3 #joint 3
+            self.j4 = j4 #joint 4
+            self.j5 = j5 #joint 5
+    #Custom arm state store
+    class ArmStateStore:
+        container = []             
+        #Add arm state
+        @staticmethod
+        def AddState(_state):
+            if _state != None:            
+                RobotArm.ArmStateStore.container.append(_state)
+        #GEt arm state
+        @staticmethod
+        def GetState(name):
+            #Only check if given name is valid
+            if(name!=None):
+                cont = RobotArm.ArmStateStore.container
+                rospy.loginfo("Searching for arm state: " + str(name))
+                for i in range(0,len(cont)):
+                    if str(name) == str(cont[i].name):
+                            rospy.loginfo("Found arm state: " + str(name))
+                            return RobotArm.ArmStateStore.container[i]
+                return None
+            else:
+                rospy.loginfo("Cannot search for null name state")
+                return None
+        #Return if container has state
+        @staticmethod
+        def HasState(name):
+            #Only check if given name is valid
+            if name != None:
+                result = RobotArm.ArmStateStore.GetState(name)
+                if(result!=None):
+                    rospy.loginfo("Store has state: " + str(name))
+                    return True #Found state!
+                else:
+                    rospy.loginfo("Store does not have state: " + str(name))
+                    return False #State does not exist
+        @staticmethod
+        def AddDefaults():
+            RobotArm.ArmStateStore.AddState(RobotArm.ArmState("search",3.1,1.5,-1.43523,2,2.8))
+            
+                
+        
+    
     #Initialise
     def __init__(self):
         #Log
@@ -101,16 +153,73 @@ class RobotArm:
         self.joint_limits = [[0.0100692,5.84014],[0.0100692,2.61799],[-5.02655,-0.015708],[0.0221239,3.4292],[0.110619,5.64159]]
         #Gripper
         self.gripper = RobotArm.Gripper()
+        RobotArm.ArmStateStore.AddDefaults()
     #Moves to specified move group
     def MoveTo(self,name):
-        rospy.loginfo("Moving to group: " + name)
-        self.group.set_named_target(str(name))
+        try:
+            rospy.loginfo("Moving to group: " + name)
+            #First try the arm state store
+            if(RobotArm.ArmStateStore.HasState(name)):
+                #Get the state
+                state = RobotArm.ArmStateStore.GetState(name)
+                #Attempt to move to the state
+                self.SetJointVals(state.j1,state.j2,state.j3,state.j4,state.j5)
+                self.group.go()
+                print self.group.get_current_joint_values()
+                rospy.sleep(5)
+            else:
+                self.group.set_named_target(str(name))
+                self.group.go()
+                #Pause execution until the robot reaches the target group
+                rospy.sleep(5)
+        except Exception as e:
+            print "Unable to move to target: "+ str(name)
+            print e
+    #Moves to specified arm state
+    def MoveToState(self,_state):
+        try:
+            if _state != None:
+                arm_cmd = brics_actuator.msg.JointPositions()
+                arm_cmd.positions.append(self.ArmJointValue(self.joint_limits[0],_state.j1))
+                arm_cmd.positions.append(self.ArmJointValue(self.joint_limits[1],_state.j2))
+                arm_cmd.positions.append(self.ArmJointValue(self.joint_limits[2],_state.j3))
+                arm_cmd.positions.append(self.ArmJointValue(self.joint_limits[3],_state.j4))
+                arm_cmd.positions.append(self.ArmJointValue(self.joint_limits[4],_state.j5))
+                print arm_cmd
+                self._ArmCmdPublisher.publish(arm_cmd)
+                rospy.sleep(1)
+        except Exception as e:
+            print e
+    def ArmJointValue(self,uri,value):
+        j_cmd = brics_actuator.msg.JointValue()
+        j_cmd.joint_uri = uri
+        j_cmd.unit = 'rad'
+        j_cmd.value = value
+        return j_cmd
+            
+    #Moves arm to random position        
+    def Random(self):
+        rospy.loginfo("Moving arm to random position")
+        self.group.set_random_target()
         self.group.go()
-	#Pause execution until the robot reaches the target group
+        #Pause execution while target is reached
         rospy.sleep(5)
     #Stop moving the arm
     def Stop(self):
         self.group.stop()
+    def SetJointVals(self,j1,j2,j3,j4,j5):
+        try:
+            vals = self.group.get_current_joint_values()
+            vals[0] = j1
+            vals[1] = j2
+            vals[2] = j3
+            vals[3] = j4
+            vals[4] = j5
+            print vals
+            self.group.set_joint_value_target(vals)
+        except Exception as e:
+            print e
+    
     def SetJointValue(self,joint_id,value):
         #Check given joint id
         if(joint_id > 0  and joint_id <= 5):
@@ -122,7 +231,8 @@ class RobotArm:
                 vals = self.group.get_current_joint_values()
                 vals[joint_id-1] = float(value)
                 self.group.set_joint_value_target(vals)
-                self.group.go()
+                print "Set value for joint " + str(joint_id)
+                print "With value " + str(value)
             #Else return error
             else:
                 print "Value out of joint range: " + str(value) + ", for joint: "  + str(joint_id)
