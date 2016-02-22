@@ -87,6 +87,11 @@ function sendApplicationJSON(commands){
 	
 }
 
+function sendApplicationCode(code){
+	var json_final = createJSON("RUN",code,"")
+	SendData(json_final)
+}
+
 //Send a stop command to the robot
 function SendStopCommand(){
 	var data = new Object();

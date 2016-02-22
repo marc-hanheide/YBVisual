@@ -73,7 +73,11 @@ Blockly.Blocks[RBLOCKS.start_robot.id] = {
     this.setTooltip('');
     this.setHelpUrl(HELP_URL);
   }
-}; 
+};
+Blockly.Python[RBLOCKS.start_robot.id] = function(block) {
+	var code =  "";
+	return [code,Blockly.Python.ORDER_ATOMIC]
+};
 
 //MOVE
 //https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#cckrgt
@@ -92,6 +96,15 @@ Blockly.Blocks[RBLOCKS.move.id] = {
     this.setHelpUrl(HELP_URL);
   }
 }; 
+Blockly.Python[RBLOCKS.move.id] = function(block) {
+  var dir = block.getFieldValue('DIRECTION');
+  var amount = block.getFieldValue('AMOUNT');
+  // TODO: Assemble Python into code variable. 
+  var amountf = parseFloat(amount)
+  code = "self.robot.DriveDirection(" + "'" +  dir + "'" + "," + amountf + ")"
+  code = code + " \n"
+  return code;
+};
 
 //ROTATE
 //https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#mbz6sk
@@ -110,24 +123,16 @@ Blockly.Blocks[RBLOCKS.rotate.id] = {
     this.setHelpUrl(HELP_URL);
   }
 }; 
+Blockly.Python[RBLOCKS.rotate.id] = function(block){
+	var dir = block.getFieldValue('DIRECTION')
+	var amount = block.getFieldValue('AMOUNT')
+	var amountf = parseFloat(amount)
+	code = "self.robot.RotateDirection(" + "'" +  dir + "'" + "," + amountf + ")"
+	code = code + "\n"
+	return code;
+};
  
-//ROTATE JOINT
-//https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#n9qvsj
-Blockly.Blocks[RBLOCKS.rotate_joint.id] = {
-  init: function() {
-	this.id = RBLOCKS.rotate_joint.id
-    this.appendDummyInput()
-        .appendField("ROTATE JOINT")
-        .appendField(new Blockly.FieldDropdown([["arm_joint_1", "arm_joint_1"], ["arm_joint_2", "arm_joint_2"], ["arm_joint_3", "arm_joint_3"], ["arm_joint_4", "arm_joint_4"], ["arm_joint_5", "arm_joint_5"]]), "ID")
-        .appendField("amount")
-        .appendField(new Blockly.FieldTextInput("0"), "AMOUNT");
-    this.setPreviousStatement(true);
-    this.setNextStatement(true);
-    this.setColour(200);
-    this.setTooltip('Rotate specified joint by given joint space value');
-    this.setHelpUrl(HELP_URL);
-  }
-}; 
+
 
 //MOVE ARM PRE
 //https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#j8ting
@@ -144,6 +149,11 @@ Blockly.Blocks[RBLOCKS.move_arm_pre.id] = {
     this.setHelpUrl(HELP_URL);
   }
 }; 
+Blockly.Python[RBLOCKS.move_arm_pre.id] = function(block){
+	var pos = block.getFieldValue('POSNAME')
+	code = "self.robot.Reach('" + pos + "')\n"
+	return code;
+};
 
 //MOVE ARM RANDOM
 Blockly.Blocks[RBLOCKS.move_arm_random.id] = {
@@ -159,6 +169,10 @@ Blockly.Blocks[RBLOCKS.move_arm_random.id] = {
     this.setHelpUrl(HELP_URL);
   }
 }; 
+Blockly.Python[RBLOCKS.move_arm_random.id] = function(block){
+	code = "self.robot.Reach('random')\n"
+	return code;
+};
 
 
 //GRIPPER STATUS
@@ -175,25 +189,14 @@ Blockly.Blocks[RBLOCKS.gripper_status.id] = {
     this.setTooltip('Set gripper status');
     this.setHelpUrl(HELP_URL);
   }
-}; 
-
-//IF GRIPPER STATE
-//https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#aa6qba
-Blockly.Blocks[RBLOCKS.gripper_state_cond.id] = {
-  init: function() {
-	this.id = RBLOCKS.gripper_state_cond.id
-    this.appendDummyInput()
-        .appendField("IF")
-        .appendField("GRIPPER STATE")
-        .appendField(new Blockly.FieldDropdown([["CLOSED", "CLOSED"], ["OPEN", "OPEN"]]), "GRIPPER_S")
-        .appendField("THEN");
-    this.setPreviousStatement(true);
-    this.setNextStatement(true);
-    this.setColour(320);
-    this.setTooltip('IF condition - checks gripper state');
-    this.setHelpUrl(HELP_URL);
-  }
-}; 
+};
+Blockly.Python[RBLOCKS.gripper_status.id] = function(block){
+	var status = block.getFieldValue('GRIPPER_STATUS')
+	code = ""
+	if(status==="GRIPPER_OPEN"){ code = "self.robot.Drop()"  }else{ code ="self.robot.Grab()" }
+	code = code + "\n"
+	return code;
+};
 
 //WAIT
 Blockly.Blocks[RBLOCKS.wait.id] = {
@@ -211,6 +214,7 @@ Blockly.Blocks[RBLOCKS.wait.id] = {
 		this.setHelpUrl(HELP_URL)
 	}
 };
+Blockly.Python[RBLOCKS.wait.id] = function(block){ var amountf = parseFloat(block.getFieldValue('AMOUNT')); return "self.robot.Pause(" + amountf + ")\n"; }
 
 //CAMERA FOLLOW
 Blockly.Blocks[RBLOCKS.camera_follow.id] = {

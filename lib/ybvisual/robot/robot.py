@@ -4,6 +4,7 @@ import rospy
 from lib.ybvisual.jsonparser import *
 import moveit_commander
 from std_msgs.msg import String
+import time
 
 #
 # Import other robot scripts
@@ -81,10 +82,28 @@ class Robot:
         self.base.MoveDistance(0,1,amount)
     def DriveRight(self,amount):
         self.base.MoveDistance(0,-1,amount)
+    def DriveDirection(self,direction,amount):
+        if direction == "FORWARDS":
+            self.DriveForward(amount)
+        elif direction == "BACK":
+            self.DriveBack(amount)
+        elif direction == "LEFT":
+            self.DriveLeft(amount)
+        elif direction == "RIGHT":
+            self.DriveRight(amount)
+        
     def RotateLeft(self,amount):
         self.base.RotateDistance(1,amount)
     def RotateRight(self,amount):
         self.base.RotateDistance(-1,amount)
+    def RotateDirection(self,direction,amount):
+        rospy.loginfo("Rotating in direction: " + str(direction) + " by amount :" + str(amount))
+        if direction == "LEFT":
+            self.RotateLeft(amount)
+        else:
+            self.RotateRight(amount)
+        
+        
     #Move robot based on given string command
     def DriveByCmd(self,cmd,amount):
         if(str(cmd) == self.base.cmd_move_forwards):
@@ -124,6 +143,10 @@ class Robot:
         self.arm.Stop();
         #stop the base
         self.base.Stop();
+    #Pause robot movmenet
+    def Pause(self,amount):
+        rospy.loginfo("Pausing for " + str(amount) + " seconds")
+        time.sleep(amount)
         
         
     #############################################

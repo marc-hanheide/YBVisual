@@ -89,7 +89,8 @@ class Server:
         def Run(data):
             rospy.loginfo("Received RUN command")
             #The robot will process the given command
-            Server.Robot.SetData(data)
+            #Server.Robot.SetData(data)
+            Server.Robot._Process(data.getData("attribute"))
             return ' '
         def __call__(self,data):
             return Server.RunCmd.Run(data) if (JSONObject.IsType(data,Server.RunCmd.ReqString) == True) else None

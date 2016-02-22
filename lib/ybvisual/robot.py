@@ -347,15 +347,18 @@ class RobotController:
         self.robot = Youbot();
         #Demo manager
         self.demo_manager = DemoManager(self.robot)
-        self.data = None
-        self.EMERGENCY_STOP = False
+        #self.data = None
+        #self.EMERGENCY_STOP = False
         #Thread used for processing data
-        self.thread = Thread(target=self._ThreadFunc,args = ())
+        #self.thread = Thread(target=self._ThreadFunc,args = ())
         #Start process data checks
-        self.Start()
+        #self.Start()
     #Halt execution -- acts as an emergency stop
     def Halt(self):
         self.robot.EmergencyStop()
+    #Process incoming application python code
+    def _Process(self,data):
+        print("hello world")
     #Process incoming data
     def Process(self,data):
         #Create JSON object using given data

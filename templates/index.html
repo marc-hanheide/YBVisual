@@ -34,6 +34,7 @@ and open the template in the editor.
 					-->
 			<script src="/static/js/blockly/blockly_compressed.js"></script>
 			<script src="/static/js/blockly/blocks_compressed.js"></script>
+			<script src="/static/js/blockly/python_compressed.js"></script>
 			<script src="/static/js/blockly/msg/js/en.js"></script>
 			<!--<script src="/static/js/blockly/generators/robotcode.js"></script>-->
 			
@@ -189,8 +190,19 @@ and open the template in the editor.
 			<sep></sep>
 			<!-- conditions -->
 			<category name="Conditions" colour="20">
-				<block type="if_gripperstate">
+				<block type="controls_if"></block>
+				<block type="controls_whileUntil"></block>
 			</category>
+			<!-- Logic -->
+			<category name="Logic">
+				<block type="logic_compare"></block>
+				<block type="logic_operation"></block>
+				<block type="logic_boolean"></block>
+			</category>
+			<!-- Variables -->
+			<category name="Variables" custom="VARIABLE"></category>
+			<!-- Functions -->
+			<category name="Functions" custom="PROCEDURE"></category>
 
 		</xml> 
 		<!-- END: Toolbox Data -->

@@ -40,7 +40,15 @@ class RobotController:
             if(rtype=="VIEW"):
                 #Return camera data
                 return self.robot.GetCameraData()
-        
+    #Process incoming data
+    def _Process(self,code):
+        print(code)
+        try:
+            #eval(code,locals())
+            exec(code,locals())
+        except Exception as e:
+            print(e)
+            print(code)
     #Process incoming data
     def Process(self,data):
         #Create JSON object using given data

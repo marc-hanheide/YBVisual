@@ -195,18 +195,24 @@ function openClicked(){
 	Run button clicked
 	**/
 function runClicked(obj){
+	
+		//Temp -- generate code
+		var code = ""
+		code = String(Blockly.Python.workspaceToCode(workspace))
+		alert(code)
 
 		//Generate commands
-		var commands = Generate();	
+		//var commands = Generate();	
 
 		/**
 			We need to check if the commands were generated successfully
 		**/
-		if(commands.length>0){
+		if(code!=""){
 				ShowMessage("Robot commands generated. Executing Program..");
 			
 				//Send command data to the server as a JSON
-				sendApplicationJSON(commands);
+				//sendApplicationJSON(commands);
+				sendApplicationCode(code);
 		
 		}else{ ShowError("Unable to run program,caused by an error generating robot commands. You either created too many STARTROBOT blocks, or you need to create one."); }
 	
