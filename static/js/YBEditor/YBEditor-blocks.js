@@ -69,11 +69,12 @@ Blockly.Blocks[RBLOCKS.start_robot.id] = {
     this.appendDummyInput()
         .appendField("START ROBOT");
     this.setNextStatement(true);
-    this.setColour(500);
+    this.setColour(400);
     this.setTooltip('');
     this.setHelpUrl(HELP_URL);
   }
 };
+//Python code
 Blockly.Python[RBLOCKS.start_robot.id] = function(block) {
 	var code =  "";
 	return [code,Blockly.Python.ORDER_ATOMIC]
@@ -95,7 +96,8 @@ Blockly.Blocks[RBLOCKS.move.id] = {
     this.setTooltip('Move the robot by amount, in specified direction');
     this.setHelpUrl(HELP_URL);
   }
-}; 
+};
+//Python code
 Blockly.Python[RBLOCKS.move.id] = function(block) {
   var dir = block.getFieldValue('DIRECTION');
   var amount = block.getFieldValue('AMOUNT');
@@ -123,6 +125,7 @@ Blockly.Blocks[RBLOCKS.rotate.id] = {
     this.setHelpUrl(HELP_URL);
   }
 }; 
+//Python code
 Blockly.Python[RBLOCKS.rotate.id] = function(block){
 	var dir = block.getFieldValue('DIRECTION')
 	var amount = block.getFieldValue('AMOUNT')
@@ -149,6 +152,7 @@ Blockly.Blocks[RBLOCKS.move_arm_pre.id] = {
     this.setHelpUrl(HELP_URL);
   }
 }; 
+//Python code
 Blockly.Python[RBLOCKS.move_arm_pre.id] = function(block){
 	var pos = block.getFieldValue('POSNAME')
 	code = "self.robot.Reach('" + pos + "')\n"
@@ -169,6 +173,7 @@ Blockly.Blocks[RBLOCKS.move_arm_random.id] = {
     this.setHelpUrl(HELP_URL);
   }
 }; 
+//Python code
 Blockly.Python[RBLOCKS.move_arm_random.id] = function(block){
 	code = "self.robot.Reach('random')\n"
 	return code;
@@ -190,6 +195,7 @@ Blockly.Blocks[RBLOCKS.gripper_status.id] = {
     this.setHelpUrl(HELP_URL);
   }
 };
+//Python code
 Blockly.Python[RBLOCKS.gripper_status.id] = function(block){
 	var status = block.getFieldValue('GRIPPER_STATUS')
 	code = ""
@@ -214,6 +220,7 @@ Blockly.Blocks[RBLOCKS.wait.id] = {
 		this.setHelpUrl(HELP_URL)
 	}
 };
+//Python code
 Blockly.Python[RBLOCKS.wait.id] = function(block){ var amountf = parseFloat(block.getFieldValue('AMOUNT')); return "self.robot.Pause(" + amountf + ")\n"; }
 
 //CAMERA FOLLOW
@@ -231,70 +238,5 @@ Blockly.Blocks[RBLOCKS.camera_follow.id] = {
   }
 }; 
 
-/*
-	Used to convert the program into workable data
-*/
-function Generate(){
-	//Get the block collection
-	var blocks = getBlockArray(100);
-	//We need a collection which contains the final commands
-	var commands = [];
-	/**
-		Cycle through, and check each block
-	**/
-	for(var i = 0; i  < blocks.length;i++){
-		//We need to get the blocks type
-		var block = blocks[i];
-		//alert(block.id)
-		block.select();
-		//var col = block.getColour();
-		var id = block.id
-		//Push output command
-		commands.push(RBLOCKS[id]['output'](block))
-	}
-	/*
-		Finally - the function should return the final commands list
-	*/
-	return commands;
-}
 
-
-/**
-	Used to get blocks, and store in array
-**/
-function getBlockArray(top_col){
-	//Get top blocks
-	var blocks = workspace.getTopBlocks(true);
-	//This will hold the start robot blocks
-	var start_blocks = [];
-	
-	//Cycle through the top blocks
-	for(var i = 0; i < blocks.length;i++){
-		//Check the id of the block.. is it a start_robot block?
-		if(blocks[i].id==RBLOCKS.start_robot.id){
-			//If true, add to the array
-			//start_blocks = blocks[i];
-			start_blocks.push(blocks[i]);
-		}
-	}
-	//Only return valid if:
-	//1. A START_ROBOT block was created
-	//2. The block is valid
-	//3. Only one START_ROBOT block exists
-	if( (start_blocks.length===1))
-	{
-		blocks = start_blocks;
-	
-		//Get all blocks -- including children
-		for(var i = 0; i < blocks.length;i++){
-			blocks = blocks.concat(blocks[i].getChildren());
-		
-		}
-	
-		//Return block contents
-		return blocks;
-		
-	}else{  
-	return start_blocks; } 
-}
 

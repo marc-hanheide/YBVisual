@@ -51,6 +51,10 @@ isDocumentReady(function(){
 			alert('exit')
 			USING_CAMERA_VIEWER = false
 			}}]  })
+	//Set application title
+	Application.SetTitle()
+	toggleApplications(false)
+	toggleApplicationSaveWindow(false)
 });
 
 
@@ -80,6 +84,31 @@ function toggleCameraViewer(flag){
 		$('#camera_viewer').window('close');
 	}
 }
+function toggleApplications(flag){
+	if(flag){
+		$('#applications_window').window('open');
+	}else{
+		$('#applications_window').window('close');
+	}
+}
+function toggleApplicationSaveWindow(flag){
+	if(flag){
+		$('#applications_save').window('open');
+	}else{
+		$('#applications_save').window('close');
+	}
+}
+
+function clearApplications(){ document.getElementById('applications_select').innerHTML = "" }
+function addApplication(name){
+	document.getElementById('applications_select').innerHTML += "<option value=" + "'" + name + "'" + ">" + name + "</option>"
+}
+function getSelectedApplication(){
+	var select = document.getElementById('applications_select')
+	var selected = select.options[select.selectedIndex].value
+	return selected
+}
+
 
 var CURRENT_DEMO = ' '
 var DEMO_RUNNING = false
@@ -149,34 +178,24 @@ function Confirm(_msg,func_yes,func_no){
 /**
 	New button clicked
 	**/
-function newClicked(ask){
-if(AuthCheck("create new application")){
-		if(ask)
-		{
-			Confirm("Are you sure you would like to create a new project? you will lose any unsaved changes.",
-			function(){
-			/*
-				User clicked YES
-			*/
-				FileIO.New();
-				toggleNewApplication(true);
-		
-			},function(){
-			/*
-				User clicked NO
-			*/
-		
-			});
-		}else{ toggleNewApplication(true); }
-}
+function newClicked(){
+	Application.New()
 }
 
 /**
 	Save button clicked
 		**/
-function saveClicked(){
-
-		FileIO.Save();
+function saveClicked(type){
+	if(type===0){
+		Application.Save()
+	}else if(type===1){
+		toggleApplicationSaveWindow(true)
+	}else{
+		var appname = document.getElementById('app_name').value;
+		Application.SetName(appname);
+		Application.Save(); 
+		toggleApplicationSaveWindow(false)
+	}
 	
 	
 }
@@ -185,8 +204,7 @@ function saveClicked(){
 	Open button clicked
 	**/
 function openClicked(){
-
-		FileIO.Open();
+	Application.Saved()
 	
 }
 
@@ -196,13 +214,9 @@ function openClicked(){
 	**/
 function runClicked(obj){
 	
-		//Temp -- generate code
+		//generate code
 		var code = ""
 		code = String(Blockly.Python.workspaceToCode(workspace))
-		alert(code)
-
-		//Generate commands
-		//var commands = Generate();	
 
 		/**
 			We need to check if the commands were generated successfully
@@ -211,7 +225,7 @@ function runClicked(obj){
 				ShowMessage("Robot commands generated. Executing Program..");
 			
 				//Send command data to the server as a JSON
-				//sendApplicationJSON(commands);
+
 				sendApplicationCode(code);
 		
 		}else{ ShowError("Unable to run program,caused by an error generating robot commands. You either created too many STARTROBOT blocks, or you need to create one."); }
@@ -258,20 +272,20 @@ function cameraButtonClicked(){
       KEYBOARD INPUT FUNCTIONS
    ------------------------------------------------
 */
-//shift+r == run
+//shift+n = new application
+Mousetrap.bind('shift+n',newClicked)
+//shift+o = open application
+Mousetrap.bind('shift+o',openClicked)
+//shift+s = save application
+Mousetrap.bind('shift+s',saveClicked)
+//shift+r = run
 Mousetrap.bind('shift+r',runClicked)
-//shift+s == stop
-Mousetrap.bind('shift+s',stopClicked)
-
-//shift+c == shutdown
+//shift+c = shutdown
 Mousetrap.bind('shift+c',function(){
 	SendServerRequest("SHUTDOWN")
 });
-
 //shift+1 = Open camera viewer
 Mousetrap.bind('shift+1',cameraButtonClicked)
-
-
 //ESC == close opened window
 Mousetrap.bind('escape',function(){
 	console.log('escape pressed')
@@ -286,6 +300,7 @@ Mousetrap.bind('escape',function(){
 	
 	//If escape is pressed -- a stop command must be sent to the robot
 	SendStopCommand()
+	ShowMessage("Robot stopped successfully.");
 });
 
 
