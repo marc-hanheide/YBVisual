@@ -160,22 +160,22 @@ and open the template in the editor.
 			<!-- statements -->
 			<category name="Statements" colour="100">
 				<!-- blocks for controlling robot base -->
-				<category name="Base" colour="100">
+				<category name="Base" colour="120">
 					<block type="move"></block>
 					<block type="rotate"></block>
 				</category>
 				<!-- block for controlling robot arm -->
-				<category name="Arm" colour="200">
+				<category name="Arm" colour="140">
 					<block type="move_arm_pre"></block>
 					<block type="move_arm_random"></block>
-					<category name="Gripper" colour="250">
+					<category name="Gripper" colour="150">
 						<block type="gripper_status">
 					</category>
 				</category>
 				<!-- blocks for using robot sensors -->
-				<category name="Sensors" colour="300">
+				<category name="Sensors" colour="160">
 					<!-- Camera sensor -->
-					<category name="Camera" colour="320">
+					<category name="Camera" colour="170">
 						<!-- track object -->
 						
 					</category>	
@@ -183,26 +183,28 @@ and open the template in the editor.
 				
 				
 				<!-- misc blocks -->
-				<category name="Misc" colour="400">
+				<category name="Misc" colour="180">
 					<block type="wait"></block>
 				</category>
 			</category>
 			<sep></sep>
-			<!-- conditions -->
-			<category name="Conditions" colour="20">
-				<block type="controls_if"></block>
-				<block type="controls_whileUntil"></block>
+			<category name="Control" colour="300">
+				<!-- conditions -->
+				<category name="Conditions" colour="320">
+					<block type="controls_if"></block>
+					<block type="controls_whileUntil"></block>
+				</category>
+				<!-- Logic -->
+				<category name="Logic" colour="340">
+					<block type="logic_compare"></block>
+					<block type="logic_operation"></block>
+					<block type="logic_boolean"></block>
+				</category>
+				<!-- Variables -->
+				<category name="Variables" custom="VARIABLE" colour="360"></category>
+				<!-- Functions -->
+				<category name="Functions" custom="PROCEDURE" colour="380"></category>
 			</category>
-			<!-- Logic -->
-			<category name="Logic">
-				<block type="logic_compare"></block>
-				<block type="logic_operation"></block>
-				<block type="logic_boolean"></block>
-			</category>
-			<!-- Variables -->
-			<category name="Variables" custom="VARIABLE"></category>
-			<!-- Functions -->
-			<category name="Functions" custom="PROCEDURE"></category>
 
 		</xml> 
 		<!-- END: Toolbox Data -->

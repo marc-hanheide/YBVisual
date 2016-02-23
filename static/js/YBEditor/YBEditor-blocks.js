@@ -91,7 +91,7 @@ Blockly.Blocks[RBLOCKS.move.id] = {
         .appendField(new Blockly.FieldTextInput("0"), "AMOUNT");
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(100);
+    this.setColour(120);
     this.setTooltip('Move the robot by amount, in specified direction');
     this.setHelpUrl(HELP_URL);
   }
@@ -118,7 +118,7 @@ Blockly.Blocks[RBLOCKS.rotate.id] = {
         .appendField(new Blockly.FieldTextInput("0"), "AMOUNT");
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(120);
+    this.setColour(130);
     this.setTooltip('Rotate the robot by amount, in specified direction');
     this.setHelpUrl(HELP_URL);
   }
@@ -144,7 +144,7 @@ Blockly.Blocks[RBLOCKS.move_arm_pre.id] = {
         .appendField(new Blockly.FieldTextInput("position name.."), "POSNAME");
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(210);
+    this.setColour(140);
     this.setTooltip('Move arm to pre-defined position (E.G candle,folded)');
     this.setHelpUrl(HELP_URL);
   }
@@ -164,7 +164,7 @@ Blockly.Blocks[RBLOCKS.move_arm_random.id] = {
 	.appendField("RANDOM")
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(210);
+    this.setColour(150);
     this.setTooltip('Move arm to a random valid position');
     this.setHelpUrl(HELP_URL);
   }
@@ -209,7 +209,7 @@ Blockly.Blocks[RBLOCKS.wait.id] = {
 			.appendField("SECONDS")
 		this.setPreviousStatement(true)
 		this.setNextStatement(true)
-		this.setColour(330)
+		this.setColour(180)
 		this.setTooltip('Wait for specified time')
 		this.setHelpUrl(HELP_URL)
 	}
