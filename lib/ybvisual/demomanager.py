@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-from lib.ybvisual.thread import *
 from multiprocessing import Process
 import threading
 from lib.ybvisual.input import *

@@ -11,12 +11,9 @@ and open the template in the editor.
         	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 			<link rel="shortcut icon" href="/static/img/favicon.ico">
 			
-			
 			<!--<link rel="stylesheet" type="text/css" href="/static/js/css/base/jquery-ui.css">-->
 			<link id="ui_style" rel="stylesheet" type="text/css" href="/static/css/themes/default/easyui.css">
 			<link  rel="stylesheet" type="text/css" href="/static/css/jqueryui/css/base/jquery-ui.css">
-			
-			
 			
 			<!--
 				JQUERY Scripts
@@ -34,15 +31,13 @@ and open the template in the editor.
 					-->
 			<script src="/static/js/blockly/blockly_compressed.js"></script>
 			<script src="/static/js/blockly/blocks_compressed.js"></script>
+			<script src="/static/js/blockly/python_compressed.js"></script>
 			<script src="/static/js/blockly/msg/js/en.js"></script>
-			<!--<script src="/static/js/blockly/generators/robotcode.js"></script>-->
-			
-        	<!--<script src="/static/js/YBEditor.js"></script>-->
 			
 			<!--
 				YBEditor scripts
-					-->
-        		<script src="/static/js/YBEditor/YBEditor-controller.js"></script>
+			-->
+        	<script src="/static/js/YBEditor/YBEditor-controller.js"></script>
 			<script src="/static/js/YBEditor/YBEditor-blocks.js"></script>
 			<script src="/static/js/YBEditor/YBEditor-file.js"></script>
 			<script src="/static/js/YBEditor/YBEditor-ui.js"></script>
@@ -114,7 +109,8 @@ and open the template in the editor.
 		<div id="file_menu">
 			<div onclick="newClicked(true)">New</div>
 			<div onclick="openClicked()">Open</div>
-			<div onclick="saveClicked()">Save</div>
+			<div onclick="saveClicked(0)">Save</div>
+			<div onclick="saveClicked(1)">Save as</div>
 		</div>
 		<!-- END: projects menu items -->
 		
@@ -159,22 +155,22 @@ and open the template in the editor.
 			<!-- statements -->
 			<category name="Statements" colour="100">
 				<!-- blocks for controlling robot base -->
-				<category name="Base" colour="100">
+				<category name="Base" colour="120">
 					<block type="move"></block>
 					<block type="rotate"></block>
 				</category>
 				<!-- block for controlling robot arm -->
-				<category name="Arm" colour="200">
+				<category name="Arm" colour="140">
 					<block type="move_arm_pre"></block>
 					<block type="move_arm_random"></block>
-					<category name="Gripper" colour="250">
+					<category name="Gripper" colour="150">
 						<block type="gripper_status">
 					</category>
 				</category>
 				<!-- blocks for using robot sensors -->
-				<category name="Sensors" colour="300">
+				<category name="Sensors" colour="160">
 					<!-- Camera sensor -->
-					<category name="Camera" colour="320">
+					<category name="Camera" colour="170">
 						<!-- track object -->
 						
 					</category>	
@@ -182,14 +178,27 @@ and open the template in the editor.
 				
 				
 				<!-- misc blocks -->
-				<category name="Misc" colour="400">
+				<category name="Misc" colour="180">
 					<block type="wait"></block>
 				</category>
 			</category>
 			<sep></sep>
-			<!-- conditions -->
-			<category name="Conditions" colour="20">
-				<block type="if_gripperstate">
+			<category name="Control" colour="300">
+				<!-- conditions -->
+				<category name="Conditions" colour="320">
+					<block type="controls_if"></block>
+					<block type="controls_whileUntil"></block>
+				</category>
+				<!-- Logic -->
+				<category name="Logic" colour="340">
+					<block type="logic_compare"></block>
+					<block type="logic_operation"></block>
+					<block type="logic_boolean"></block>
+				</category>
+				<!-- Variables -->
+				<category name="Variables" custom="VARIABLE" colour="360"></category>
+				<!-- Functions -->
+				<category name="Functions" custom="PROCEDURE" colour="380"></category>
 			</category>
 
 		</xml> 
@@ -235,6 +244,22 @@ and open the template in the editor.
 				
 			}
 		</script>
+		
+		<!-- START:applications window -->
+		<div id="applications_window" class="easyui-window" title="Open" style="width:500px;overflow:hidden;" data-options="modal:true" resizable="False" minimizable="False" maximizable="False" closed="True">
+			<div style="padding: 10px;"><select style="font-size:30px;" id="applications_select"></select></div>
+			<a style="margin: 10px; 10px;" href="#" onclick="Application.Open(getSelectedApplication())" class="easyui-linkbutton">Open</a>
+			<a href="#" onclick="toggleApplications(false)" class="easyui-linkbutton">Cancel</a>
+		</div>
+		<!-- END: applications window -->
+		
+		<!-- START: save window -->
+		<div id="applications_save" class="easyui-window" title="Save" style="width:500px;overflow:hidden;" data-options="modal:true" resizable="False" minimizable="False" maximizable="False" closed="True">
+			<div style="padding: 10px;"><input id="app_name" type="text" value="Enter application name.."></div>
+			<a style="margin: 10px; 10px;" href="#" onclick="saveClicked(2)" class="easyui-linkbutton">Save</a>
+			<a href="#" onclick="toggleApplicationSaveWindow(false)" class="easyui-linkbutton">Cancel</a>
+		</div>
+		<!-- END: save window -->
 		
 		<!-- START: camera viewer -->
 		<div id="camera_viewer" class="easyui-window" title="Camera Viewer" data-options="modal:false" style="width:1280px;height:720px;overflow:hidden;" closed="true">

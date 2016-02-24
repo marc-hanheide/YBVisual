@@ -12,8 +12,7 @@ import os
 # Robot lib imports
 #
 from lib.ybvisual.jsonparser import JSONObject
-from lib.ybvisual.session import Session
-from lib.ybvisual.program import Program
+from lib.ybvisual.application import Application
 from lib.ybvisual.robot.robotcontroller import RobotController
 
 #
@@ -24,10 +23,8 @@ class Server:
     # Use a try-except to catch any errors while initialising these variables
     #
     try:
-        #Holds session information
-        _Session = Session()
         #Used for saving/opening existing programs
-        _Program = Program()
+        _Application = Application()
         #Robot controller - Processes robot specific commands
         Robot = RobotController()    
         #Define templates folder
@@ -72,6 +69,54 @@ class Server:
             return Server.ServerCmd.Run(data) if (JSONObject.IsType(data,Server.ServerCmd.ReqString) == True) else None 
     SERVERCMD = ServerCmd()
     
+    #APPLICATION MANAGEMENT COMMAND
+    class ApplicationCmd:
+        ReqString = "APPLICATION"
+        @staticmethod
+        def Run(data):
+            rospy.loginfo("Received APPLICATION command")
+            
+            #Get the json object to handle the type of the application command
+            json = JSONObject(data.getData("attribute"))
+            _type = json.getData("type")
+            _att = json.getData("attribute")
+            _val = json.getData("value")
+            rospy.loginfo("Type: " + str(_type)) # type
+            rospy.loginfo("Attribute: " + str(_att)) # attribute
+            rospy.loginfo("Value: " + str(_val)) # value
+
+            #Check the application command type
+            if(str(_type) == "SAVE"):
+                rospy.loginfo("Saving application")
+                # The attribute holds the application name
+                appname = str(_att)
+                # The value holds the application data
+                appdata = str(_val)
+                # Display info for debugging
+                rospy.loginfo("Application name: " + appname)
+                rospy.loginfo("Application data: " + appdata)
+                Server._Application.Save(appdata,appname)
+            elif(str(_type) == "OPEN"):
+                rospy.loginfo("Opening application")
+                #Now attempt to open the application
+                #Attribute holds the application name
+                appname = str(_att)
+                rospy.loginfo("Attempting to open application: " + str(appname))
+                _app = Server._Application.Open(appname)
+                _app.replace("?","")
+                rospy.loginfo("Opened application: " + str(_app))
+                return _app               
+            elif(str(_type) == "LIST"):
+                rospy.loginfo("Getting saved application list")
+                _list = Server._Application.getSaved()
+                print "apps: " + _list
+                return _list
+            
+            return ' '
+        def __call__(self,data):
+            return Server.ApplicationCmd.Run(data) if (JSONObject.IsType(data,Server.ApplicationCmd.ReqString) == True) else None
+    APPLICATIONCMD = ApplicationCmd()
+    
     #PASSWORD COMMAND
     class PasswordCmd:
         ReqString = "PASSCHECK"
@@ -89,7 +134,8 @@ class Server:
         def Run(data):
             rospy.loginfo("Received RUN command")
             #The robot will process the given command
-            Server.Robot.SetData(data)
+            #Server.Robot.SetData(data)
+            Server.Robot._Process(data.getData("attribute"))
             return ' '
         def __call__(self,data):
             return Server.RunCmd.Run(data) if (JSONObject.IsType(data,Server.RunCmd.ReqString) == True) else None
@@ -107,22 +153,17 @@ class Server:
         def __call__(self,data):
             return Server.SensorsCmd.Run(data) if (JSONObject.IsType(data,Server.SensorsCmd.ReqString) == True) else None
     SENSORSCMD = SensorsCmd()
-            
+    #Server Commands
+    CMD = [SERVERCMD,APPLICATIONCMD,PASSWORDCMD,RUNCMD,SENSORSCMD]
 
     #The API variable handles POST messages sent to the main index page
     @staticmethod
     def CheckData(data):
-        #Return value        
-        ret = ' '
-        #Server command
-        ret = Server.SERVERCMD(data)
-        #Password command
-        ret = Server.PASSWORDCMD(data)
-        #Run command
-        ret = Server.RUNCMD(data)
-        #Sensors command
-        ret = Server.SENSORSCMD(data)
-        return ret
+        for i in range(0,len(Server.CMD)):
+            ret = Server.CMD[i](data)
+            if(ret!=None):
+                return ret
+        return ' '
             
 #
 # Index page structure

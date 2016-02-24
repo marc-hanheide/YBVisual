@@ -69,11 +69,16 @@ Blockly.Blocks[RBLOCKS.start_robot.id] = {
     this.appendDummyInput()
         .appendField("START ROBOT");
     this.setNextStatement(true);
-    this.setColour(500);
+    this.setColour(400);
     this.setTooltip('');
     this.setHelpUrl(HELP_URL);
   }
-}; 
+};
+//Python code
+Blockly.Python[RBLOCKS.start_robot.id] = function(block) {
+	var code =  "";
+	return [code,Blockly.Python.ORDER_ATOMIC]
+};
 
 //MOVE
 //https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#cckrgt
@@ -87,11 +92,21 @@ Blockly.Blocks[RBLOCKS.move.id] = {
         .appendField(new Blockly.FieldTextInput("0"), "AMOUNT");
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(100);
+    this.setColour(120);
     this.setTooltip('Move the robot by amount, in specified direction');
     this.setHelpUrl(HELP_URL);
   }
-}; 
+};
+//Python code
+Blockly.Python[RBLOCKS.move.id] = function(block) {
+  var dir = block.getFieldValue('DIRECTION');
+  var amount = block.getFieldValue('AMOUNT');
+  // TODO: Assemble Python into code variable. 
+  var amountf = parseFloat(amount)
+  code = "self.robot.DriveDirection(" + "'" +  dir + "'" + "," + amountf + ")"
+  code = code + " \n"
+  return code;
+};
 
 //ROTATE
 //https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#mbz6sk
@@ -105,29 +120,22 @@ Blockly.Blocks[RBLOCKS.rotate.id] = {
         .appendField(new Blockly.FieldTextInput("0"), "AMOUNT");
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(120);
+    this.setColour(130);
     this.setTooltip('Rotate the robot by amount, in specified direction');
     this.setHelpUrl(HELP_URL);
   }
 }; 
+//Python code
+Blockly.Python[RBLOCKS.rotate.id] = function(block){
+	var dir = block.getFieldValue('DIRECTION')
+	var amount = block.getFieldValue('AMOUNT')
+	var amountf = parseFloat(amount)
+	code = "self.robot.RotateDirection(" + "'" +  dir + "'" + "," + amountf + ")"
+	code = code + "\n"
+	return code;
+};
  
-//ROTATE JOINT
-//https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#n9qvsj
-Blockly.Blocks[RBLOCKS.rotate_joint.id] = {
-  init: function() {
-	this.id = RBLOCKS.rotate_joint.id
-    this.appendDummyInput()
-        .appendField("ROTATE JOINT")
-        .appendField(new Blockly.FieldDropdown([["arm_joint_1", "arm_joint_1"], ["arm_joint_2", "arm_joint_2"], ["arm_joint_3", "arm_joint_3"], ["arm_joint_4", "arm_joint_4"], ["arm_joint_5", "arm_joint_5"]]), "ID")
-        .appendField("amount")
-        .appendField(new Blockly.FieldTextInput("0"), "AMOUNT");
-    this.setPreviousStatement(true);
-    this.setNextStatement(true);
-    this.setColour(200);
-    this.setTooltip('Rotate specified joint by given joint space value');
-    this.setHelpUrl(HELP_URL);
-  }
-}; 
+
 
 //MOVE ARM PRE
 //https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#j8ting
@@ -139,11 +147,17 @@ Blockly.Blocks[RBLOCKS.move_arm_pre.id] = {
         .appendField(new Blockly.FieldTextInput("position name.."), "POSNAME");
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(210);
+    this.setColour(140);
     this.setTooltip('Move arm to pre-defined position (E.G candle,folded)');
     this.setHelpUrl(HELP_URL);
   }
 }; 
+//Python code
+Blockly.Python[RBLOCKS.move_arm_pre.id] = function(block){
+	var pos = block.getFieldValue('POSNAME')
+	code = "self.robot.Reach('" + pos + "')\n"
+	return code;
+};
 
 //MOVE ARM RANDOM
 Blockly.Blocks[RBLOCKS.move_arm_random.id] = {
@@ -154,11 +168,16 @@ Blockly.Blocks[RBLOCKS.move_arm_random.id] = {
 	.appendField("RANDOM")
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(210);
+    this.setColour(150);
     this.setTooltip('Move arm to a random valid position');
     this.setHelpUrl(HELP_URL);
   }
 }; 
+//Python code
+Blockly.Python[RBLOCKS.move_arm_random.id] = function(block){
+	code = "self.robot.Reach('random')\n"
+	return code;
+};
 
 
 //GRIPPER STATUS
@@ -175,25 +194,15 @@ Blockly.Blocks[RBLOCKS.gripper_status.id] = {
     this.setTooltip('Set gripper status');
     this.setHelpUrl(HELP_URL);
   }
-}; 
-
-//IF GRIPPER STATE
-//https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#aa6qba
-Blockly.Blocks[RBLOCKS.gripper_state_cond.id] = {
-  init: function() {
-	this.id = RBLOCKS.gripper_state_cond.id
-    this.appendDummyInput()
-        .appendField("IF")
-        .appendField("GRIPPER STATE")
-        .appendField(new Blockly.FieldDropdown([["CLOSED", "CLOSED"], ["OPEN", "OPEN"]]), "GRIPPER_S")
-        .appendField("THEN");
-    this.setPreviousStatement(true);
-    this.setNextStatement(true);
-    this.setColour(320);
-    this.setTooltip('IF condition - checks gripper state');
-    this.setHelpUrl(HELP_URL);
-  }
-}; 
+};
+//Python code
+Blockly.Python[RBLOCKS.gripper_status.id] = function(block){
+	var status = block.getFieldValue('GRIPPER_STATUS')
+	code = ""
+	if(status==="GRIPPER_OPEN"){ code = "self.robot.Drop()"  }else{ code ="self.robot.Grab()" }
+	code = code + "\n"
+	return code;
+};
 
 //WAIT
 Blockly.Blocks[RBLOCKS.wait.id] = {
@@ -206,11 +215,13 @@ Blockly.Blocks[RBLOCKS.wait.id] = {
 			.appendField("SECONDS")
 		this.setPreviousStatement(true)
 		this.setNextStatement(true)
-		this.setColour(330)
+		this.setColour(180)
 		this.setTooltip('Wait for specified time')
 		this.setHelpUrl(HELP_URL)
 	}
 };
+//Python code
+Blockly.Python[RBLOCKS.wait.id] = function(block){ var amountf = parseFloat(block.getFieldValue('AMOUNT')); return "self.robot.Pause(" + amountf + ")\n"; }
 
 //CAMERA FOLLOW
 Blockly.Blocks[RBLOCKS.camera_follow.id] = {
@@ -227,70 +238,5 @@ Blockly.Blocks[RBLOCKS.camera_follow.id] = {
   }
 }; 
 
-/*
-	Used to convert the program into workable data
-*/
-function Generate(){
-	//Get the block collection
-	var blocks = getBlockArray(100);
-	//We need a collection which contains the final commands
-	var commands = [];
-	/**
-		Cycle through, and check each block
-	**/
-	for(var i = 0; i  < blocks.length;i++){
-		//We need to get the blocks type
-		var block = blocks[i];
-		//alert(block.id)
-		block.select();
-		//var col = block.getColour();
-		var id = block.id
-		//Push output command
-		commands.push(RBLOCKS[id]['output'](block))
-	}
-	/*
-		Finally - the function should return the final commands list
-	*/
-	return commands;
-}
 
-
-/**
-	Used to get blocks, and store in array
-**/
-function getBlockArray(top_col){
-	//Get top blocks
-	var blocks = workspace.getTopBlocks(true);
-	//This will hold the start robot blocks
-	var start_blocks = [];
-	
-	//Cycle through the top blocks
-	for(var i = 0; i < blocks.length;i++){
-		//Check the id of the block.. is it a start_robot block?
-		if(blocks[i].id==RBLOCKS.start_robot.id){
-			//If true, add to the array
-			//start_blocks = blocks[i];
-			start_blocks.push(blocks[i]);
-		}
-	}
-	//Only return valid if:
-	//1. A START_ROBOT block was created
-	//2. The block is valid
-	//3. Only one START_ROBOT block exists
-	if( (start_blocks.length===1))
-	{
-		blocks = start_blocks;
-	
-		//Get all blocks -- including children
-		for(var i = 0; i < blocks.length;i++){
-			blocks = blocks.concat(blocks[i].getChildren());
-		
-		}
-	
-		//Return block contents
-		return blocks;
-		
-	}else{  
-	return start_blocks; } 
-}
 

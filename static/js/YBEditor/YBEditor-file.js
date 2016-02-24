@@ -1,50 +1,65 @@
 /*
-	YBEDITOR Controller - I/O functions for the currently loaded program
+	YBEDITOR File - I/O functions for the currently loaded application
 
 */
-	
-	
+
 /**
-	Holds information for the currently loaded projects
-	**/
-var FileIO = 
+ *  Holds information regarding the current application
+ * **/
+var Application = 
 {
-	'Name':"newapplication", //Project name.
-	'Commands':[], //Array for holding the commands
-	//Create a new program -- reset the values
-	'New':function() 
-	{
-		this.Filename = null;
-		this.Commands = [];
-		alert("values reset");
-		
+	//The current application
+	'Current':'untitled',
+	'SetName':function(_new){
+		Application.Current = _new
+		Application.SetTitle()
 	},
-	//Save the program
-	'Save':function()
-	{
-		//We need the XML document
-		var xml = Blockly.Xml.workspaceToDom(workspace);
-		var _list = Blockly.Xml.domToPrettyText(xml);
-		var _string = "";
+	//Start a new application
+	'New':function(){
+		workspace.clear()
+		Blockly.Xml.domToWorkspace(workspace,document.getElementById('default_blocks'))
+		Application.SetTitle()
+	},
+	'_New':function(appname,xmldom){
+		workspace.clear()
+		Blockly.Xml.domToWorkspace(workspace,xmldom)
+		Application.SetName(appname)
+		toggleApplications(false)
+	},
+	//Open an existing application
+	'Open':function(application){
+		appdata = LoadApplicationData(application)
+		var xml = Blockly.Xml.textToDom(appdata)
+		Application._New(application,xml)
+	},
+	//Save the current application to file
+	'Save':function(){
+		//Gather the XML document
+		var xml = Blockly.Xml.workspaceToDom(workspace)
+
 		
-		//We need it as one string
-		for(var i = 0; i < _list.length;i++){
-			_string = _string + _list[i];
-		} 
+		var xml_text = Blockly.Xml.domToText(xml)
 		
 		//Send the application data to the server
-		SendApplicationData(_string);
+		SendApplicationData(xml_text);
 		//Show completion message
 		ShowMessage("Application successfully saved to file.");
 	},
-	//Open an existing program
-	'Open':function(_name){
-		//Request a list of currently saved applications
-		apps = RequestApplicationList()
-		
-		
-	}
-}
+	//Return a list of the currently saved applications
+	'Saved':function(){ list = RequestApplicationList(); 
+		//Get list of saved applications
+		apps = list
+		clearApplications()
+		for(i in apps){
+			app = apps[i]
+			addApplication(app)
+		}
+		toggleApplications(true)
+		 },
+	//Set application window title
+	'SetTitle':function(){ document.title = "YouBot Visual: " + Application.Current }
+};
+
 
 //Holds loaded xml data
 var LOADED_XML = null;
