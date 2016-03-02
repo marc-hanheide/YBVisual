@@ -7,10 +7,6 @@ and open the template in the editor.
     Created on : 11-Nov-2015, 20:40:39
     Author     : Adam
 */
-.blocklyToolboxDiv{
-	background-color: red;
-
-}
 
 .filter_option{
 	padding: 10px;
@@ -23,3 +19,5 @@ and open the template in the editor.
 } .filter_option[data-selected="false"]:hover{ border: 1px solid black; cursor:pointer; }
 .filter_option[data-selected="true"]{ border: 1px solid black; }
 .filter_option[data-selected="false"]{ border: 1px dotted black; }
+
+

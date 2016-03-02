@@ -15,6 +15,14 @@ and open the template in the editor.
 			<link id="ui_style" rel="stylesheet" type="text/css" href="/static/css/themes/default/easyui.css">
 			<link  rel="stylesheet" type="text/css" href="/static/css/jqueryui/css/base/jquery-ui.css">
 			
+			<!-- Intro stylesheet -->
+			<link rel="stylesheet" type="text/css" href="/static/css/intro/introjs.min.css">
+			<!-- Intro theme stylesheet -->
+			<link rel="stylesheet" type="text/css" href="/static/css/intro/themes/introjs-dark.css">
+			
+			<!-- Finally - add any additional styles -->
+			<link rel="stylesheet" type="text/css" href="/static/css/styles.css">
+			
 			<!--
 				JQUERY Scripts
 					-->
@@ -25,6 +33,9 @@ and open the template in the editor.
 			
 			<!-- MOUSETRAP - handles user input -->
 			<script src="/static/js/mousetrap/mousetrap.js"></script>
+			
+			<!-- INTRO - Handles user introduction -->
+			<script src="/static/js/intro/intro.min.js"></script>
 			
 			<!-- 
 				Blockly Scripts
@@ -42,8 +53,7 @@ and open the template in the editor.
 			<script src="/static/js/YBEditor/YBEditor-file.js"></script>
 			<script src="/static/js/YBEditor/YBEditor-ui.js"></script>
 			
-			<!-- Finally - add any additional styles -->
-			<link rel="stylesheet" type="text/css" href="/static/css/styles.css">
+			
 		
     </head>
     <body>
@@ -55,11 +65,11 @@ and open the template in the editor.
 		<div class="easyui-layout" style="width:100%; height: 100%; fit:true">
 		
 			<!-- START: menu layout -->
-			<div class="easyui-panel" style="padding:5px" data-options="region:'north' " >
-				<a href="#" class="easyui-menubutton" data-options=" menu:'#file_menu'">File</a>
-				<a href="#" class="easyui-menubutton" data-options=" menu:'#view_menu'">View</a>
-				<a href="#" class="easyui-menubutton" data-options=" menu:'#app_menu'">Application</a>
-				<a href="#" class="easyui-menubutton" data-options=" menu:'#help_menu'">Help</a>
+			<div class="easyui-panel" id="main_menu" style="padding:5px" data-options="region:'north' " >
+				<a href="#" id="file_menu_option" class="easyui-menubutton" data-options=" menu:'#file_menu'">File</a>
+				<a href="#" id="view_menu_option" class="easyui-menubutton" data-options=" menu:'#view_menu'">View</a>
+				<a href="#" id="application_menu_option" class="easyui-menubutton" data-options=" menu:'#app_menu'">Application</a>
+				<a href="#" id="help_menu_option" class="easyui-menubutton" data-options=" menu:'#help_menu'">Help</a>
 			</div>
 			<!-- END: menu layout -->
 			
@@ -151,7 +161,7 @@ and open the template in the editor.
 		
 		
 		<!-- START: Toolbox Data -->
-		<xml id="toolbox" style="display: none">
+		<xml  id="toolbox" style="display: none">
 			<!-- statements -->
 			<category name="Statements" colour="100">
 				<!-- blocks for controlling robot base -->
