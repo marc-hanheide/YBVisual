@@ -55,6 +55,8 @@ isDocumentReady(function(){
 	Application.SetTitle()
 	toggleApplications(false)
 	toggleApplicationSaveWindow(false)
+	//Start user introduction
+	startIntro()
 });
 
 
@@ -272,6 +274,7 @@ function cameraButtonClicked(){
       KEYBOARD INPUT FUNCTIONS
    ------------------------------------------------
 */
+
 //shift+n = new application
 Mousetrap.bind('shift+n',newClicked)
 //shift+o = open application
@@ -303,6 +306,35 @@ Mousetrap.bind('escape',function(){
 	ShowMessage("Robot stopped successfully.");
 });
 
+/*
+   ------------------------------------------------
+      USER INTRODUCTION - using INTRO library
+   ------------------------------------------------
+*/
+//Start the user introduction
+function startIntro(){
+	
+	var intro = introJs();
+	
+	intro.setOptions(
+	{
+		steps: [
+		{ element: document.getElementById('main_menu'),intro:"This is the main menu bar." },
+		{ element: document.getElementById('file_menu_option'),intro:"Use this option to open,save and create a new application." },
+		{ element: document.getElementById('view_menu_option'),intro:"This option is used to view robot information, such as an attached sensor." },
+		{ element: document.getElementById('application_menu_option'),intro:"Used for executing, and stopping a running application." },
+		{ element: document.getElementById('help_menu_option'),intro:"Use this option to access help, and tutorials." },
+		{ element: document.getElementsByClassName('blocklyToolboxDiv')[0],intro:"This is the toolbox, containing draggable commands for the main edit area.",position:'right' },
+		{ element: document.getElementById('editor_visual_content'),intro:"This is the main edit area, Drag commands into here from the toolbox.",position:'left' }
+		]
+		
+	}
+	
+	);
+	
+	//introJs().setOption('showProgress',true).start();
+	intro.setOption('showProgress',true).start();
+}
 
 	
 	
