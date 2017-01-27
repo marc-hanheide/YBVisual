@@ -1,0 +1,1 @@
+<xml xmlns="http://www.w3.org/1999/xhtml"><block type="start_robot" inline="true" deletable="false" x="500" y="250"><next><block type="move"><field name="DIRECTION">LEFT</field><field name="AMOUNT">0</field></block></next></block></xml>

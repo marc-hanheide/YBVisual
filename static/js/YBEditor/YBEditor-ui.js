@@ -1,12 +1,65 @@
 /*
+	YBEDITOR UI- I/O - Functions to define the user interface
+
+*/
+USING_CAMERA_VIEWER = false;
+
+/*
+   ------------------------------------------------
+       INTERFACE STYLE FUNCTIONS
+   ------------------------------------------------
+*/
+//Holds available stylesheets
+var THEMES = 
+[
+	['metro','/static/css/themes/metro/easyui.css'],
+	['gray','/static/css/themes/gray/easyui.css'],
+	['default','/static/css/themes/default/easyui.css'],
+	['bootstrap','/static/css/themes/bootstrap/easyui.css'],
+	['black','/static/css/themes/black/easyui.css']
+];
+//Changes page style
+function changeStyle(name){	
+	var theme = null;
+	
+	for(var i = 0; i < THEMES.length;i++){
+		
+		if(THEMES[i][0] == name){
+			theme = THEMES[i][1];
+		}
+	}
+	
+	if( !(theme==null) ){
+		document.getElementById('ui_style').href = theme;
+	}
+	
+}
+
+
+/*
  * Wait for the window to be ready
  */
-$(document).ready(function()
-{
-	//Which windows should be initially visible?
-	toggleNewApplication(false);
-		
+function isDocumentReady(func){
+	$(document).ready(func);
+}
+isDocumentReady(function(){
+	//Set default block
+	Blockly.Xml.domToWorkspace(workspace,document.getElementById('default_blocks'))
+	//Needs to handle camera viewer close event
+	$('#camera_viewer').window({ collapsible:false,minimizable:false,maximizable:false,resizable:false,onBeforeClose:function(){USING_CAMERA_VIEWER=false},
+		tools:[{iconCls:'icon-cancel',handler:function(){ 
+			alert('exit')
+			USING_CAMERA_VIEWER = false
+			}}]  })
+	//Set application title
+	Application.SetTitle()
+	toggleApplications(false)
+	toggleApplicationSaveWindow(false)
+	//Start user introduction
+	startIntro()
 });
+
+
 /*
    ------------------------------------------------
        INTERFACE WINDOW FUNCTIONS
@@ -24,6 +77,60 @@ function toggleNewApplication(flag){
 		$('#new_app').window('open');
 	}else{
 		$('#new_app').window('close');
+	}
+}
+function toggleCameraViewer(flag){
+	if(flag){
+		$('#camera_viewer').window('open');
+	}else{
+		$('#camera_viewer').window('close');
+	}
+}
+function toggleApplications(flag){
+	if(flag){
+		$('#applications_window').window('open');
+	}else{
+		$('#applications_window').window('close');
+	}
+}
+function toggleApplicationSaveWindow(flag){
+	if(flag){
+		$('#applications_save').window('open');
+	}else{
+		$('#applications_save').window('close');
+	}
+}
+
+function clearApplications(){ document.getElementById('applications_select').innerHTML = "" }
+function addApplication(name){
+	document.getElementById('applications_select').innerHTML += "<option value=" + "'" + name + "'" + ">" + name + "</option>"
+}
+function getSelectedApplication(){
+	var select = document.getElementById('applications_select')
+	var selected = select.options[select.selectedIndex].value
+	return selected
+}
+
+
+var CURRENT_DEMO = ' '
+var DEMO_RUNNING = false
+function showDemoWindow(){
+	toggleDemoWindow(true)
+	DEMO_RUNNING = true
+}
+function closeDemoWindow(name){
+	SendDemoStopRequest()
+	toggleDemoWindow(false)
+	DEMO_RUNNING = false
+	CURRENT_DEMO = ' '
+}	
+function toggleDemoWindow(flag){
+	if(CURRENT_DEMO!=' '){
+		if(flag){
+			$('#demo_window').window('open');
+		}else{
+			$('#demo_window').window('close');
+		}
 	}
 }
 
@@ -73,68 +180,164 @@ function Confirm(_msg,func_yes,func_no){
 /**
 	New button clicked
 	**/
-function newClicked(ask){
-	if(ask)
-	{
-		Confirm("Are you sure you would like to create a new project? you will lose any unsaved changes.",
-		function(){
-			/*
-				User clicked YES
-			*/
-			FileIO.New();
-			toggleNewApplication(true);
-		
-		},function(){
-			/*
-				User clicked NO
-			*/
-		
-		});
-	}else{ toggleNewApplication(true); }
+function newClicked(){
+	Application.New()
 }
 
 /**
 	Save button clicked
 		**/
-function saveClicked(){
-	FileIO.Save();
+function saveClicked(type){
+	if(type===0){
+		Application.Save()
+	}else if(type===1){
+		toggleApplicationSaveWindow(true)
+	}else{
+		var appname = document.getElementById('app_name').value;
+		Application.SetName(appname);
+		Application.Save(); 
+		toggleApplicationSaveWindow(false)
+	}
+	
 	
 }
 
+/**
+	Open button clicked
+	**/
+function openClicked(){
+	Application.Saved()
+	
+}
 
 
 /**
 	Run button clicked
 	**/
 function runClicked(obj){
-	//Generate commands
-	var commands = Generate();
 	
-	/**
-		We need to check if the commands were generated successfully
-	**/
-	if(commands.length>0){
-			ShowMessage("Robot commands generated. Executing Program..");
+		//generate code
+		var code = ""
+		code = String(Blockly.Python.workspaceToCode(workspace))
+
+		/**
+			We need to check if the commands were generated successfully
+		**/
+		if(code!=""){
+				ShowMessage("Robot commands generated. Executing Program..");
 			
-			//Send command data to the server as a JSON
-			sendApplicationJSON(commands);
+				//Send command data to the server as a JSON
+
+				sendApplicationCode(code);
 		
-	}else{ ShowError("Unable to run program,caused by an error generating robot commands. You either created too many STARTROBOT blocks, or you need to create one."); }
+		}else{ ShowError("Unable to run program,caused by an error generating robot commands. You either created too many STARTROBOT blocks, or you need to create one."); }
+	
 	
 }	
 /**
 	Stop button clicked
 	**/
 function stopClicked(obj){
-	ShowMessage("Robot stopped successfully.");
+
+		SendStopCommand();
+		ShowMessage("Robot stopped successfully.");
+	
 	
 }
 /**
 	Demo button clicked
 	**/
 function demoClicked(obj,demo_name){
-	ShowMessage("Starting demo: " + demo_name);
+
+		CURRENT_DEMO = demo_name + '_cont' 
+		ShowMessage("Starting demo: " + demo_name);
+		SendDemoStartRequest(demo_name)
+		showDemoWindow()
+	
 }
+
+function cameraProcLoop(){
+			if(USING_CAMERA_VIEWER==true){SendCameraViewRequest()}
+} 			setInterval(cameraProcLoop,500);
+
+/**
+ *  Camera button clicked
+ * **/
+function cameraButtonClicked(){
+	toggleCameraViewer(true)
+	USING_CAMERA_VIEWER = true
+}
+
+
+/*
+   ------------------------------------------------
+      KEYBOARD INPUT FUNCTIONS
+   ------------------------------------------------
+*/
+
+//shift+n = new application
+Mousetrap.bind('shift+n',newClicked)
+//shift+o = open application
+Mousetrap.bind('shift+o',openClicked)
+//shift+s = save application
+Mousetrap.bind('shift+s',saveClicked)
+//shift+r = run
+Mousetrap.bind('shift+r',runClicked)
+//shift+c = shutdown
+Mousetrap.bind('shift+c',function(){
+	SendServerRequest("SHUTDOWN")
+});
+//shift+1 = Open camera viewer
+Mousetrap.bind('shift+1',cameraButtonClicked)
+//ESC == close opened window
+Mousetrap.bind('escape',function(){
+	console.log('escape pressed')
+	if(DEMO_RUNNING){
+		SendDemoStopRequest()
+		closeDemoWindow()
+	}
+	if(USING_CAMERA_VIEWER){
+		toggleCameraViewer()
+		USING_CAMERA_VIEWER = false
+	}
+	
+	//If escape is pressed -- a stop command must be sent to the robot
+	SendStopCommand()
+	ShowMessage("Robot stopped successfully.");
+});
+
+/*
+   ------------------------------------------------
+      USER INTRODUCTION - using INTRO library
+   ------------------------------------------------
+*/
+//Start the user introduction
+function startIntro(){
+	
+	var intro = introJs();
+	
+	intro.setOptions(
+	{
+		steps: [
+		{ element: document.getElementById('main_menu'),intro:"This is the main menu bar." },
+		{ element: document.getElementById('file_menu_option'),intro:"Use this option to open,save and create a new application." },
+		{ element: document.getElementById('view_menu_option'),intro:"This option is used to view robot information, such as an attached sensor." },
+		{ element: document.getElementById('application_menu_option'),intro:"Used for executing, and stopping a running application." },
+		{ element: document.getElementById('help_menu_option'),intro:"Use this option to access help, and tutorials." },
+		{ element: document.getElementsByClassName('blocklyToolboxDiv')[0],intro:"This is the toolbox, containing draggable commands for the main edit area.",position:'right' },
+		{ element: document.getElementById('editor_visual_content'),intro:"This is the main edit area, Drag commands into here from the toolbox.",position:'left' }
+		]
+		
+	}
+	
+	);
+	
+	//introJs().setOption('showProgress',true).start();
+	intro.setOption('showProgress',true).start();
+}
+
+	
+	
 
 
 

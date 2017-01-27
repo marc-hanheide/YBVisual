@@ -1,4 +1,10 @@
+/*
+	YBEDITOR Controller - Used for sending application data to the python server
 
+*/
+
+
+SENDING_DATA = false
 
 
 /*
@@ -6,11 +12,37 @@
         SERVER I/O FUNCTIONS
    ------------------------------------------------
 */
-//Send application data to the setActive
+//Send application data to the server
 function SendApplicationData(appdata){
 	//var json = createJSON("APPDATA",appdata);
-	SendData(createJSON("APPDATA",FileIO.Name,appdata));
+	//SendData(createJSON("APPSAVE",Application.Current,appdata));
+	SendData(createJSON("APPLICATION",createJSON("SAVE",Application.Current,appdata),""))
 }
+
+//Load application data from the server
+function LoadApplicationData(appname){
+	
+	//SendData(createJSON("APPOPEN",appname,""),function(data){
+	//		alert(data);
+	//});
+	appxml = ''
+	SendData(createJSON("APPLICATION",createJSON("OPEN",appname,""),""),function(data){
+		appxml = data
+		})
+	return appxml
+	
+}
+
+//Request a list of applications saved locally on the server
+function RequestApplicationList(){
+
+	_list = []
+	SendData(createJSON("APPLICATION",createJSON("LIST","",""),""),function(data){
+		json = JSON.parse(data)
+		_list = json.applications
+		})
+	return _list
+} 
 
 //Create JSON data to send to the server
 function createJSON(_type,_att,_val){
@@ -22,46 +54,85 @@ function createJSON(_type,_att,_val){
 	return _json;
 }
 
-//Create the JSON application data to send to the server
-function sendApplicationJSON(commands){
-	//Array holds the gathered JSON objects
-	//var commands_json = [];
+//Send application code data
+function sendApplicationCode(code){
+	var json_final = createJSON("RUN",code,"")
+	SendData(json_final)
+}
+
+//Send a stop command to the robot
+function SendStopCommand(){
 	var data = new Object();
 	data.commands = [];
 	
+	var type = "ESTOP"
+	var attribute = ""
+	var val = ""
+	var _json = createJSON(type,attribute,val)
 	
-	//Cycle through the commands
-	for(var i = 0;i < commands.length;i++){
+	SendData(_json)
+}
+
+//Send a demo start request
+function SendDemoStartRequest(name){
+	var data = new Object();
+	data.commands = [];
+	var demo_json = createJSON("DEMO","START",name)
+	data.commands.push(demo_json)
+	var json_final = createJSON("RUN",JSON.stringify(data),"")
+	SendData(json_final)
+}
+//Send a demo stop request
+function SendDemoStopRequest(){
+	var data = new Object();
+	data.commands = [];
+	var demo_json = createJSON("DEMO","STOP","")
+	data.commands.push(demo_json)
+	var json_final = createJSON("RUN",JSON.stringify(data),"")
+	SendData(json_final)
+}
+
+//Send a camera view request
+function SendCameraViewRequest(){
+	var type = "SENSORS"
+	var attribute = "CAMERA"
+	var val = "VIEW"
+	var _json = createJSON(type,attribute,val)
+	SendData(_json,function(data){
+		img_src = 'data:image/jpg;base64,'+data+''
+		document.getElementById('camera_viewer_src').src = img_src
 		
-		/**
-			We need to split - and parse the command string
-		**/
-		var command = commands[i].split(",");
-		//Get the command type
-		var type = command[0]; 
-		//Get command attributes
-		var attribute = command[1]; 
-		//Get command value
-		var val = command[2];
-		//From these - we can create the JSON object
-		var _json = createJSON(type,attribute,val);
-		//Add to the array
-		data.commands.push(_json);
+		//Also add to filter previews
+		document.getElementById('camera_viewer_filter_none').src = img_src
+		
+		})
+}
+
+//Send a key event
+function SendKeyEvent(type,key){
+	var _type = ''
+	if(type==="PRESS"){
+		_type = 'PRESS'
+	}else{ _type = 'RELEASE' }
 	
-	}
-	
-	//Finally -- add a halt command
-	var json_halt = createJSON("HALT","","");
-	data.commands.push(json_halt);
-	
-	//Create a final JSON object using the created json array
-	var json_final = JSON.stringify(data);
-	//Created -- now send the JSON object to the server
-	SendData(json_final);
-	
+	SendData(createJSON("KEYEVENT",_type,key))
+}
+
+//Send sever control command
+function SendServerRequest(type){
+	var _json = createJSON("SERVER",type,"")
+	SendData(_json)
 }
 
 
 //Send data as POST request
 function SendData(_data)
-{  $.ajax({ type:"POST",data: _data } ); }
+{  $.ajax({ type:"POST",data: _data } );  request.done(function(){}) }
+
+function SendData(_data,callback)
+{  var request = $.ajax({ type:"POST",data: _data,async:false } );
+request.done(callback);  }
+
+//Request data using a GET request
+function RequestData(_data)
+{  alert("GET request"); $.ajax({ type:"GET",data: _data } ); }
