@@ -190,11 +190,8 @@ if __name__ == "__main__":
     try:
         Server.Start()
         print "Server shutdown"
-        #Find server process - and kill it
-        os.system("pkill -1 -f server.py")
     except Exception as e:
         print "Exception found"
         print e
-        os.system("pkill -1 -f server.py")
         
         
